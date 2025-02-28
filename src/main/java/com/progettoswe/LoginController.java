@@ -4,10 +4,15 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 
+import java.io.IOException;
+import java.util.Dictionary;
+import java.util.Hashtable;
+
+
 public class LoginController {
 
     @FXML
-    private TextField usernameField;
+    private TextField mailTextField;
 
     @FXML
     private TextField passwordField;
@@ -17,15 +22,22 @@ public class LoginController {
 
     @FXML
     private void handleLogin() {
-        String username = usernameField.getText();
+        String mail = mailTextField.getText();
         String password = passwordField.getText();
+            
+
         
         // Implement authentication logic here
-        if (authenticate(username, password)) {
+        if (authenticate(mail, password)) {
             // Switch to the main view or perform the next action
         } else {
             // Show error message
         }
+    }
+
+    @FXML
+    private void switchToRegistrate() throws IOException {
+        App.setRoot("registrate");
     }
 
     private boolean authenticate(String username, String password) {
