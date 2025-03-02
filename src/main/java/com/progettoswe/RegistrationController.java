@@ -5,10 +5,13 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
-
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.io.IOException;
-import java.util.Dictionary;
-import java.util.Hashtable;
+import java.time.LocalDate;
+import java.sql.Date;
 
 
 public class RegistrationController {
@@ -28,7 +31,26 @@ public class RegistrationController {
     private void handleRegistration() {
         String mail = mailTextField.getText();
         String password = passwordField.getText();
+
         
+        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         // Implement registration logic here
         if (register(mail, password)) {
             Alert a = new Alert(AlertType.INFORMATION, "Utente registrato con successo");
@@ -57,12 +79,10 @@ public class RegistrationController {
             return false;
         }
 
-        if (App.users.get(mail) != null) {
-            erroreMessage = "Email già registrata";
-            return false;
-        }
+        registraUtente(mail, password);
+            
 
-        App.users.put(mail, password);
+        
         return true;
 
     }
@@ -74,6 +94,56 @@ public class RegistrationController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    //metodo per verificare se l'email è già presente nel database
+    private static boolean emailEsistente(String email) {
+        String query = "SELECT count(*) FROM utente WHERE email = ?";
+        try (Connection conn = DatabaseConnection.getConnection()) {
+            PreparedStatement pstmt = conn.prepareStatement(query);
+            pstmt.setString(1, query); // imposto il parametro della query, sostituisco il ? con l'email
+
+            try(ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next() && rs.getInt(1) > 0) {
+                    Alert a = new Alert(AlertType.ERROR, "Email già registrata");
+                    return true; //email trovata
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false; //email non trovata
+    }
+
+    //metodo per registrare un nuovo utente nel database
+    private static boolean registraUtente(String email, String password) {
+        if(emailEsistente(email)) { //verifico se l'email è già presente nel database
+            Alert a = new Alert(AlertType.ERROR, "Email già registrata");
+            return false;
+        }
+        String query = "INSERT INTO utente (nome, cognome, cf, email, pw, cellulare, data_nascita, indirizzo) VALUES (?, ?, ?, ?, ?, ?, ?, ?)"; //query per inserire un nuovo utente
+
+        try(Connection conn = DatabaseConnection.getConnection()) {
+            PreparedStatement pstmt = conn.prepareStatement(query);
+            //imposto i parametri della query
+            LocalDate data = LocalDate.of(1990, 1, 1);
+            Date sqlDate = Date.valueOf(data);
+            pstmt.setString(1, "Mattia");
+            pstmt.setString(2, "Donadoni");
+            pstmt.setString(3, "DNDMTT03L11D612B");
+            pstmt.setString(4, email);
+            pstmt.setString(5, password);
+            pstmt.setString(6, "3333333333");
+            pstmt.setDate(7, sqlDate);
+            pstmt.setString(8, "Via Roma 1");
+
+            int rowsInserted = pstmt.executeUpdate(); //eseguo la query
+            return rowsInserted > 0; //restituisce true se l'utente è stato registrato con successo
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false; //se non è stato possibile registrare l'utente a causa di un errore
     }
 
 }
