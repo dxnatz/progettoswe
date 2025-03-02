@@ -1,4 +1,5 @@
 module com.progettoswe {
+    requires java.sql;
     requires javafx.controls;
     requires javafx.fxml;
 

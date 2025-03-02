@@ -11,6 +11,11 @@
     </properties>
     <dependencies>
         <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>42.7.5</version> <!-- Controlla l'ultima versione disponibile -->
+        </dependency>
+        <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-controls</artifactId>
             <version>20.0.1</version>
@@ -21,6 +26,7 @@
             <version>20.0.1</version>
         </dependency>
     </dependencies>
+    
     <build>
         <plugins>
             <plugin>
