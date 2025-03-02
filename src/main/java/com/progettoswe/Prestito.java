@@ -32,8 +32,44 @@ public class Prestito {
         this.dataRitiro = null;
     }
 
-    public Libro getLibro(){
+    public int getId() {
+        return id;
+    }
+
+    public Utente getUtente() {
+        return utente;
+    }
+
+    public Libro getLibro() {
         return libro;
+    }
+
+    public Date getDataPrenotazione() {
+        return dataPrenotazione;
+    }
+
+    public Date getScadenzaPrestito() {
+        return scadenzaPrestito;
+    }
+
+    public int getNumeroRinnovi() {
+        return numeroRinnovi;
+    }
+
+    public boolean isRitirato() {
+        return ritirato;
+    }
+
+    public boolean isRestituito() {
+        return restituito;
+    }
+
+    public Date getScadenzaRitiro() {
+        return scadenzaRitiro;
+    }
+
+    public Date getDataRitiro() {
+        return dataRitiro;
     }
 
     public void ritirato(){

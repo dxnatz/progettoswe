@@ -22,6 +22,30 @@ public class Utente {
         this.prestiti = new ArrayList<Prestito>();
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public String getCognome() {
+        return cognome;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getCellulare() {
+        return cellulare;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
     public void aggiungiPreferito(Libro libro){
         if(!preferiti.contains(libro)){
             preferiti.add(libro);

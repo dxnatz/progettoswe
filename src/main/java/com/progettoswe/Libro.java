@@ -27,66 +27,34 @@ public class Libro {
         return isbn;
     }
 
-    public void setIsbn(int isbn) {
-        this.isbn = isbn;
-    }
-
     public String getTitolo() {
         return titolo;
-    }
-
-    public void setTitolo(String titolo) {
-        this.titolo = titolo;
     }
 
     public String getAutore() {
         return autore;
     }
 
-    public void setAutore(String autore) {
-        this.autore = autore;
-    }
-
     public String getGenere() {
         return genere;
-    }
-
-    public void setGenere(String genere) {
-        this.genere = genere;
     }
 
     public String getEditore() {
         return editore;
     }
 
-    public void setEditore(String editore) {
-        this.editore = editore;
-    }
-
     public int getAnnoPubblicazione() {
         return annoPubblicazione;
-    }
-
-    public void setAnnoPubblicazione(int annoPubblicazione) {
-        this.annoPubblicazione = annoPubblicazione;
     }
 
     public int getStato() {
         return stato;
     }
 
-    public void setStato(int stato) {
-        this.stato = stato;
-    }
-
     public float getPrezzo() {
         return prezzo;
     }
 
-    public void setPrezzo(float prezzo) {
-        this.prezzo = prezzo;
-    }
-    
     public boolean isDisponibile() {
         return disponibile;
     }

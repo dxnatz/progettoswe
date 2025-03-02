@@ -1,7 +1,8 @@
 module com.progettoswe {
-    requires java.sql;
     requires javafx.controls;
     requires javafx.fxml;
+    requires transitive javafx.graphics;
+    requires transitive java.sql;
 
     opens com.progettoswe to javafx.fxml;
     exports com.progettoswe;

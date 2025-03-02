@@ -5,8 +5,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 
 import java.io.IOException;
-import java.util.Dictionary;
-import java.util.Hashtable;
 
 
 public class LoginController {
