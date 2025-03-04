@@ -36,8 +36,10 @@
     
     <Label text="Indirizzo di Casa:" GridPane.columnIndex="0" GridPane.rowIndex="8"/>
     <TextField fx:id="indirizzoTextField" promptText="Inserisci il tuo Indirizzo" GridPane.columnIndex="1" GridPane.rowIndex="8"/>
-    
-    <Button fx:id="registerButton" text="Registrati" onAction="#handleRegistration"
-            GridPane.columnIndex="0" GridPane.rowIndex="9" GridPane.columnSpan="2"/>
-    
+
+    <HBox GridPane.columnIndex="1" GridPane.rowIndex="9" alignment="CENTER_RIGHT" spacing="10">
+       <Button fx:id="backButton" text="Indietro" onAction="#handleBack"/>
+       <Button fx:id="registerButton" text="Registrati" onAction="#handleRegistration"/>
+    </HBox>
+
 </GridPane>

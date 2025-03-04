@@ -61,6 +61,11 @@ public class RegistrationController {
         registraUtente(nome, cognome, codiceFiscale, mail, password, cellulare, dataNascita, indirizzo);
     }
 
+    @FXML
+    private void handleBack() {
+        switchToLogin();
+    }
+
     //Metodi di validazione
     private boolean isValidEmail(String email){
         return Pattern.matches(EMAIL_REGEX, email);

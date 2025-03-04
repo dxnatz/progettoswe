@@ -14,31 +14,21 @@
     </top>
     
     <center>
-        <VBox spacing="10">
-            <Label text="Catalogo Libri"/>
-            <ListView fx:id="catalogList"/>
-        </VBox>
+        <HBox spacing="5">
+            <VBox spacing="10" HBox.hgrow="ALWAYS">
+                <Label text="Catalogo Libri"/>
+                <ListView fx:id="catalogList" VBox.vgrow="ALWAYS"/>
+            </VBox>
+            <VBox spacing="10" HBox.hgrow="ALWAYS">
+                <Label text="Prestiti Attivi"/>
+                <ListView fx:id="loansSection" VBox.vgrow="ALWAYS"/>
+                <HBox spacing="5">
+                    <Button text="Prolunga Prestito" onAction="#extendLoan"/>
+                    <Button text="Cancella Prestito" onAction="#cancelLoan"/>
+                </HBox>
+            </VBox>
+        </HBox>
     </center>
+
     
-    <right>
-        <VBox spacing="10">
-            <Label text="Libri Preferiti"/>
-            <ListView fx:id="favoriteBooksList"/>
-            <HBox spacing="5">
-                <Button text="Aggiungi" onAction="#addToFavorites"/>
-                <Button text="Rimuovi" onAction="#removeFromFavorites"/>
-            </HBox>
-        </VBox>
-    </right>
-    
-    <bottom>
-        <VBox spacing="10">
-            <Label text="Prestiti Attivi"/>
-            <VBox fx:id="loansSection" spacing="5"/>
-            <HBox spacing="5">
-                <Button text="Prolunga Prestito" onAction="#extendLoan"/>
-                <Button text="Cancella Prestito" onAction="#cancelLoan"/>
-            </HBox>
-        </VBox>
-    </bottom>
 </BorderPane>
