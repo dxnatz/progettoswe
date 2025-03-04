@@ -30,6 +30,11 @@ public class LoginController {
     }
 
     @FXML
+    private void switchToHomePage() throws IOException {
+        App.setRoot("homePage");
+    }
+
+    @FXML
     private void handleLogin() {
         String mail = emailTextField.getText();
         String password = passwordTextField.getText();
@@ -59,7 +64,11 @@ public class LoginController {
             try(ResultSet rs = preparedStatement.executeQuery()) {
 
                 if (rs.next() && rs.getInt(1) > 0) {
-                    System.out.println("Accesso effettuato");
+                    try {
+                        switchToHomePage();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     return true; 
                 }
                 throw new SQLException();
