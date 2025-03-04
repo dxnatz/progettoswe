@@ -1,4 +1,4 @@
-package com.progettoswe;
+package com.progettoswe.model;
 import java.util.ArrayList;
 
 public class Utente {

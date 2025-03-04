@@ -3,7 +3,7 @@
 <?import javafx.scene.layout.*?>
 
 <BorderPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.progettoswe.HomePageController">
+            fx:controller="com.progettoswe.controller.HomePageController">
     
     <top>
         <HBox spacing="10" alignment="CENTER">

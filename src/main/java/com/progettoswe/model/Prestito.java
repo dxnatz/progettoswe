@@ -1,4 +1,4 @@
-package com.progettoswe;
+package com.progettoswe.model;
 import java.util.Date;
 import java.util.Calendar;
 

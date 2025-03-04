@@ -1,4 +1,4 @@
-package com.progettoswe;
+package com.progettoswe.model;
 
 public class Libro {
     private int isbn;

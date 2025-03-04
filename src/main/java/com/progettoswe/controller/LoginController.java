@@ -1,4 +1,4 @@
-package com.progettoswe;
+package com.progettoswe.controller;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -9,8 +9,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
+import com.progettoswe.util.DatabaseConnection;
 import java.io.IOException;
+import com.progettoswe.App;
 
 
 public class LoginController {

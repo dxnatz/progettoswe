@@ -1,4 +1,4 @@
-package com.progettoswe;
+package com.progettoswe.controller;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -13,6 +13,9 @@ import java.sql.SQLException;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.regex.Pattern;
+import com.progettoswe.App;
+import com.progettoswe.util.DatabaseConnection;
+
 import java.sql.Date;
 
 
