@@ -2,10 +2,9 @@ package com.progettoswe.controller;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.layout.VBox;
 import com.progettoswe.App;
 import com.progettoswe.util.DatabaseConnection;
-
+import com.progettoswe.util.Session;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -25,8 +24,9 @@ public class HomePageController {
 
     
     private void loadCatalog() {
+        String query = "SELECT titolo, autore, copie FROM libro";
+
         try (Connection connection = DatabaseConnection.getConnection()) {
-            String query = "SELECT titolo, autore, copie FROM libro";
             PreparedStatement statement = connection.prepareStatement(query);
             ResultSet resultSet = statement.executeQuery();
             
@@ -43,22 +43,63 @@ public class HomePageController {
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            // Mostra un messaggio di errore all'utente
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Errore di caricamento");
-            alert.setHeaderText("Impossibile caricare il catalogo");
-            alert.setContentText("Si è verificato un errore durante il caricamento del catalogo dei libri.");
-            alert.showAndWait();
         }
     }
     
     private void loadLoans() {
-        // TODO: Caricare i prestiti attivi dell'utente dal database
+        String query = "SELECT libro.titolo, data_fine FROM prestito JOIN libro ON prestito.isbn_libro = libro.isbn JOIN utente ON utente.codice = prestito.codice_utente WHERE utente.email = ?";
+
+        try(Connection connection = DatabaseConnection.getConnection()){
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setString(1, Session.getUserEmail());
+            ResultSet resultSet = statement.executeQuery();
+
+            while(resultSet.next()){
+                String titolo = resultSet.getString("titolo");
+                String dataFine = resultSet.getString("data_fine");
+                loansSection.getItems().add(titolo + " - FINE PRESTITO: " + dataFine);
+            }
+        }catch(SQLException e){
+            e.printStackTrace();
+        }
     }
     
     @FXML
     private void searchBooks() {
-        // TODO: Implementare ricerca nel database per titolo/autore
+        String searchText = searchField.getText();
+        String query = "SELECT titolo, autore, copie FROM libro WHERE LOWER(titolo) LIKE LOWER(?) OR LOWER(autore) LIKE LOWER(?) OR LOWER(editore) LIKE LOWER(?) OR LOWER(genere) LIKE LOWER(?)";
+
+        try (Connection connection = DatabaseConnection.getConnection()) {
+            PreparedStatement statement = connection.prepareStatement(query);
+            String searchPattern = "%" + searchText + "%";
+            statement.setString(1, searchPattern);
+            statement.setString(2, searchPattern);
+            statement.setString(3, searchPattern);
+            statement.setString(4, searchPattern);
+            ResultSet resultSet = statement.executeQuery();
+            
+            catalogList.getItems().clear(); // Pulisce la lista prima di aggiungere i nuovi risultati
+            
+            while (resultSet.next()) {
+                String titolo = resultSet.getString("titolo");
+                String autore = resultSet.getString("autore");
+                String disponibile;
+                if(resultSet.getInt("copie") == 0){
+                    disponibile = "Non disponibile";
+                }else{
+                    disponibile = "Disponibile";
+                }
+                catalogList.getItems().add(titolo + " - " + autore + " - " + disponibile);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // Mostra un messaggio di errore all'utente
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Errore di ricerca");
+            alert.setHeaderText("Impossibile eseguire la ricerca");
+            alert.setContentText("Si è verificato un errore durante la ricerca dei libri.");
+            alert.showAndWait();
+        }
     }
     
     @FXML
@@ -74,6 +115,7 @@ public class HomePageController {
     @FXML
     private void logout() {
         try {
+            Session.setUserEmail(null);
             App.setRoot("login");
         } catch (IOException e) {
             e.printStackTrace();

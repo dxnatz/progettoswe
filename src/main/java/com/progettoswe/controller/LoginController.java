@@ -10,6 +10,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import com.progettoswe.util.DatabaseConnection;
+import com.progettoswe.util.Session;
 import java.io.IOException;
 import com.progettoswe.App;
 
@@ -39,7 +40,7 @@ public class LoginController {
     private void handleLogin() {
         String mail = emailTextField.getText();
         String password = passwordTextField.getText();
-        
+        Session.setUserEmail(mail);
         authenticate(mail, password);
     }
 
