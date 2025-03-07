@@ -1,29 +1,28 @@
 package com.progettoswe.model;
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 public class Utente {
-    private int id;
     private String nome;
     private String cognome;
+    private String codiceFiscale;
     private String email;
-    private String cellulare;
     private String password;
-    private ArrayList<Libro> preferiti;
+    private String cellulare;
+    private LocalDate dataNascita;
+    private String indirizzo;
     private ArrayList<Prestito> prestiti;
 
-    public Utente(int id, String nome, String cognome, String email, String cellulare, String password) {
-        this.id = id;
+    public Utente(String nome, String cognome, String codiceFiscale, String email, String password, String cellulare, LocalDate dataNascita, String indirizzo) {
         this.nome = nome;
         this.cognome = cognome;
+        this.codiceFiscale = codiceFiscale;
         this.email = email;
-        this.cellulare = cellulare;
         this.password = password;
-        this.preferiti = new ArrayList<Libro>();
+        this.cellulare = cellulare;
+        this.dataNascita = dataNascita;
+        this.indirizzo = indirizzo;
         this.prestiti = new ArrayList<Prestito>();
-    }
-
-    public int getId() {
-        return id;
     }
 
     public String getNome() {
@@ -32,6 +31,10 @@ public class Utente {
 
     public String getCognome() {
         return cognome;
+    }
+
+    public String getCodiceFiscale() {
+        return codiceFiscale;
     }
 
     public String getEmail() {
@@ -46,22 +49,12 @@ public class Utente {
         return password;
     }
 
-    public void aggiungiPreferito(Libro libro){
-        if(!preferiti.contains(libro)){
-            preferiti.add(libro);
-        }
+    public LocalDate getDataNascita() {
+        return dataNascita;
     }
 
-    public void aggiungiPrestito(Prestito prestito){
-        prestiti.add(prestito);
-    }
-
-    public void rimuoviLibroDaPreferiti(Libro libro) {
-        preferiti.remove(libro);
-    }
-
-    public ArrayList<Libro> getListaPreferiti() {
-        return preferiti;
+    public String getIndirizzo() {
+        return indirizzo;
     }
 
     public ArrayList<Prestito> getPrestiti() {

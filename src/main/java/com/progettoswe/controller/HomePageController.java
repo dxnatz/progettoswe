@@ -4,7 +4,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import com.progettoswe.App;
-import com.progettoswe.util.DatabaseConnection;
+import com.progettoswe.dao.DatabaseConnection;
 
 import java.io.IOException;
 import java.sql.Connection;

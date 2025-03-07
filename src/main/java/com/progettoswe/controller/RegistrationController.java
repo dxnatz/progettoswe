@@ -6,6 +6,7 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -13,8 +14,11 @@ import java.sql.SQLException;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.regex.Pattern;
+
 import com.progettoswe.App;
-import com.progettoswe.util.DatabaseConnection;
+import com.progettoswe.dao.DatabaseConnection;
+import com.progettoswe.dao.UserDAO;
+import com.progettoswe.model.Utente;
 
 import java.sql.Date;
 
@@ -30,6 +34,8 @@ public class RegistrationController {
     @FXML private DatePicker dataNascitaPicker;
     @FXML private TextField indirizzoTextField;
     @FXML private Button registerButton;
+
+    private UserDAO userDAO = new UserDAO();
 
     //Espressioni di valdizaione dei campi
     private static final String EMAIL_REGEX = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$";
@@ -58,6 +64,8 @@ public class RegistrationController {
         LocalDate dataNascita = dataNascitaPicker.getValue();
         String indirizzo = indirizzoTextField.getText();
 
+        Utente utente = new Utente(nome, cognome, codiceFiscale, mail, password, cellulare, dataNascita, indirizzo);
+
         registraUtente(nome, cognome, codiceFiscale, mail, password, cellulare, dataNascita, indirizzo);
     }
 
@@ -85,64 +93,6 @@ public class RegistrationController {
         LocalDate limiteMassimo = today.minusYears(10); // Limite massimo (almeno 10 anni)
     
         return !dataNascita.isAfter(limiteMassimo) && !dataNascita.isBefore(limiteMinimo); //verifica se rientra tra 10 e 100 anni
-    }
-
-    //metodo per verificare se l'email è già presente nel database
-    private static boolean emailEsistente(String email) {
-        String query = "SELECT count (*) FROM utente WHERE email = ?"; //query per contare il numero di email uguali a quella inserita
-
-        try (Connection conn = DatabaseConnection.getConnection()) {
-            PreparedStatement pstmt = conn.prepareStatement(query);
-            pstmt.setString(1, email); // imposto il parametro della query, sostituisco il ? con l'email
-
-            try(ResultSet rs = pstmt.executeQuery()) {
-                if (rs.next() && rs.getInt(1) > 0) {
-                    return true; //email trovata
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return false; //email non trovata
-    }
-
-    //metodo per verificare se il codice fiscale è già presente nel database
-    private static boolean cfEsistente(String cf) {
-        String query = "SELECT count (*) FROM utente WHERE cf = ?"; //query per contare il numero di codici fiscali uguali a quello inserito
-
-        try (Connection conn = DatabaseConnection.getConnection()) {
-            PreparedStatement pstmt = conn.prepareStatement(query);
-            pstmt.setString(1, cf); // imposto il parametro della query, sostituisco il ? con il codice fiscale
-
-            try(ResultSet rs = pstmt.executeQuery()) {
-                if (rs.next() && rs.getInt(1) > 0) {
-                    return true; //codice fiscale trovato
-                }
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return false; //codice fiscale non trovato
-    }
-
-    //metodo per verificare se il cellulare è già presente nel database
-    private static boolean cellulareEsistente(String cellulare) {
-        String query = "SELECT count (*) FROM utente WHERE cellulare = ?"; //query per contare il numero di numeri di cellulare uguali a quello inserito
-
-        try (Connection conn = DatabaseConnection.getConnection()) {
-            PreparedStatement pstmt = conn.prepareStatement(query);
-            pstmt.setString(1, cellulare); // imposto il parametro della query, sostituisco il ? con il numero di cellulare
-
-            try(ResultSet rs = pstmt.executeQuery()) {
-                if (rs.next() && rs.getInt(1) > 0) {
-                    return true; //numero di cellulare trovato
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return false; //numero di cellulare non trovato
     }
 
     //metodo per registrare un nuovo utente nel database

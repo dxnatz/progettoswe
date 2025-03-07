@@ -1,4 +1,4 @@
-package com.progettoswe.util;
+package com.progettoswe.dao;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
