@@ -1,23 +1,29 @@
 package com.progettoswe.model;
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 public class Utente {
     private int id;
     private String nome;
     private String cognome;
+    private String cf;
     private String email;
     private String cellulare;
     private String password;
+    private LocalDate dataNascita;
+    private String indirizzo;
     private ArrayList<Libro> preferiti;
     private ArrayList<Prestito> prestiti;
 
-    public Utente(int id, String nome, String cognome, String email, String cellulare, String password) {
-        this.id = id;
+    public Utente(String nome, String cognome, String cf, String email, String cellulare, String password, LocalDate dataNascita, String indirizzo) {
         this.nome = nome;
         this.cognome = cognome;
+        this.cf = cf;
         this.email = email;
         this.cellulare = cellulare;
         this.password = password;
+        this.dataNascita = dataNascita;
+        this.indirizzo = indirizzo;
         this.preferiti = new ArrayList<Libro>();
         this.prestiti = new ArrayList<Prestito>();
     }
@@ -68,4 +74,15 @@ public class Utente {
         return prestiti;
     }
 
+    public LocalDate getDataNascita() {
+        return dataNascita;
+    }
+
+    public String getCodiceFiscale() {
+        return cf;
+    }
+
+    public String getIndirizzo() {
+        return indirizzo;
+    }
 }

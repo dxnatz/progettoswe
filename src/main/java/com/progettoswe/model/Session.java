@@ -1,4 +1,4 @@
-package com.progettoswe.util;
+package com.progettoswe.model;
 
 public class Session {
     private static String userEmail;

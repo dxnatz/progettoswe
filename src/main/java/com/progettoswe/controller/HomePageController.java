@@ -3,8 +3,9 @@ package com.progettoswe.controller;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import com.progettoswe.App;
-import com.progettoswe.util.DatabaseConnection;
-import com.progettoswe.util.Session;
+import com.progettoswe.ORM.DatabaseConnection;
+import com.progettoswe.model.Session;
+
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
