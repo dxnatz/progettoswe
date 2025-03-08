@@ -20,14 +20,5 @@ public class Catalogo {
         return libri;
     }
 
-    //ricerca libro o per titolo o per autore
-    public ArrayList<Libro> ricercaLibro(String ricerca) {
-        ArrayList<Libro> risultati = new ArrayList<Libro>();
-        for (Libro libro : libri) {
-            if (libro.toString().toLowerCase().contains(ricerca.toLowerCase())) {
-                risultati.add(libro);
-            }
-        }
-        return risultati;
-    }
+
 }

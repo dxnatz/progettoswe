@@ -5,14 +5,10 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.io.IOException;
 import com.progettoswe.App;
-import com.progettoswe.ORM.DatabaseConnection;
 import com.progettoswe.model.Session;
+import com.progettoswe.ORM.UserDAO;
 
 
 public class LoginController {
@@ -55,71 +51,28 @@ public class LoginController {
             
         }
 
-        String query = "SELECT count(*) FROM utente WHERE email = ? AND pw = ?";
-
-        try (Connection connection = DatabaseConnection.getConnection()){
-
-            PreparedStatement preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setString(1, email);
-            preparedStatement.setString(2, password);
-
-            try(ResultSet rs = preparedStatement.executeQuery()) {
-
-                if (rs.next() && rs.getInt(1) > 0) {
-                    try {
-                        switchToHomePage();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    return true; 
-                }
-                throw new SQLException();
-            } 
-            catch (SQLException e) {
-
-                if(emailCorrettaPasswordErrata(email, password)){
-                    Alert a = new Alert(AlertType.ERROR, "Password errata\n\nReinseriscila");
-                    a.setHeaderText("Errore di accesso");
-                    a.setTitle("Errore durante l'accesso");
-                    a.showAndWait();
-                    passwordTextField.clear();
-
-                } else {
-                    Alert a = new Alert(AlertType.INFORMATION, "Email non registrata nel nostro sistema\n\nRegistrati per accedere");
-                    a.setHeaderText("Errore di accesso");
-                    a.setTitle("Errore durante l'accesso");
-                    a.showAndWait();
-                    emailTextField.clear();
-                    passwordTextField.clear();
-                }
+        if(UserDAO.login(email, password)) {
+            try {
+                switchToHomePage();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
+            return true;
+        } else if(!UserDAO.emailCorrettaPasswordErrata(email, password)) {
+            Alert a = new Alert(AlertType.ERROR, "La password inserta è errata");
+            a.setHeaderText("Errore di accesso");
+            a.setTitle("Errore durante l'accesso");
+            a.showAndWait();
+            passwordTextField.clear();
+        }else{
+            Alert a = new Alert(AlertType.ERROR, "L'email e la password non sono corretti\n\nSe non sei ancora registrato, fallo ora!");
+            a.setHeaderText("Errore di accesso");
+            a.setTitle("Errore durante l'accesso");
+            a.showAndWait();
+            emailTextField.clear();
+            passwordTextField.clear();
         }
         return false;
-    }
-
-    private boolean emailCorrettaPasswordErrata(String email, String password) {
-
-        String query = "SELECT count(*) FROM utente WHERE email = ? AND pw != ?";
-
-        try (Connection connection = DatabaseConnection.getConnection()){
-            
-            PreparedStatement preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setString(1, email);
-            preparedStatement.setString(2, password);
-
-            try(ResultSet rs = preparedStatement.executeQuery()) {
-                if (rs.next() && rs.getInt(1) > 0) {
-                    return false; 
-                }
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return true;
     }
 
 }

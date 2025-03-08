@@ -3,104 +3,48 @@ package com.progettoswe.controller;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import com.progettoswe.App;
-import com.progettoswe.ORM.DatabaseConnection;
+import com.progettoswe.model.Catalogo;
+import com.progettoswe.model.Prestito;
 import com.progettoswe.model.Session;
-
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import com.progettoswe.ORM.UserDAO;
 
 public class HomePageController {
-    @FXML private ListView<String> catalogList;
-    @FXML private TextField searchField;
-    @FXML private ListView<String> loansSection;
+    @FXML private ListView<String> listaCatalogo;
+    @FXML private TextField ricerca;
+    @FXML private ListView<String> listaPrestiti;
+    Catalogo catalogo = new Catalogo();
+    ArrayList<Prestito> prestiti = new ArrayList<Prestito>();
     
     public void initialize() {
         // Inizializza interfaccia utente
-        loadCatalog();
-        loadLoans();
+        stampaCatalogo();
+        stampaPrestiti();
     }
 
     
-    private void loadCatalog() {
-        String query = "SELECT titolo, autore, copie FROM libro";
-
-        try (Connection connection = DatabaseConnection.getConnection()) {
-            PreparedStatement statement = connection.prepareStatement(query);
-            ResultSet resultSet = statement.executeQuery();
-            
-            while (resultSet.next()) {
-                String titolo = resultSet.getString("titolo");
-                String autore = resultSet.getString("autore");
-                String disponibile;
-                if(resultSet.getInt("copie") == 0){
-                    disponibile = "Non disponibile";
-                }else{
-                    disponibile = "Disponibile";
-                }
-                catalogList.getItems().add(titolo + " - " + autore + " - " + disponibile);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+    private void stampaCatalogo() {
+        catalogo = UserDAO.caricaCatalogo();
+        aggiornaCatalogo(catalogo);
     }
     
-    private void loadLoans() {
-        String query = "SELECT libro.titolo, data_fine FROM prestito JOIN libro ON prestito.isbn_libro = libro.isbn JOIN utente ON utente.codice = prestito.codice_utente WHERE utente.email = ?";
-
-        try(Connection connection = DatabaseConnection.getConnection()){
-            PreparedStatement statement = connection.prepareStatement(query);
-            statement.setString(1, Session.getUserEmail());
-            ResultSet resultSet = statement.executeQuery();
-
-            while(resultSet.next()){
-                String titolo = resultSet.getString("titolo");
-                String dataFine = resultSet.getString("data_fine");
-                loansSection.getItems().add(titolo + " - FINE PRESTITO: " + dataFine);
-            }
-        }catch(SQLException e){
-            e.printStackTrace();
+    private void stampaPrestiti() {
+        prestiti = UserDAO.caricaPrestiti();
+        for (int i = 0; i < prestiti.size(); i++) {
+            String titolo = prestiti.get(i).getLibro().getTitolo();
+            LocalDate dataFine = prestiti.get(i).getDataInizioPrenotazione().plusDays(30);
+            listaPrestiti.getItems().add(titolo + " | Da restituire entro il: " + dataFine);
         }
     }
     
     @FXML
     private void searchBooks() {
-        String searchText = searchField.getText();
-        String query = "SELECT titolo, autore, copie FROM libro WHERE LOWER(titolo) LIKE LOWER(?) OR LOWER(autore) LIKE LOWER(?) OR LOWER(editore) LIKE LOWER(?) OR LOWER(genere) LIKE LOWER(?)";
-
-        try (Connection connection = DatabaseConnection.getConnection()) {
-            PreparedStatement statement = connection.prepareStatement(query);
-            String searchPattern = "%" + searchText + "%";
-            statement.setString(1, searchPattern);
-            statement.setString(2, searchPattern);
-            statement.setString(3, searchPattern);
-            statement.setString(4, searchPattern);
-            ResultSet resultSet = statement.executeQuery();
-            
-            catalogList.getItems().clear(); // Pulisce la lista prima di aggiungere i nuovi risultati
-            
-            while (resultSet.next()) {
-                String titolo = resultSet.getString("titolo");
-                String autore = resultSet.getString("autore");
-                String disponibile;
-                if(resultSet.getInt("copie") == 0){
-                    disponibile = "Non disponibile";
-                }else{
-                    disponibile = "Disponibile";
-                }
-                catalogList.getItems().add(titolo + " - " + autore + " - " + disponibile);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            // Mostra un messaggio di errore all'utente
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Errore di ricerca");
-            alert.setHeaderText("Impossibile eseguire la ricerca");
-            alert.setContentText("Si è verificato un errore durante la ricerca dei libri.");
-            alert.showAndWait();
-        }
+        String searchText = ricerca.getText();
+        listaCatalogo.getItems().clear();
+        catalogo = UserDAO.ricercaLibro(searchText);
+        aggiornaCatalogo(catalogo);
     }
     
     @FXML
@@ -114,12 +58,32 @@ public class HomePageController {
     }
 
     @FXML
+    private void prenotaLibro(){
+
+    }
+
+    @FXML
     private void logout() {
         try {
             Session.setUserEmail(null);
             App.setRoot("login");
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    private void aggiornaCatalogo(Catalogo catalogo){
+        listaCatalogo.getItems().clear();
+        for (int i = 0; i < catalogo.getLibri().size(); i++) {
+            String titolo = catalogo.getLibri().get(i).getTitolo();
+            String autore = catalogo.getLibri().get(i).getAutore();
+            String disponibile;
+            if(catalogo.getLibri().get(i).getCopie() == 0){
+                disponibile = "Non disponibile";
+            }else{
+                disponibile = "Disponibile";
+            }
+            listaCatalogo.getItems().add(titolo + " - " + autore + " - " + disponibile);
         }
     }
 }

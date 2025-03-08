@@ -1,29 +1,25 @@
 package com.progettoswe.model;
 
 public class Libro {
-    private int isbn;
+    private String isbn;
     private String titolo;
     private String autore;
-    private String genere;
     private String editore;
     private int annoPubblicazione;
-    private int stato;
-    private float prezzo;
-    private boolean disponibile;
+    private String genere;
+    private int copie;
 
-    public Libro(int isbn, String titolo, String autore, String genere, String editore, int annoPubblicazione, float prezzo) {
+    public Libro(String isbn, String titolo, String autore, String editore, int annoPubblicazione, String genere, int copie) {
         this.isbn = isbn;
         this.titolo = titolo;
         this.autore = autore;
         this.genere = genere;
         this.editore = editore;
         this.annoPubblicazione = annoPubblicazione;
-        this.stato = 0; //a new book is in new state by default and is set to zero
-        this.prezzo = prezzo;
-        this.disponibile = true; //a new book is available by default
+        this.copie = copie;
     }
 
-    public int getIsbn() {
+    public String getIsbn() {
         return isbn;
     }
 
@@ -47,20 +43,12 @@ public class Libro {
         return annoPubblicazione;
     }
 
-    public int getStato() {
-        return stato;
+    public int getCopie() {
+        return copie;
     }
 
-    public float getPrezzo() {
-        return prezzo;
-    }
-
-    public boolean isDisponibile() {
-        return disponibile;
-    }
-
-    public void setDisponibile(boolean disponibile) {
-        this.disponibile = disponibile;
+    public void setCopie(int copie) {
+        this.copie = copie;
     }
 
     @Override

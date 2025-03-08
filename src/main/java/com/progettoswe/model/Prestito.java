@@ -1,35 +1,34 @@
 package com.progettoswe.model;
-import java.util.Date;
-import java.util.Calendar;
+import java.time.LocalDate;
 
 public class Prestito {
     private int id;
     private Utente utente;
     private Libro libro;
-    private Date dataPrenotazione;
-    private Date scadenzaPrestito;
+    private LocalDate dataInizioPrestito;
     private int numeroRinnovi;
     private boolean ritirato;
     private boolean restituito;
-    private Date scadenzaRitiro;
-    private Date dataRitiro;
+    private LocalDate dataInizioPrenotazione;
 
-    public Prestito(int id, Utente utente, Libro libro, Date dataPrenotazione) {
+    public Prestito(int id, Utente utente, Libro libro) {
         this.id = id;
         this.utente = utente;
         this.libro = libro;
-        this.dataPrenotazione = dataPrenotazione;
-        this.scadenzaPrestito = null;
+        this.dataInizioPrenotazione = LocalDate.now();
         this.numeroRinnovi = 0;
         this.ritirato = false;
         this.restituito = false;
-        
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(dataPrenotazione);
-        calendar.add(Calendar.DAY_OF_YEAR, 7); //user has 7 days to pick up the book from the library
-        this.scadenzaRitiro = calendar.getTime();
+    }
 
-        this.dataRitiro = null;
+    public Prestito(int id, Utente utente, Libro libro, LocalDate dataInizioPrenotazione) {
+        this.id = id;
+        this.utente = utente;
+        this.libro = libro;
+        this.dataInizioPrenotazione = dataInizioPrenotazione;
+        this.numeroRinnovi = 0;
+        this.ritirato = false;
+        this.restituito = false;
     }
 
     public int getId() {
@@ -44,12 +43,12 @@ public class Prestito {
         return libro;
     }
 
-    public Date getDataPrenotazione() {
-        return dataPrenotazione;
+    public LocalDate getDataInizioPrestito() {
+        return dataInizioPrestito;
     }
 
-    public Date getScadenzaPrestito() {
-        return scadenzaPrestito;
+    public LocalDate getDataInizioPrenotazione() {
+        return dataInizioPrenotazione;
     }
 
     public int getNumeroRinnovi() {
@@ -64,32 +63,18 @@ public class Prestito {
         return restituito;
     }
 
-    public Date getScadenzaRitiro() {
-        return scadenzaRitiro;
-    }
-
-    public Date getDataRitiro() {
-        return dataRitiro;
-    }
-
     public void ritirato(){
-        if(!ritirato){
-            dataRitiro = new Date();
-
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(dataRitiro);
-            calendar.add(Calendar.DAY_OF_YEAR, 30); //user has 30 days to return the book to the library
-            scadenzaPrestito = calendar.getTime();
-
+        if(!ritirato && !restituito){
             ritirato = true;
-            libro.setDisponibile(false);
+            libro.setCopie(libro.getCopie() - 1);
+            dataInizioPrestito = LocalDate.now();
         }
     }
 
     public void restituito(){
         if(ritirato && !restituito){
             restituito = true;
-            libro.setDisponibile(true);
+            libro.setCopie(libro.getCopie() + 1);
         }
     }
 
@@ -97,11 +82,6 @@ public class Prestito {
     public void rinnovaPrestito(){
         if(ritirato && !restituito && numeroRinnovi < 3){
             numeroRinnovi++;
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(scadenzaPrestito);
-            calendar.add(Calendar.DAY_OF_YEAR, 30); // add 30 days to the current scadenzaPrestito
-            scadenzaPrestito = calendar.getTime();
-
         }
     }
 }

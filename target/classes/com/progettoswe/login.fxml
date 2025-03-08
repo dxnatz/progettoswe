@@ -11,7 +11,7 @@
          <TextField fx:id="emailTextField" promptText="E-Mail" prefWidth="150"/>
          <PasswordField fx:id="passwordTextField" promptText="Password" prefWidth="150" />
          <Button fx:id="loginButton" text="Login" onAction="#handleLogin"/>
-         <Button fx:id="registrateButton" text="Registrate" onAction="#switchToRegistrate"/>
+         <Button fx:id="registrateButton" text="Registrati" onAction="#switchToRegistrate"/>
       </HBox>
    <padding>
       <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
