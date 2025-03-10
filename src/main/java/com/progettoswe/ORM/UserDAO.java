@@ -4,12 +4,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import com.progettoswe.model.Catalogo;
-import com.progettoswe.model.Libro;
-import com.progettoswe.model.Prestito;
-import com.progettoswe.model.Session;
 import com.progettoswe.model.Utente;
 import java.sql.Date;
 
@@ -149,7 +143,7 @@ public class UserDAO {
         return true;
     }
 
-    public static Catalogo caricaCatalogo() {
+    /*public static Catalogo caricaCatalogo() {
         Catalogo catalogo = new Catalogo(); //creo un nuovo catalogo per inserire i libri
         String query = "SELECT * FROM libro";
 
@@ -173,7 +167,7 @@ public class UserDAO {
             e.printStackTrace();
         }
         return catalogo;
-    }
+    }*/
 
     // Metodo per restituire un utente dal database
     public static Utente utente(String email) {
@@ -202,7 +196,7 @@ public class UserDAO {
     }
 
     //Metodo per rstituire i prestiti di un utente dal database in base all'email dentro la sessione
-    public static ArrayList<Prestito> caricaPrestiti(){
+    /*public static ArrayList<Prestito> caricaPrestiti(){
         ArrayList<Prestito> prestiti = new ArrayList<>();
         String query = "SELECT * FROM prestito JOIN libro ON prestito.isbn_libro = libro.isbn JOIN utente ON utente.codice = prestito.codice_utente WHERE utente.email = ?";
 
@@ -229,9 +223,9 @@ public class UserDAO {
             e.printStackTrace();
         }
         return prestiti;
-    }
+    }*/
 
-    public static Catalogo ricercaLibro(String ricerca){
+    /*public static Catalogo ricercaLibro(String ricerca){
         Catalogo catalogo = new Catalogo(); //creo un nuovo catalogo per inserire i libri che corrispondono alla ricerca
         String query = "SELECT * FROM libro WHERE LOWER(titolo) LIKE LOWER(?) OR LOWER(autore) LIKE LOWER(?) OR LOWER(editore) LIKE LOWER(?) OR LOWER(genere) LIKE LOWER(?)";
 
@@ -260,9 +254,9 @@ public class UserDAO {
             e.printStackTrace();
         }
         return catalogo;
-    }
+    }*/
 
-    public static boolean prenotaLibro(Libro libro){
+    /*public static boolean prenotaLibro(Libro libro){
         String query = "INSERT INTO prestito (codice_utente, isbn_libro) VALUES (?, ?, ?)";
 
         try(Connection connection = DatabaseConnection.getConnection()){
@@ -277,5 +271,5 @@ public class UserDAO {
             e.printStackTrace();
         }
         return false;
-    }
+    }*/
 }

@@ -1,0 +1,62 @@
+package com.progettoswe.ORM;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.time.LocalDate;
+import java.util.ArrayList;
+
+import com.progettoswe.model.Libro;
+import com.progettoswe.model.Prestito;
+import com.progettoswe.model.Session;
+
+public class LoanDAO {
+    
+    public static ArrayList<Prestito> caricaPrestiti(){
+        ArrayList<Prestito> prestiti = new ArrayList<>();
+        String query = "SELECT * FROM prestito JOIN libro ON prestito.isbn_libro = libro.isbn JOIN utente ON utente.codice = prestito.codice_utente WHERE utente.email = ?";
+
+        try(Connection connection = DatabaseConnection.getConnection()){
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setString(1, Session.getUserEmail()); //imposto il parametro della query, sostituisco il ? con l'email dell'utente dentro la sessione
+            ResultSet resultSet = statement.executeQuery();
+
+            while(resultSet.next()){
+                int codice = resultSet.getInt("codice_utente");
+                String isbn = resultSet.getString("isbn");
+                String titolo = resultSet.getString("titolo");
+                String autore = resultSet.getString("autore");
+                String editore = resultSet.getString("editore");
+                int anno_pubblicazione = resultSet.getInt("anno_pubblicazione");
+                String genere = resultSet.getString("genere");
+                int copie = resultSet.getInt("copie");
+                Libro libro = new Libro(isbn, titolo, autore, editore, anno_pubblicazione, genere, copie);
+                LocalDate dataPrenotazione = resultSet.getDate("data_inizio").toLocalDate();
+                Prestito prestito = new Prestito(codice, Session.getUtente(), libro, dataPrenotazione);
+                prestiti.add(prestito);
+            }
+        }catch(SQLException e){
+            e.printStackTrace();
+        }
+        return prestiti;
+    }
+
+    public static boolean prenotaLibro(Libro libro){
+        String query = "INSERT INTO prestito (codice_utente, isbn_libro) VALUES (?, ?, ?)";
+
+        try(Connection connection = DatabaseConnection.getConnection()){
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setInt(1, Session.getUtente().getCodice());
+            statement.setString(2, libro.getIsbn());
+
+            int rowsInserted = statement.executeUpdate();
+            return rowsInserted > 0;
+
+        }catch(SQLException e){
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+}

@@ -11,7 +11,7 @@ import java.time.LocalDate;
 import java.util.regex.Pattern;
 import com.progettoswe.App;
 import com.progettoswe.model.Utente;
-import com.progettoswe.ORM.UserDAO;
+import com.progettoswe.business_logic.UserService;
 
 
 public class RegistrationController {
@@ -136,9 +136,9 @@ public class RegistrationController {
             dataNascitaPicker.getEditor().clear();
             return false;
         }
-
+        
         //verifico se l'email è già presente nel database
-        if(UserDAO.emailEsistente(email)) {
+        if(UserService.emailEsistente(email)) {
             Alert a = new Alert(AlertType.ERROR, "Questa email è già stata utilizzata");
             a.setHeaderText("Registrazione fallita");
             a.setTitle("Errore nella registrazione");
@@ -148,7 +148,7 @@ public class RegistrationController {
         }
 
         //verifico se il codice fiscale è già presente nel database
-        if(UserDAO.cfEsistente(cf)) {
+        if(UserService.cfEsistente(cf)) {
             Alert a = new Alert(AlertType.ERROR, "Questo codice fiscale non può essere utilizzato\n\nÈ gia presente nel nostro database");
             a.setHeaderText("Registrazione fallita");
             a.setTitle("Errore nella registrazione");
@@ -158,7 +158,7 @@ public class RegistrationController {
         }
 
         //verifico se il numero di cellulare è già presente nel database
-        if(UserDAO.cellulareEsistente(cellulare)) {
+        if(UserService.cellulareEsistente(cellulare)) {
             Alert a = new Alert(AlertType.ERROR, "Questo numero di cellulare non può essere utilizzato\n\nÈ gia presente nel nostro database");
             a.setHeaderText("Registrazione fallita");
             a.setTitle("Errore nella registrazione");
@@ -167,7 +167,7 @@ public class RegistrationController {
             return false;
         }
 
-        if(UserDAO.inserimentoUtente(utente)) {
+        if(UserService.inserimentoUtente(utente)) {
             Alert a = new Alert(AlertType.INFORMATION, "Ti sei registrato con successo, verrai reindirizzato alla pagina di login");
             a.setHeaderText("Registrazione avvenuta con successo");
             a.setTitle("Registrazione avvenuta");

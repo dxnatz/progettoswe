@@ -8,7 +8,7 @@ import javafx.scene.control.TextField;
 import java.io.IOException;
 import com.progettoswe.App;
 import com.progettoswe.model.Session;
-import com.progettoswe.ORM.UserDAO;
+import com.progettoswe.business_logic.UserService;
 
 
 public class LoginController {
@@ -40,25 +40,23 @@ public class LoginController {
         authenticate(mail, password);
     }
 
-    private boolean authenticate(String email, String password) {
+    private void authenticate(String email, String password) {
 
         if (email.isEmpty() || password.isEmpty()) {
             Alert a = new Alert(AlertType.ERROR, "Inserisci email e password");
             a.setHeaderText("Errore di accesso");
             a.setTitle("Errore durante l'accesso");
             a.showAndWait();
-            return false;
-            
+            return;
         }
 
-        if(UserDAO.login(email, password)) {
+        if(UserService.login(email, password)) {
             try {
                 switchToHomePage();
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            return true;
-        } else if(!UserDAO.emailCorrettaPasswordErrata(email, password)) {
+        } else if(UserService.checkPassword(email, password)) {
             Alert a = new Alert(AlertType.ERROR, "La password inserta è errata");
             a.setHeaderText("Errore di accesso");
             a.setTitle("Errore durante l'accesso");
@@ -72,7 +70,6 @@ public class LoginController {
             emailTextField.clear();
             passwordTextField.clear();
         }
-        return false;
     }
 
 }
