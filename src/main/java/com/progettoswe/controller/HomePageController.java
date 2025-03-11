@@ -16,7 +16,8 @@ public class HomePageController {
     @FXML private ListView<String> listaCatalogo;
     @FXML private TextField ricerca;
     @FXML private ListView<String> listaPrestiti;
-    @FXML private Button btnPrenota; // Aggiungi il pulsante Prenota
+    @FXML private Button btnPrenota;
+    @FXML private Button btnCancellaPrestito;
     Catalogo catalogo = new Catalogo();
     ArrayList<Prestito> prestiti = new ArrayList<Prestito>();
     
@@ -25,12 +26,21 @@ public class HomePageController {
         stampaCatalogo();
         stampaPrestiti();
 
-        // Aggiungi un listener alla ListView per controllare la disponibilità del libro selezionato
+        // Listener alla ListView per controllare la disponibilità del libro selezionato
         listaCatalogo.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 String[] bookDetails = newValue.split(" - ");
                 String disponibilita = bookDetails[2];
                 btnPrenota.setDisable(disponibilita.equals("Non disponibile"));
+            }
+        });
+
+        // Listener alla ListView per controllare se è possibile annullare il prestito selezionato
+        listaPrestiti.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                String[] loanDetails = newValue.split(" - ");
+                String dataFine = loanDetails[2].split("Da restituire entro il: ")[1];
+                btnCancellaPrestito.setDisable(LoanService.prenotazioneScaduta(dataFine));
             }
         });
     }

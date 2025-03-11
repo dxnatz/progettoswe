@@ -61,12 +61,22 @@ public class LoanService {
             String [] loanDetails = selectedLoan.split(" - ");
             String titolo = loanDetails[0];
             String autore = loanDetails[1];
-            System.out.println(titolo + " " + autore);
             String isbn = getIsbnFromSelection(titolo, autore);
-            System.out.println(isbn);
             if(isbn != null && LoanDAO.prestitoDaMenoDiTreGiorni(isbn)){
                 aumentaCopieLibro(isbn);
                 return LoanDAO.annullaPrestito(isbn);
+            }
+        }
+        return false;
+    }
+
+    public static boolean prenotazioneScaduta(String dataFine) {
+        if(dataFine != null){
+            LocalDate dataOdiena = LocalDate.now();
+            LocalDate dataControllo = LocalDate.parse(dataFine);
+            dataControllo = dataControllo.minusDays(27);
+            if(dataOdiena.isAfter(dataControllo)){
+                return true;
             }
         }
         return false;

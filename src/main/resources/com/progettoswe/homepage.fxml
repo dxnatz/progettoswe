@@ -25,7 +25,7 @@
                 <ListView fx:id="listaPrestiti" VBox.vgrow="ALWAYS"/>
                 <HBox spacing="5">
                     <Button text="Prolunga Prestito" onAction="#extendLoan"/>
-                    <Button text="Cancella Prestito" onAction="#cancellaPrestito"/>
+                    <Button fx:id="btnCancellaPrestito" text="Cancella Prestito" onAction="#cancellaPrestito"/>
                 </HBox>
             </VBox>
         </HBox>
