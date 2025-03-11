@@ -1,7 +1,10 @@
 package com.progettoswe.controller;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.util.Duration;
 import com.progettoswe.App;
 import com.progettoswe.model.Catalogo;
 import com.progettoswe.model.Prestito;
@@ -43,6 +46,16 @@ public class HomePageController {
                 btnCancellaPrestito.setDisable(LoanService.prenotazioneScaduta(dataFine));
             }
         });
+
+        // Timeline per aggiornare la pagina ogni 20 secondi
+        Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(20), event -> {
+            listaCatalogo.getItems().clear();
+            listaPrestiti.getItems().clear();
+            stampaCatalogo();
+            stampaPrestiti();
+        }));
+        timeline.setCycleCount(Timeline.INDEFINITE);
+        timeline.play();
     }
 
     private void stampaCatalogo() {
@@ -136,7 +149,7 @@ public class HomePageController {
                         successAlert.showAndWait();
                     } else {
                         Alert errorAlert = new Alert(Alert.AlertType.ERROR);
-                        errorAlert.setContentText("Il libro non è stato selezionato correttamente, non è disponibile oppure hai già un prestito attivo per questo libro");
+                        errorAlert.setContentText("Il libro non è stato selezionato correttamente, non è disponibile, hai già un prestito attivo per questo libro, oppure perchè è appena stato prenotato da un altro utente");
                         errorAlert.setHeaderText("Errore");
                         errorAlert.setTitle("Errore durante la prenotazione del libro");
                         errorAlert.showAndWait();
