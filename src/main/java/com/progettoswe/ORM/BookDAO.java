@@ -67,4 +67,47 @@ public class BookDAO {
         return catalogo;
     }
 
+    public static String ottieniIsbn (String nome, String autore) {
+        String query = "SELECT isbn FROM libro WHERE titolo = ? AND autore = ?";
+        try(Connection connection = DatabaseConnection.getConnection()){
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setString(1, nome);
+            statement.setString(2, autore);
+            ResultSet resultSet = statement.executeQuery();
+            if(resultSet.next()){
+                return resultSet.getString("isbn");
+            }
+        }catch(SQLException e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static boolean libroDisponibile(String isbn) {
+        String query = "SELECT copie FROM libro WHERE isbn = ?";
+        try(Connection connection = DatabaseConnection.getConnection()){
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setString(1, isbn);
+            ResultSet resultSet = statement.executeQuery();
+            if(resultSet.next()){
+                int copie = resultSet.getInt("copie");
+                return copie > 0;
+            }
+        }catch(SQLException e){
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public static void decrementaCopieLibro(String isbn){
+        String query = "UPDATE libro SET copie = copie - 1 WHERE isbn = ?";
+        try(Connection connection = DatabaseConnection.getConnection()){
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setString(1, isbn);
+            statement.executeUpdate();
+        }catch(SQLException e){
+            e.printStackTrace();
+        }
+    }
+
 }

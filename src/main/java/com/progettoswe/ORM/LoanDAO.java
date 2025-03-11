@@ -42,13 +42,13 @@ public class LoanDAO {
         return prestiti;
     }
 
-    public static boolean prenotaLibro(Libro libro){
-        String query = "INSERT INTO prestito (codice_utente, isbn_libro) VALUES (?, ?, ?)";
+    public static boolean prenotaLibro(String isbn){
+        String query = "INSERT INTO prestito (codice_utente, isbn_libro) VALUES (?, ?)";
 
         try(Connection connection = DatabaseConnection.getConnection()){
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setInt(1, Session.getUtente().getCodice());
-            statement.setString(2, libro.getIsbn());
+            statement.setString(2, isbn);
 
             int rowsInserted = statement.executeUpdate();
             return rowsInserted > 0;
@@ -59,4 +59,19 @@ public class LoanDAO {
         return false;
     }
 
+    public static boolean libroGiaPrenotato(String isbn){
+        String query = "SELECT * FROM prestito WHERE isbn_libro = ? AND codice_utente = ?";
+
+        try(Connection connection = DatabaseConnection.getConnection()){
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setString(1, isbn);
+            statement.setInt(2, Session.getUtente().getCodice());
+            ResultSet resultSet = statement.executeQuery();
+            return resultSet.next();
+
+        }catch(SQLException e){
+            e.printStackTrace();
+        }
+        return false;
+    }
 }

@@ -51,7 +51,24 @@ public class HomePageController {
 
     @FXML
     private void prenotaLibro(){
-        //
+        String selectedBook = listaCatalogo.getSelectionModel().getSelectedItem();
+        if(LoanService.prenotaLibro(selectedBook)){
+            listaCatalogo.getItems().clear();
+            listaPrestiti.getItems().clear();
+            BookService.stampaCatalogo(catalogo, listaCatalogo);
+            stampaPrestiti();
+            Alert a = new Alert(Alert.AlertType.INFORMATION);
+            a.setContentText("Libro prenotato con successo");
+            a.setHeaderText("Successo");
+            a.setTitle("Prenotazione avvenuta con successo");
+            a.showAndWait();
+        }else{
+            Alert a = new Alert(Alert.AlertType.ERROR);
+            a.setContentText("Il libro non è stato selezionato correttamente, non è disponibile oppure hai già un prestito attivo per questo libro");
+            a.setHeaderText("Errore");
+            a.setTitle("Errore durante la prenotazione del libro");
+            a.showAndWait();
+        }
     }
 
     @FXML
