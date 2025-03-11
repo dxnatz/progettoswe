@@ -16,6 +16,7 @@ public class HomePageController {
     @FXML private ListView<String> listaCatalogo;
     @FXML private TextField ricerca;
     @FXML private ListView<String> listaPrestiti;
+    @FXML private Button btnPrenota; // Aggiungi il pulsante Prenota
     Catalogo catalogo = new Catalogo();
     ArrayList<Prestito> prestiti = new ArrayList<Prestito>();
     
@@ -23,9 +24,17 @@ public class HomePageController {
         // Inizializza interfaccia utente
         stampaCatalogo();
         stampaPrestiti();
+
+        // Aggiungi un listener alla ListView per controllare la disponibilità del libro selezionato
+        listaCatalogo.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                String[] bookDetails = newValue.split(" - ");
+                String disponibilita = bookDetails[2];
+                btnPrenota.setDisable(disponibilita.equals("Non disponibile"));
+            }
+        });
     }
 
-    
     private void stampaCatalogo() {
         BookService.stampaCatalogo(catalogo, listaCatalogo);
     }
@@ -52,22 +61,44 @@ public class HomePageController {
     @FXML
     private void prenotaLibro(){
         String selectedBook = listaCatalogo.getSelectionModel().getSelectedItem();
-        if(LoanService.prenotaLibro(selectedBook)){
-            listaCatalogo.getItems().clear();
-            listaPrestiti.getItems().clear();
-            BookService.stampaCatalogo(catalogo, listaCatalogo);
-            stampaPrestiti();
-            Alert a = new Alert(Alert.AlertType.INFORMATION);
-            a.setContentText("Libro prenotato con successo");
-            a.setHeaderText("Successo");
-            a.setTitle("Prenotazione avvenuta con successo");
-            a.showAndWait();
-        }else{
-            Alert a = new Alert(Alert.AlertType.ERROR);
-            a.setContentText("Il libro non è stato selezionato correttamente, non è disponibile oppure hai già un prestito attivo per questo libro");
-            a.setHeaderText("Errore");
-            a.setTitle("Errore durante la prenotazione del libro");
-            a.showAndWait();
+        if (selectedBook != null) {
+            Alert confirmAlert = new Alert(Alert.AlertType.CONFIRMATION);
+            confirmAlert.setTitle("Conferma Prenotazione");
+            confirmAlert.setHeaderText("Conferma Prenotazione");
+            confirmAlert.setContentText("Sei sicuro di voler prenotare il libro: " + selectedBook + "?");
+
+            ButtonType buttonTypeYes = new ButtonType("Sì");
+            ButtonType buttonTypeNo = new ButtonType("No", ButtonBar.ButtonData.CANCEL_CLOSE);
+
+            confirmAlert.getButtonTypes().setAll(buttonTypeYes, buttonTypeNo);
+
+            confirmAlert.showAndWait().ifPresent(type -> {
+                if (type == buttonTypeYes) {
+                    if (LoanService.prenotaLibro(selectedBook)) {
+                        listaCatalogo.getItems().clear();
+                        listaPrestiti.getItems().clear();
+                        BookService.stampaCatalogo(catalogo, listaCatalogo);
+                        stampaPrestiti();
+                        Alert successAlert = new Alert(Alert.AlertType.INFORMATION);
+                        successAlert.setContentText("Libro prenotato con successo");
+                        successAlert.setHeaderText("Successo");
+                        successAlert.setTitle("Prenotazione avvenuta con successo");
+                        successAlert.showAndWait();
+                    } else {
+                        Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+                        errorAlert.setContentText("Il libro non è stato selezionato correttamente, non è disponibile oppure hai già un prestito attivo per questo libro");
+                        errorAlert.setHeaderText("Errore");
+                        errorAlert.setTitle("Errore durante la prenotazione del libro");
+                        errorAlert.showAndWait();
+                    }
+                }
+            });
+        } else {
+            Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+            errorAlert.setContentText("Seleziona un libro da prenotare.");
+            errorAlert.setHeaderText("Errore");
+            errorAlert.setTitle("Errore durante la prenotazione del libro");
+            errorAlert.showAndWait();
         }
     }
 
@@ -80,6 +111,4 @@ public class HomePageController {
             e.printStackTrace();
         }
     }
-
-    
 }

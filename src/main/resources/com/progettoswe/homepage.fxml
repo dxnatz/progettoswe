@@ -18,7 +18,7 @@
             <VBox spacing="10" HBox.hgrow="ALWAYS">
                 <Label text="Catalogo Libri"/>
                 <ListView fx:id="listaCatalogo" VBox.vgrow="ALWAYS"/>
-                <Button text="Prenota" onAction="#prenotaLibro"/> <!-- Aggiungi il pulsante Prenota -->
+                <Button fx:id="btnPrenota" text="Prenota" onAction="#prenotaLibro"/> <!-- Aggiungi il pulsante Prenota -->
             </VBox>
             <VBox spacing="10" HBox.hgrow="ALWAYS">
                 <Label text="Prestiti Attivi"/>
