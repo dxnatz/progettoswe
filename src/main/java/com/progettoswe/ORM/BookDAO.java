@@ -110,4 +110,15 @@ public class BookDAO {
         }
     }
 
+    public static void aumentaCopieLibro(String isbn){
+        String query = "UPDATE libro SET copie = copie + 1 WHERE isbn = ?";
+        try(Connection connection = DatabaseConnection.getConnection()){
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setString(1, isbn);
+            statement.executeUpdate();
+        }catch(SQLException e){
+            e.printStackTrace();
+        }
+    }
+
 }

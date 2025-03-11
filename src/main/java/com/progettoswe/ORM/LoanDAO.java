@@ -74,4 +74,37 @@ public class LoanDAO {
         }
         return false;
     }
+
+    public static boolean prestitoDaMenoDiTreGiorni(String isbn){
+        String query = "SELECT * FROM prestito WHERE isbn_libro = ? AND codice_utente = ? AND data_inizio >= CURRENT_DATE - INTERVAL '3 days'";
+
+        try(Connection connection = DatabaseConnection.getConnection()){
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setString(1, isbn);
+            statement.setInt(2, Session.getUtente().getCodice());
+            ResultSet resultSet = statement.executeQuery();
+            return resultSet.next();
+
+        }catch(SQLException e){
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public static boolean annullaPrestito(String isbn){
+        String query = "DELETE FROM prestito WHERE isbn_libro = ? AND codice_utente = ?";
+
+        try(Connection connection = DatabaseConnection.getConnection()){
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setString(1, isbn);
+            statement.setInt(2, Session.getUtente().getCodice());
+
+            int rowsDeleted = statement.executeUpdate();
+            return rowsDeleted > 0;
+
+        }catch(SQLException e){
+            e.printStackTrace();
+        }
+        return false;
+    }
 }

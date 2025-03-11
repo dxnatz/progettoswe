@@ -54,8 +54,48 @@ public class HomePageController {
     }
     
     @FXML
-    private void cancelLoan() {
-        // logica per annullare il prestito nel database
+    private void cancellaPrestito() {
+        // logica per annullare il prestito nel database se non sono passati più di 3 giorni dalla prenotazione, altrimenti restituire un errore
+        String selectedLoan = listaPrestiti.getSelectionModel().getSelectedItem();
+        if (selectedLoan != null) {
+            Alert confirmAlert = new Alert(Alert.AlertType.CONFIRMATION);
+            confirmAlert.setTitle("Conferma Annullamento Prestito");
+            confirmAlert.setHeaderText("Conferma Annullamento Prestito");
+            confirmAlert.setContentText("Sei sicuro di voler annullare il prestito del libro: " + selectedLoan + "?");
+
+            ButtonType buttonTypeYes = new ButtonType("Sì");
+            ButtonType buttonTypeNo = new ButtonType("No", ButtonBar.ButtonData.CANCEL_CLOSE);
+
+            confirmAlert.getButtonTypes().setAll(buttonTypeYes, buttonTypeNo);
+
+            confirmAlert.showAndWait().ifPresent(type -> {
+                if (type == buttonTypeYes) {
+                    if (LoanService.annullaPrestito(selectedLoan)) {
+                        listaCatalogo.getItems().clear();
+                        listaPrestiti.getItems().clear();
+                        BookService.stampaCatalogo(catalogo, listaCatalogo);
+                        stampaPrestiti();
+                        Alert successAlert = new Alert(Alert.AlertType.INFORMATION);
+                        successAlert.setContentText("Prestito annullato con successo");
+                        successAlert.setHeaderText("Successo");
+                        successAlert.setTitle("Annullamento prestito avvenuto con successo");
+                        successAlert.showAndWait();
+                    } else {
+                        Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+                        errorAlert.setContentText("Il prestito non è stato selezionato correttamente oppure non è possibile annullare il prestito perchè sono passati più di 3 giorni dalla prenotazione");
+                        errorAlert.setHeaderText("Errore");
+                        errorAlert.setTitle("Errore durante l'annullamento del prestito");
+                        errorAlert.showAndWait();
+                    }
+                }
+            });
+        } else {
+            Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+            errorAlert.setContentText("Seleziona un prestito da annullare.");
+            errorAlert.setHeaderText("Errore");
+            errorAlert.setTitle("Errore durante l'annullamento del prestito");
+            errorAlert.showAndWait();
+        }
     }
 
     @FXML

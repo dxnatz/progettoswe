@@ -15,8 +15,9 @@ public class LoanService {
         prestiti = LoanDAO.caricaPrestiti();
         for (int i = 0; i < prestiti.size(); i++) {
             String titolo = prestiti.get(i).getLibro().getTitolo();
+            String autore = prestiti.get(i).getLibro().getAutore();
             LocalDate dataFine = prestiti.get(i).getDataInizioPrenotazione().plusDays(30);
-            listaPrestiti.getItems().add(titolo + " | Da restituire entro il: " + dataFine);
+            listaPrestiti.getItems().add(titolo + " - " + autore + " - Da restituire entro il: " + dataFine);
         }
     }
 
@@ -25,7 +26,7 @@ public class LoanService {
             String [] bookDetails = selectedBook.split(" - ");
             String titolo = bookDetails[0];
             String autore = bookDetails[1];
-            String isbn = getIsbnFromSelectedBook(titolo, autore);
+            String isbn = getIsbnFromSelection(titolo, autore);
             if(isbn != null && libroDisponibile(isbn) && !libroGiaPrenotato(isbn)){
                 decrementaCopieLibro(isbn);
                 return LoanDAO.prenotaLibro(isbn);
@@ -34,7 +35,7 @@ public class LoanService {
         return false;
     }
 
-    private static String getIsbnFromSelectedBook(String titolo, String autore) {
+    private static String getIsbnFromSelection(String titolo, String autore) {
         String isbn = BookDAO.ottieniIsbn(titolo, autore);
         return isbn;
     }
@@ -49,6 +50,26 @@ public class LoanService {
 
     private static void decrementaCopieLibro(String isbn) {
         BookDAO.decrementaCopieLibro(isbn);
+    }
+
+    private static void aumentaCopieLibro(String isbn) {
+        BookDAO.aumentaCopieLibro(isbn);
+    }
+
+    public static boolean annullaPrestito(String selectedLoan) {
+        if(selectedLoan != null){
+            String [] loanDetails = selectedLoan.split(" - ");
+            String titolo = loanDetails[0];
+            String autore = loanDetails[1];
+            System.out.println(titolo + " " + autore);
+            String isbn = getIsbnFromSelection(titolo, autore);
+            System.out.println(isbn);
+            if(isbn != null && LoanDAO.prestitoDaMenoDiTreGiorni(isbn)){
+                aumentaCopieLibro(isbn);
+                return LoanDAO.annullaPrestito(isbn);
+            }
+        }
+        return false;
     }
     
 }
