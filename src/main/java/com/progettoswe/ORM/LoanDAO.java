@@ -107,4 +107,37 @@ public class LoanDAO {
         }
         return false;
     }
+
+    public static void prolungaPrestito(String isbn){
+        String query = "UPDATE prestito SET num_rinnovi = num_rinnovi + 1 WHERE isbn_libro = ? AND codice_utente = ?";
+
+        try(Connection connection = DatabaseConnection.getConnection()){
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setString(1, isbn);
+            statement.setInt(2, Session.getUtente().getCodice());
+            statement.executeUpdate();
+
+        }catch(SQLException e){
+            e.printStackTrace();
+        }
+    }
+
+    public static boolean rinnoviEsauriti(String isbn){
+        String query = "SELECT num_rinnovi FROM prestito WHERE isbn_libro = ? AND codice_utente = ?";
+
+        try(Connection connection = DatabaseConnection.getConnection()){
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setString(1, isbn);
+            statement.setInt(2, Session.getUtente().getCodice());
+            ResultSet resultSet = statement.executeQuery();
+            if(resultSet.next()){
+                int num_rinnovi = resultSet.getInt("num_rinnovi");
+                return num_rinnovi == 1;
+            }
+
+        }catch(SQLException e){
+            e.printStackTrace();
+        }
+        return false;
+    }
 }

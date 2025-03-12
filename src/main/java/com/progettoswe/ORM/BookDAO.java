@@ -121,4 +121,20 @@ public class BookDAO {
         }
     }
 
+    public static boolean copiaDisponibile(String isbn){
+        String query = "SELECT copie FROM libro WHERE isbn = ?";
+        try(Connection connection = DatabaseConnection.getConnection()){
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setString(1, isbn);
+            ResultSet resultSet = statement.executeQuery();
+            if(resultSet.next()){
+                int copie = resultSet.getInt("copie");
+                return copie > 0;
+            }
+        }catch(SQLException e){
+            e.printStackTrace();
+        }
+        return false;
+    }
+
 }

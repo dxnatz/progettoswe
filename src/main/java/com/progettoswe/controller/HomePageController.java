@@ -73,7 +73,48 @@ public class HomePageController {
     
     @FXML
     private void extendLoan() {
-        // logica per prolungare il prestito nel database
+        // logica per prolungare il prestito nel database se il prestito non scade entro 2 giorni dalla data attuale, se c'è un'altra copia disponibile e se non è già stato prolungato una volta
+        
+        String selectedLoan = listaPrestiti.getSelectionModel().getSelectedItem();
+        if (selectedLoan != null) {
+            Alert confirmAlert = new Alert(Alert.AlertType.CONFIRMATION);
+            confirmAlert.setTitle("Conferma Prolungamento Prestito");
+            confirmAlert.setHeaderText("Conferma Prolungamento Prestito");
+            confirmAlert.setContentText("Sei sicuro di voler prolungare il prestito del libro: " + selectedLoan + "?");
+
+            ButtonType buttonTypeYes = new ButtonType("Sì");
+            ButtonType buttonTypeNo = new ButtonType("No", ButtonBar.ButtonData.CANCEL_CLOSE);
+
+            confirmAlert.getButtonTypes().setAll(buttonTypeYes, buttonTypeNo);
+
+            confirmAlert.showAndWait().ifPresent(type -> {
+                if (type == buttonTypeYes) {
+                    if (LoanService.prolungaPrestito(selectedLoan)) {
+                        listaCatalogo.getItems().clear();
+                        listaPrestiti.getItems().clear();
+                        BookService.stampaCatalogo(catalogo, listaCatalogo);
+                        stampaPrestiti();
+                        Alert successAlert = new Alert(Alert.AlertType.INFORMATION);
+                        successAlert.setContentText("Prestito prolungato con successo");
+                        successAlert.setHeaderText("Successo");
+                        successAlert.setTitle("Prolungamento prestito avvenuto con successo");
+                        successAlert.showAndWait();
+                    } else {
+                        Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+                        errorAlert.setContentText("Il prestito non è stato selezionato correttamente oppure non è possibile prolungare il prestito perchè è già stato prolungato una volta, non c'è un'altra copia disponibile oppure perchè è scaduto");
+                        errorAlert.setHeaderText("Errore");
+                        errorAlert.setTitle("Errore durante il prolungamento del prestito");
+                        errorAlert.showAndWait();
+                    }
+                }
+            });
+        } else {
+            Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+            errorAlert.setContentText("Seleziona un prestito da prolungare.");
+            errorAlert.setHeaderText("Errore");
+            errorAlert.setTitle("Errore durante il prolungamento del prestito");
+            errorAlert.showAndWait();
+        }
     }
     
     @FXML

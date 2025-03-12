@@ -16,7 +16,13 @@ public class LoanService {
         for (int i = 0; i < prestiti.size(); i++) {
             String titolo = prestiti.get(i).getLibro().getTitolo();
             String autore = prestiti.get(i).getLibro().getAutore();
-            LocalDate dataFine = prestiti.get(i).getDataInizioPrenotazione().plusDays(30);
+            LocalDate dataFine;
+            String isbn = prestiti.get(i).getLibro().getIsbn();
+            if(LoanDAO.rinnoviEsauriti(isbn)){
+                dataFine = prestiti.get(i).getDataInizioPrenotazione().plusDays(60);
+            }else{
+                dataFine = prestiti.get(i).getDataInizioPrenotazione().plusDays(30);
+            }
             listaPrestiti.getItems().add(titolo + " - " + autore + " - Da restituire entro il: " + dataFine);
         }
     }
@@ -80,6 +86,41 @@ public class LoanService {
             }
         }
         return false;
+    }
+
+    public static boolean prolungaPrestito(String selectedLoan) {
+        if(selectedLoan != null){
+            String [] loanDetails = selectedLoan.split(" - ");
+            String titolo = loanDetails[0];
+            String autore = loanDetails[1];
+            String dataFine = loanDetails[2].split("Da restituire entro il: ")[1];
+            String isbn = getIsbnFromSelection(titolo, autore);
+            if(isbn != null && !scadenzaImminente(dataFine) && copiaDisponibile(isbn) && !rinnoviEsauriti(isbn)){
+                LoanDAO.prolungaPrestito(isbn);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static boolean scadenzaImminente(String dataFine) {
+        if(dataFine != null){
+            LocalDate dataOdiena = LocalDate.now();
+            LocalDate dataControllo = LocalDate.parse(dataFine);
+            dataControllo = dataControllo.minusDays(2);
+            if(dataOdiena.isAfter(dataControllo)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static boolean copiaDisponibile(String isbn) {
+        return BookDAO.copiaDisponibile(isbn);
+    }
+
+    private static boolean rinnoviEsauriti(String isbn) {
+        return LoanDAO.rinnoviEsauriti(isbn);
     }
     
 }
