@@ -13,6 +13,7 @@ import com.progettoswe.business_logic.BookService;
 import com.progettoswe.business_logic.LoanService;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 public class HomePageController {
@@ -21,6 +22,7 @@ public class HomePageController {
     @FXML private ListView<String> listaPrestiti;
     @FXML private Button btnPrenota;
     @FXML private Button btnCancellaPrestito;
+    @FXML private Button btnProlungaPrestito; // Aggiungi il pulsante Prolunga Prestito
     Catalogo catalogo = new Catalogo();
     ArrayList<Prestito> prestiti = new ArrayList<Prestito>();
     
@@ -44,6 +46,7 @@ public class HomePageController {
                 String[] loanDetails = newValue.split(" - ");
                 String dataFine = loanDetails[2].split("Da restituire entro il: ")[1];
                 btnCancellaPrestito.setDisable(LoanService.prenotazioneScaduta(dataFine));
+                btnProlungaPrestito.setDisable(LocalDate.parse(dataFine).minusDays(2).isBefore(LocalDate.now()));
             }
         });
 
@@ -80,7 +83,7 @@ public class HomePageController {
             Alert confirmAlert = new Alert(Alert.AlertType.CONFIRMATION);
             confirmAlert.setTitle("Conferma Prolungamento Prestito");
             confirmAlert.setHeaderText("Conferma Prolungamento Prestito");
-            confirmAlert.setContentText("Sei sicuro di voler prolungare il prestito del libro: " + selectedLoan + "?");
+            confirmAlert.setContentText("Sei sicuro di voler prolungare il prestito del libro: " + selectedLoan + "?\n\n" + "Il prestito verrà prolungato di 15 giorni.");
 
             ButtonType buttonTypeYes = new ButtonType("Sì");
             ButtonType buttonTypeNo = new ButtonType("No", ButtonBar.ButtonData.CANCEL_CLOSE);
@@ -101,7 +104,7 @@ public class HomePageController {
                         successAlert.showAndWait();
                     } else {
                         Alert errorAlert = new Alert(Alert.AlertType.ERROR);
-                        errorAlert.setContentText("Il prestito non è stato selezionato correttamente oppure non è possibile prolungare il prestito perchè è già stato prolungato una volta, non c'è un'altra copia disponibile oppure perchè è scaduto");
+                        errorAlert.setContentText("Il prestito non è stato selezionato correttamente oppure non è possibile prolungare il prestito perchè è già stato prolungato due volte, non c'è un'altra copia disponibile oppure perchè è scaduto");
                         errorAlert.setHeaderText("Errore");
                         errorAlert.setTitle("Errore durante il prolungamento del prestito");
                         errorAlert.showAndWait();
@@ -190,7 +193,7 @@ public class HomePageController {
                         successAlert.showAndWait();
                     } else {
                         Alert errorAlert = new Alert(Alert.AlertType.ERROR);
-                        errorAlert.setContentText("Il libro non è stato selezionato correttamente, non è disponibile, hai già un prestito attivo per questo libro, oppure perchè è appena stato prenotato da un altro utente");
+                        errorAlert.setContentText("Il libro non è stato selezionato correttamente, non è disponibile, hai già un prestito attivo per questo libro, perchè è appena stato prenotato da un altro utente, oppure hai raggiunto il numero massimo di prestiti");
                         errorAlert.setHeaderText("Errore");
                         errorAlert.setTitle("Errore durante la prenotazione del libro");
                         errorAlert.showAndWait();

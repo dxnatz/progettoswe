@@ -122,8 +122,9 @@ public class LoanDAO {
         }
     }
 
-    public static boolean rinnoviEsauriti(String isbn){
+    public static int rinnoviEsauriti(String isbn){
         String query = "SELECT num_rinnovi FROM prestito WHERE isbn_libro = ? AND codice_utente = ?";
+        int num_rinnovi = 0;
 
         try(Connection connection = DatabaseConnection.getConnection()){
             PreparedStatement statement = connection.prepareStatement(query);
@@ -131,8 +132,25 @@ public class LoanDAO {
             statement.setInt(2, Session.getUtente().getCodice());
             ResultSet resultSet = statement.executeQuery();
             if(resultSet.next()){
-                int num_rinnovi = resultSet.getInt("num_rinnovi");
-                return num_rinnovi == 1;
+                num_rinnovi = resultSet.getInt("num_rinnovi");
+            }
+
+        }catch(SQLException e){
+            e.printStackTrace();
+        }
+        return num_rinnovi;
+    }
+
+    public static boolean prestitiMassimiRaggiunti(){
+        String query = "SELECT COUNT(*) FROM prestito WHERE codice_utente = ?";
+
+        try(Connection connection = DatabaseConnection.getConnection()){
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setInt(1, Session.getUtente().getCodice());
+            ResultSet resultSet = statement.executeQuery();
+            if(resultSet.next()){
+                int num_prestiti = resultSet.getInt(1);
+                return num_prestiti >= 3;
             }
 
         }catch(SQLException e){
