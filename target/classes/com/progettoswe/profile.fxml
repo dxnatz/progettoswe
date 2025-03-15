@@ -12,7 +12,7 @@
     </top>
     
     <center>
-        <GridPane hgap="10" vgap="10">
+        <GridPane hgap="10" vgap="10" alignment="CENTER">
             <padding>
                 <Insets top="20" right="20" bottom="20" left="20"/>
             </padding>
@@ -34,7 +34,10 @@
             <Label text="Conferma Nuova Password:" GridPane.rowIndex="5" GridPane.columnIndex="0"/>
             <PasswordField fx:id="confermaPassword" GridPane.rowIndex="5" GridPane.columnIndex="1"/>
             
-            <Button text="Salva" onAction="#salvaInformazioni" GridPane.rowIndex="6" GridPane.columnIndex="1" HBox.hgrow="ALWAYS"/>
+            <HBox spacing="10" GridPane.rowIndex="6" GridPane.columnIndex="1" alignment="CENTER">
+                <Button text="Salva" onAction="#salvaInformazioni"/>
+                <Button text="Cancella Utente" onAction="#cancellaUtente"/>
+            </HBox>
         </GridPane>
     </center>
     

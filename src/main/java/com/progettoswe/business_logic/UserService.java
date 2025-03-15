@@ -54,5 +54,12 @@ public class UserService {
             return true;
         }
         return false;
-    }   
+    }
+
+    public static boolean deleteUtente(Utente utente) {
+        if(UserDAO.deleteUtente(utente)) {
+            return true;
+        }
+        return false;
+    }
 }

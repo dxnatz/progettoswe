@@ -207,4 +207,20 @@ public class UserDAO {
         return false; //se non è stato possibile aggiornare l'utente a causa di un errore
     }
 
+    public static boolean deleteUtente(Utente utente) {
+        String query = "DELETE FROM utente WHERE codice = ?";
+
+        try(Connection conn = DatabaseConnection.getConnection()) {
+            PreparedStatement pstmt = conn.prepareStatement(query);
+            pstmt.setInt(1, utente.getCodice());
+
+            int rowsDeleted = pstmt.executeUpdate(); //eseguo la query
+            return rowsDeleted > 0; //restituisce true se l'utente è stato eliminato con successo
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false; //se non è stato possibile eliminare l'utente a causa di un errore
+    }
+
 }

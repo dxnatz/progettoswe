@@ -2,6 +2,8 @@ package com.progettoswe.controller;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import com.progettoswe.App;
@@ -10,6 +12,7 @@ import com.progettoswe.model.Session;
 import com.progettoswe.model.Utente;
 
 import java.io.IOException;
+import java.util.Optional;
 import java.util.regex.Pattern;
 
 public class ProfileController {
@@ -120,6 +123,35 @@ public class ProfileController {
             alert.setHeaderText("Errore durante l'aggiornamento");
             alert.setContentText("Si è verificato un errore durante l'aggiornamento delle informazioni.");
             alert.showAndWait();
+        }
+    }
+
+    @FXML
+    private void cancellaUtente() throws IOException {
+        Alert confirmAlert = new Alert(AlertType.CONFIRMATION);
+        confirmAlert.setTitle("Conferma Cancellazione");
+        confirmAlert.setHeaderText("Sei sicuro di voler cancellare il tuo account?");
+        confirmAlert.setContentText("Questa azione è irreversibile.");
+
+        Optional<ButtonType> result = confirmAlert.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            Utente utente = Session.getUtente();
+            if (UserService.deleteUtente(utente)) {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Successo");
+                alert.setHeaderText("Utente cancellato");
+                alert.setContentText("Il tuo account è stato cancellato con successo.");
+                alert.showAndWait();
+                Session.setUserEmail(null);
+                Session.setUtente(null);
+                App.setRoot("login");
+            } else {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Errore");
+                alert.setHeaderText("Errore durante la cancellazione");
+                alert.setContentText("Si è verificato un errore durante la cancellazione dell'account.");
+                alert.showAndWait();
+            }
         }
     }
 
