@@ -48,4 +48,11 @@ public class UserService {
         }
         return false;
     }
+
+    public static boolean updateUtente(Utente utente) {
+        if(UserDAO.updateUtente(utente)) {
+            return true;
+        }
+        return false;
+    }   
 }

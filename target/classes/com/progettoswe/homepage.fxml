@@ -10,6 +10,7 @@
             <TextField fx:id="ricerca" promptText="Cerca per titolo, autore..."/>
             <Button text="Cerca" onAction="#searchBooks"/>
             <Button text="Logout" onAction="#logout"/>
+            <Button text="Profilo" onAction="#visualizzaProfilo"/>
         </HBox>
     </top>
     
@@ -18,7 +19,7 @@
             <VBox spacing="10" HBox.hgrow="ALWAYS">
                 <Label text="Catalogo Libri"/>
                 <ListView fx:id="listaCatalogo" VBox.vgrow="ALWAYS"/>
-                <Button fx:id="btnPrenota" text="Prenota" onAction="#prenotaLibro"/> <!-- Aggiungi il pulsante Prenota -->
+                <Button fx:id="btnPrenota" text="Prenota" onAction="#prenotaLibro"/>
             </VBox>
             <VBox spacing="10" HBox.hgrow="ALWAYS">
                 <Label text="Prestiti Attivi"/>

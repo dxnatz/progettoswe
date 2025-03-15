@@ -1,11 +1,11 @@
 package com.progettoswe.ORM;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import com.progettoswe.model.Utente;
-import java.sql.Date;
 
 public class UserDAO {
 
@@ -143,32 +143,6 @@ public class UserDAO {
         return true;
     }
 
-    /*public static Catalogo caricaCatalogo() {
-        Catalogo catalogo = new Catalogo(); //creo un nuovo catalogo per inserire i libri
-        String query = "SELECT * FROM libro";
-
-        try (Connection connection = DatabaseConnection.getConnection()) {
-            PreparedStatement statement = connection.prepareStatement(query);
-            ResultSet resultSet = statement.executeQuery();
-            
-            while (resultSet.next()) {
-                String isbn = resultSet.getString("isbn");
-                String titolo = resultSet.getString("titolo");
-                String autore = resultSet.getString("autore");
-                String editore = resultSet.getString("editore");
-                int anno_pubblicazione = resultSet.getInt("anno_pubblicazione");
-                String genere = resultSet.getString("genere");
-                int copie = resultSet.getInt("copie");
-
-                Libro libro = new Libro(isbn, titolo, autore, editore, anno_pubblicazione, genere, copie);
-                catalogo.aggiungiLibro(libro);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return catalogo;
-    }*/
-
     // Metodo per restituire un utente dal database
     public static Utente utente(String email) {
         String query = "SELECT * FROM utente WHERE email = ?";
@@ -195,81 +169,42 @@ public class UserDAO {
         return null;
     }
 
-    //Metodo per rstituire i prestiti di un utente dal database in base all'email dentro la sessione
-    /*public static ArrayList<Prestito> caricaPrestiti(){
-        ArrayList<Prestito> prestiti = new ArrayList<>();
-        String query = "SELECT * FROM prestito JOIN libro ON prestito.isbn_libro = libro.isbn JOIN utente ON utente.codice = prestito.codice_utente WHERE utente.email = ?";
+    public static boolean updateUtente(Utente utente) {
+        String query;
+        if (utente.getPassword() == null || utente.getPassword().isEmpty()) {
+            query = "UPDATE utente SET nome = ?, cognome = ?, cf = ?, email = ?, cellulare = ?, data_nascita = ?, indirizzo = ? WHERE codice = ?";
+        } else {
+            query = "UPDATE utente SET nome = ?, cognome = ?, cf = ?, email = ?, pw = ?, cellulare = ?, data_nascita = ?, indirizzo = ? WHERE codice = ?";
+        }
 
-        try(Connection connection = DatabaseConnection.getConnection()){
-            PreparedStatement statement = connection.prepareStatement(query);
-            statement.setString(1, Session.getUserEmail()); //imposto il parametro della query, sostituisco il ? con l'email dell'utente dentro la sessione
-            ResultSet resultSet = statement.executeQuery();
-
-            while(resultSet.next()){
-                int codice = resultSet.getInt("codice_utente");
-                String isbn = resultSet.getString("isbn");
-                String titolo = resultSet.getString("titolo");
-                String autore = resultSet.getString("autore");
-                String editore = resultSet.getString("editore");
-                int anno_pubblicazione = resultSet.getInt("anno_pubblicazione");
-                String genere = resultSet.getString("genere");
-                int copie = resultSet.getInt("copie");
-                Libro libro = new Libro(isbn, titolo, autore, editore, anno_pubblicazione, genere, copie);
-                LocalDate dataPrenotazione = resultSet.getDate("data_inizio").toLocalDate();
-                Prestito prestito = new Prestito(codice, Session.getUtente(), libro, dataPrenotazione);
-                prestiti.add(prestito);
+        try(Connection conn = DatabaseConnection.getConnection()) {
+            PreparedStatement pstmt = conn.prepareStatement(query);
+            //imposto i parametri della query
+            Date sqlDate = Date.valueOf(utente.getDataNascita());
+            pstmt.setString(1, utente.getNome());
+            pstmt.setString(2, utente.getCognome());
+            pstmt.setString(3, utente.getCodiceFiscale());
+            pstmt.setString(4, utente.getEmail());
+            if (utente.getPassword() == null || utente.getPassword().isEmpty()) {
+                pstmt.setString(5, utente.getCellulare());
+                pstmt.setDate(6, sqlDate);
+                pstmt.setString(7, utente.getIndirizzo());
+                pstmt.setInt(8, utente.getCodice());
+            } else {
+                pstmt.setString(5, utente.getPassword());
+                pstmt.setString(6, utente.getCellulare());
+                pstmt.setDate(7, sqlDate);
+                pstmt.setString(8, utente.getIndirizzo());
+                pstmt.setInt(9, utente.getCodice());
             }
-        }catch(SQLException e){
+
+            int rowsUpdated = pstmt.executeUpdate(); //eseguo la query
+            return rowsUpdated > 0; //restituisce true se l'utente è stato aggiornato con successo
+
+        } catch (SQLException e) {
             e.printStackTrace();
         }
-        return prestiti;
-    }*/
+        return false; //se non è stato possibile aggiornare l'utente a causa di un errore
+    }
 
-    /*public static Catalogo ricercaLibro(String ricerca){
-        Catalogo catalogo = new Catalogo(); //creo un nuovo catalogo per inserire i libri che corrispondono alla ricerca
-        String query = "SELECT * FROM libro WHERE LOWER(titolo) LIKE LOWER(?) OR LOWER(autore) LIKE LOWER(?) OR LOWER(editore) LIKE LOWER(?) OR LOWER(genere) LIKE LOWER(?)";
-
-        try(Connection connection = DatabaseConnection.getConnection()){
-            PreparedStatement statement = connection.prepareStatement(query);
-            String searchPattern = "%" + ricerca + "%";
-            statement.setString(1, searchPattern);
-            statement.setString(2, searchPattern);
-            statement.setString(3, searchPattern);
-            statement.setString(4, searchPattern);
-            ResultSet resultSet = statement.executeQuery();
-
-            while(resultSet.next()){
-                String isbn = resultSet.getString("isbn");
-                String titolo = resultSet.getString("titolo");
-                String autore = resultSet.getString("autore");
-                String editore = resultSet.getString("editore");
-                int anno_pubblicazione = resultSet.getInt("anno_pubblicazione");
-                String genere = resultSet.getString("genere");
-                int copie = resultSet.getInt("copie");
-
-                Libro libro = new Libro(isbn, titolo, autore, editore, anno_pubblicazione, genere, copie);
-                catalogo.aggiungiLibro(libro);
-            }
-        }catch(SQLException e){
-            e.printStackTrace();
-        }
-        return catalogo;
-    }*/
-
-    /*public static boolean prenotaLibro(Libro libro){
-        String query = "INSERT INTO prestito (codice_utente, isbn_libro) VALUES (?, ?, ?)";
-
-        try(Connection connection = DatabaseConnection.getConnection()){
-            PreparedStatement statement = connection.prepareStatement(query);
-            statement.setInt(1, Session.getUtente().getCodice());
-            statement.setString(2, libro.getIsbn());
-
-            int rowsInserted = statement.executeUpdate();
-            return rowsInserted > 0;
-
-        }catch(SQLException e){
-            e.printStackTrace();
-        }
-        return false;
-    }*/
 }

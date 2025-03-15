@@ -210,9 +210,19 @@ public class HomePageController {
     }
 
     @FXML
+    private void visualizzaProfilo() {
+        try {
+            App.setRoot("profile");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
     private void logout() {
         try {
             Session.setUserEmail(null);
+            Session.setUtente(null);
             App.setRoot("login");
         } catch (IOException e) {
             e.printStackTrace();

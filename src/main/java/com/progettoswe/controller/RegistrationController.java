@@ -172,6 +172,7 @@ public class RegistrationController {
             a.setHeaderText("Registrazione avvenuta con successo");
             a.setTitle("Registrazione avvenuta");
             a.showAndWait();
+            switchToLogin();
             return true; //se l'utente è stato registrato con successo
         }else{
             Alert a = new Alert(AlertType.ERROR, "Errore non previsto nella registrazione");
