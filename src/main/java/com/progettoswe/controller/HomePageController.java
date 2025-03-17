@@ -108,13 +108,13 @@ public class HomePageController {
                         BookService.stampaCatalogo(catalogo, listaCatalogo);
                         stampaPrestiti();
                         Alert successAlert = new Alert(Alert.AlertType.INFORMATION);
-                        successAlert.setContentText("Prestito prolungato con successo");
+                        successAlert.setContentText("Prestito prolungato con successo.\n\nIl libro è da restituire entro 15 giorni dalla data attuale.");
                         successAlert.setHeaderText("Successo");
                         successAlert.setTitle("Prolungamento prestito avvenuto con successo");
                         successAlert.showAndWait();
                     } else {
                         Alert errorAlert = new Alert(Alert.AlertType.ERROR);
-                        errorAlert.setContentText("Il prestito non è stato selezionato correttamente oppure non è possibile prolungare il prestito perchè è già stato prolungato due volte, non c'è un'altra copia disponibile oppure perchè è scaduto");
+                        errorAlert.setContentText("Il prestito non è stato selezionato correttamente.\n\nNon è possibile prolungare il prestito perchè è già stato prolungato due volte.\n\nNon c'è un'altra copia disponibile.\n\n Il prestito è scaduto.");
                         errorAlert.setHeaderText("Errore");
                         errorAlert.setTitle("Errore durante il prolungamento del prestito");
                         errorAlert.showAndWait();
@@ -153,13 +153,13 @@ public class HomePageController {
                         BookService.stampaCatalogo(catalogo, listaCatalogo);
                         stampaPrestiti();
                         Alert successAlert = new Alert(Alert.AlertType.INFORMATION);
-                        successAlert.setContentText("Prestito annullato con successo");
+                        successAlert.setContentText("Prestito annullato con successo.");
                         successAlert.setHeaderText("Successo");
                         successAlert.setTitle("Annullamento prestito avvenuto con successo");
                         successAlert.showAndWait();
                     } else {
                         Alert errorAlert = new Alert(Alert.AlertType.ERROR);
-                        errorAlert.setContentText("Il prestito non è stato selezionato correttamente oppure non è possibile annullare il prestito perchè sono passati più di 3 giorni dalla prenotazione");
+                        errorAlert.setContentText("Il prestito non è stato selezionato correttamente.\n\nNon è possibile annullare il prestito perchè sono passati più di 3 giorni dalla prenotazione.");
                         errorAlert.setHeaderText("Errore");
                         errorAlert.setTitle("Errore durante l'annullamento del prestito");
                         errorAlert.showAndWait();
@@ -197,13 +197,13 @@ public class HomePageController {
                         BookService.stampaCatalogo(catalogo, listaCatalogo);
                         stampaPrestiti();
                         Alert successAlert = new Alert(Alert.AlertType.INFORMATION);
-                        successAlert.setContentText("Libro prenotato con successo");
+                        successAlert.setContentText("Libro prenotato con successo.");
                         successAlert.setHeaderText("Successo");
                         successAlert.setTitle("Prenotazione avvenuta con successo");
                         successAlert.showAndWait();
                     } else {
                         Alert errorAlert = new Alert(Alert.AlertType.ERROR);
-                        errorAlert.setContentText("Il libro non è stato selezionato correttamente, non è disponibile, hai già un prestito attivo per questo libro, perchè è appena stato prenotato da un altro utente, oppure hai raggiunto il numero massimo di prestiti");
+                        errorAlert.setContentText("Il libro non è stato selezionato correttamente.\n\nIl libro non è disponibile.\n\nHai già un prestito attivo per questo libro.\n\n Il libro è appena stato prenotato da un altro utente.\n\nHai raggiunto il numero massimo di prestiti.");
                         errorAlert.setHeaderText("Errore");
                         errorAlert.setTitle("Errore durante la prenotazione del libro");
                         errorAlert.showAndWait();
