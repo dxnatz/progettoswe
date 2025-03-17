@@ -43,7 +43,7 @@
 
     <!-- Pulsanti -->
     <HBox GridPane.columnIndex="1" GridPane.rowIndex="8" alignment="CENTER_RIGHT" spacing="10">
-        <Button fx:id="annullaButton" text="Indietro" onAction="#handleAnnulla"/>
+        <Button fx:id="backButton" text="Indietro" onAction="#backToOpUser"/>
         <Button fx:id="aggiungiButton" text="Aggiungi Libro"/>
     </HBox>
 

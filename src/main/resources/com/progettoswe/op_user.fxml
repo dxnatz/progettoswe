@@ -27,9 +27,12 @@
                 <Insets top="20" right="20" bottom="20" left="20"/>
             </padding>
             <VBox spacing="10" HBox.hgrow="ALWAYS">
-                <Label text="Catalogo Libri"/>
+                    <Label text="Catalogo Libri"/>
                 <ListView fx:id="listaCatalogo" VBox.vgrow="ALWAYS"/>
-                <Button text="Aggiungi Libro" onAction="#openAddBookWindow"/>
+                <HBox spacing = "10">
+                    <Button text="Aggiungi Libro" onAction="#openAddBookWindow"/>
+                    <Button fx:id="updateButton" text="Modifica Libro" onAction="#openUpdateBookWindow" disable="true"/>
+                </HBox>
             </VBox>
             <VBox spacing="10" HBox.hgrow="ALWAYS">
                 <Label text="Prestiti Attivi"/>

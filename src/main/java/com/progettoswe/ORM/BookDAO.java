@@ -166,4 +166,34 @@ public class BookDAO {
         }
     }
 
+    public static Libro getLibro(String isbn) {
+        String query = "SELECT * FROM libro WHERE isbn = ?";
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+    
+            statement.setString(1, isbn);
+            ResultSet resultSet = statement.executeQuery();
+    
+            if (resultSet.next()) {
+                String ISBN = (resultSet.getString("isbn"));
+                String titolo = (resultSet.getString("titolo"));
+                String autore = (resultSet.getString("autore"));
+                String editore = (resultSet.getString("editore"));
+                int anno = (resultSet.getInt("anno_pubblicazione"));
+                String genere = (resultSet.getString("genere"));
+                int copie = (resultSet.getInt("copie"));
+    
+                Libro libro = new Libro(ISBN, titolo, autore, editore, anno, genere, copie);
+
+                return libro;
+            } else {
+                return null;
+            }
+    
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null; // Restituisci null in caso di errore
+        }
+    }
+
 }

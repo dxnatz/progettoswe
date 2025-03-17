@@ -10,6 +10,22 @@ import javafx.scene.control.TextField;
 
 public class BookService {
 
+    private static void aggiornaCatalogoISBN(Catalogo catalogo, ListView<String> listaCatalogo) {
+        listaCatalogo.getItems().clear();
+        for (int i = 0; i < catalogo.getLibri().size(); i++) {
+            String isbn = catalogo.getLibri().get(i).getIsbn();
+            String titolo = catalogo.getLibri().get(i).getTitolo();
+            String autore = catalogo.getLibri().get(i).getAutore();
+            String disponibile;
+            if(catalogo.getLibri().get(i).getCopie() == 0){
+                disponibile = "Non disponibile";
+            }else{
+                disponibile = "Disponibile";
+            }
+            listaCatalogo.getItems().add(isbn + " - " + titolo + " - " + autore + " - " + disponibile);
+        }
+    }
+
     private static void aggiornaCatalogo(Catalogo catalogo, ListView<String> listaCatalogo) {
         listaCatalogo.getItems().clear();
         for (int i = 0; i < catalogo.getLibri().size(); i++) {
@@ -28,6 +44,11 @@ public class BookService {
     public static void stampaCatalogo(Catalogo catalogo, ListView<String> listaCatalogo) {
         catalogo = BookDAO.caricaCatalogo();
         aggiornaCatalogo(catalogo, listaCatalogo);
+    }
+
+    public static void stampaCatalogoISBN(Catalogo catalogo, ListView<String> listaCatalogo) {
+        catalogo = BookDAO.caricaCatalogo();
+        aggiornaCatalogoISBN(catalogo, listaCatalogo);
     }
     
     public static void searchBooks(Catalogo catalogo, ListView<String> listaCatalogo, TextField ricerca) {

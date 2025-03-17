@@ -70,7 +70,7 @@ public class AddBookController {
     }
 
     @FXML
-    private void handleAnnulla() throws IOException {
+    private void backToOpUser() throws IOException {
         App.setRoot("op_user");
     }
 
