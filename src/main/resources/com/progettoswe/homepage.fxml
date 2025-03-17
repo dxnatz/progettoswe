@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
@@ -7,15 +8,24 @@
     
     <top>
         <HBox spacing="10" alignment="CENTER">
-            <TextField fx:id="ricerca" promptText="Cerca per titolo, autore..."/>
-            <Button text="Cerca" onAction="#searchBooks"/>
-            <Button text="Logout" onAction="#logout"/>
-            <Button text="Profilo" onAction="#visualizzaProfilo"/>
+            <padding>
+                <Insets top="20" right="20" bottom="20" left="20"/>
+            </padding>
+            <HBox spacing="10" alignment="CENTER_LEFT" HBox.hgrow="ALWAYS">
+                <TextField fx:id="ricerca" promptText="Cerca per titolo, autore..."/>
+                <Button text="Cerca" onAction="#searchBooks"/>
+            </HBox>
+            <HBox spacing="10" alignment="CENTER_RIGHT" HBox.hgrow="ALWAYS">
+                <Button text="Profilo" onAction="#visualizzaProfilo"/>
+            </HBox>
         </HBox>
     </top>
     
     <center>
         <HBox spacing="5">
+            <padding>
+                <Insets top="20" right="20" bottom="20" left="20"/>
+            </padding>
             <VBox spacing="10" HBox.hgrow="ALWAYS">
                 <Label text="Catalogo Libri"/>
                 <ListView fx:id="listaCatalogo" VBox.vgrow="ALWAYS"/>

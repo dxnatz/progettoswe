@@ -7,6 +7,9 @@
     
     <top>
         <HBox spacing="10" alignment="CENTER">
+            <padding>
+                <Insets top="20" right="0" bottom="20" left="0"/>
+            </padding>
             <Label text="Profilo Utente" style="-fx-font-size: 24px;"/>
         </HBox>
     </top>
@@ -44,9 +47,10 @@
     <bottom>
         <HBox spacing="10" alignment="CENTER">
             <padding>
-                <Insets top="10" right="10" bottom="10" left="10"/>
+                <Insets top="20" right="0" bottom="20" left="0"/>
             </padding>
             <Button text="Indietro" onAction="#tornaIndietro"/>
+            <Button text="Logout" onAction="#logout"/>
         </HBox>
     </bottom>
     

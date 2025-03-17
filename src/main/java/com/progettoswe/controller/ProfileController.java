@@ -156,6 +156,17 @@ public class ProfileController {
     }
 
     @FXML
+    private void logout() {
+        Session.setUserEmail(null);
+        Session.setUtente(null);
+        try {
+            App.setRoot("login");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
     private void tornaIndietro() {
         try {
             App.setRoot("homepage");

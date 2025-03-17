@@ -4,11 +4,13 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.layout.HBox;
+import javafx.scene.paint.Color;
+import javafx.util.Callback;
 import javafx.util.Duration;
 import com.progettoswe.App;
 import com.progettoswe.model.Catalogo;
 import com.progettoswe.model.Prestito;
-import com.progettoswe.model.Session;
 import com.progettoswe.business_logic.BookService;
 import com.progettoswe.business_logic.LoanService;
 
@@ -51,7 +53,7 @@ public class HomePageController {
         });
 
         // Timeline per aggiornare la pagina ogni 20 secondi
-        Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(20), event -> {
+        Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(10), event -> {
             listaCatalogo.getItems().clear();
             listaPrestiti.getItems().clear();
             stampaCatalogo();
@@ -59,6 +61,14 @@ public class HomePageController {
         }));
         timeline.setCycleCount(Timeline.INDEFINITE);
         timeline.play();
+
+        // Imposta la cell factory per la listaCatalogo per personalizzare le celle
+        listaCatalogo.setCellFactory(new Callback<ListView<String>, ListCell<String>>() {
+            @Override
+            public ListCell<String> call(ListView<String> listView) {
+                return new BookListCell();
+            }
+        });
     }
 
     private void stampaCatalogo() {
@@ -218,14 +228,30 @@ public class HomePageController {
         }
     }
 
-    @FXML
-    private void logout() {
-        try {
-            Session.setUserEmail(null);
-            Session.setUtente(null);
-            App.setRoot("login");
-        } catch (IOException e) {
-            e.printStackTrace();
+    // Classe interna per personalizzare le celle della listaCatalogo
+    private static class BookListCell extends ListCell<String> {
+        @Override
+        protected void updateItem(String item, boolean empty) {
+            super.updateItem(item, empty);
+    
+            if (item != null && !empty) {
+                String[] bookDetails = item.split(" - ");
+                String disponibilita = bookDetails[2];
+    
+                if (disponibilita.equals("Non disponibile")) {
+                    Label disponibilitaLabel = new Label(disponibilita);
+                    disponibilitaLabel.setTextFill(Color.RED);
+                    HBox hbox = new HBox(new Label(bookDetails[0] + " - "), new Label(bookDetails[1] + " - "), disponibilitaLabel);
+                    setGraphic(hbox);
+                    setText(null); // Evita conflitti tra testo e grafica
+                } else {
+                    setText(bookDetails[0] + " - " + bookDetails[1] + " - " + disponibilita);
+                    setGraphic(null);
+                }
+            } else {
+                setText(null);
+                setGraphic(null);
+            }
         }
     }
 }
