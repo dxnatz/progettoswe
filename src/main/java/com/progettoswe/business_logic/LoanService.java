@@ -11,6 +11,11 @@ import javafx.scene.control.ListView;
 
 public class LoanService {
     
+    //TODO
+    public static void stampaTuttiPrestiti(ArrayList<Prestito> prestiti, ListView<String> listaPrestiti) {
+
+    }
+
     public static void stampaPrestiti(ArrayList<Prestito> prestiti, ListView<String> listaPrestiti) {
         prestiti = LoanDAO.caricaPrestiti();
         for (int i = 0; i < prestiti.size(); i++) {

@@ -13,6 +13,11 @@ import com.progettoswe.model.Session;
 
 public class LoanDAO {
     
+    //TODO
+    public static ArrayList<Prestito> caricaTuttiPrestiti(){
+        return null;
+    }
+
     public static ArrayList<Prestito> caricaPrestiti(){
         ArrayList<Prestito> prestiti = new ArrayList<>();
         String query = "SELECT * FROM prestito JOIN libro ON prestito.isbn_libro = libro.isbn JOIN utente ON utente.codice = prestito.codice_utente WHERE utente.email = ?";

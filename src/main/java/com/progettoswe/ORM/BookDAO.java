@@ -137,4 +137,33 @@ public class BookDAO {
         return false;
     }
 
+    public static boolean aggiungiLibro(Libro l){
+        String query = "INSERT INTO libro (isbn, titolo, autore, editore, anno_pubblicazione, genere, copie) " +
+                       "VALUES (?, ?, ?, ?, ?, ?, ?)";
+
+        try (Connection conn = DatabaseConnection.getConnection(); // Ottieni una connessione al database
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+
+            // Imposta i parametri della query con i valori del libro
+            pstmt.setString(1, l.getIsbn());
+            pstmt.setString(2, l.getTitolo());
+            pstmt.setString(3, l.getAutore());
+            pstmt.setString(4, l.getEditore());
+            pstmt.setInt(5, l.getAnnoPubblicazione());
+            pstmt.setString(6, l.getGenere());
+            pstmt.setInt(7, l.getCopie());
+
+            // Esegui la query
+            int rowsAffected = pstmt.executeUpdate();
+
+            // Restituisci true se l'inserimento è avvenuto con successo
+            return rowsAffected > 0;
+
+        } catch (SQLException e) {
+            // Gestisci eventuali errori
+            e.printStackTrace();
+            return false;
+        }
+    }
+
 }

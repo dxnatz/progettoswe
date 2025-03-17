@@ -2,12 +2,13 @@ package com.progettoswe.business_logic;
 
 import com.progettoswe.ORM.BookDAO;
 import com.progettoswe.model.Catalogo;
+import com.progettoswe.model.Libro;
+
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 
 
 public class BookService {
-    
 
     private static void aggiornaCatalogo(Catalogo catalogo, ListView<String> listaCatalogo) {
         listaCatalogo.getItems().clear();
@@ -34,6 +35,17 @@ public class BookService {
         listaCatalogo.getItems().clear();
         catalogo = BookDAO.ricercaLibro(searchText);
         aggiornaCatalogo(catalogo, listaCatalogo);
+    }
+
+    public static boolean addBook(Libro l){
+        if(BookDAO.libroDisponibile(l.getIsbn())){
+            for (int i = 0; i < l.getCopie(); i++) {
+                BookDAO.aumentaCopieLibro(l.getIsbn());
+            }
+            return true;
+        }
+
+        return BookDAO.aggiungiLibro(l);
     }
 
 }
