@@ -110,6 +110,7 @@ public class OpUserController {
                 String s = lastSelectedISBN;
                 if (deleteBook()){
                     stampaCatalogo();
+                    System.out.println("---------------cancellato");
                 }else{
                     Alert nonCancellato = new Alert(Alert.AlertType.ERROR);
                     nonCancellato.setTitle("Errore");
@@ -120,7 +121,6 @@ public class OpUserController {
             }
     }
 
-    //TODO
     private boolean deleteBook(){
         return BookService.deleteBook(lastSelectedISBN, prestiti);
     }

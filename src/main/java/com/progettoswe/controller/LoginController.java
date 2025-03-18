@@ -1,14 +1,16 @@
 package com.progettoswe.controller;
 
+import java.io.IOException;
+
+import com.progettoswe.App;
+import com.progettoswe.business_logic.UserService;
+import com.progettoswe.model.Session;
+
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
-import java.io.IOException;
-import com.progettoswe.App;
-import com.progettoswe.model.Session;
-import com.progettoswe.business_logic.UserService;
 
 
 public class LoginController {
@@ -33,11 +35,21 @@ public class LoginController {
     }
 
     @FXML
+    private void switchToOpUser() throws IOException {
+        App.setRoot("op_user");
+    }
+
+    @FXML
     private void handleLogin() {
         String mail = emailTextField.getText();
         String password = passwordTextField.getText();
         Session.setUserEmail(mail);
         authenticate(mail, password);
+    }
+
+    //TODO
+    private boolean isThisUserEmail(String email){
+        return true;
     }
 
     private void authenticate(String email, String password) {
@@ -52,7 +64,12 @@ public class LoginController {
 
         if(UserService.login(email, password)) {
             try {
-                switchToHomePage();
+                if (isThisUserEmail(email)) {
+                    switchToHomePage();
+                }else{
+                    switchToOpUser();
+                }
+                
             } catch (IOException e) {
                 e.printStackTrace();
             }
