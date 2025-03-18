@@ -31,6 +31,16 @@ public class Prestito {
         this.restituito = false;
     }
 
+    public Prestito(int id, Utente utente, Libro libro, LocalDate dataInizioPrenotazione, int numRinnovi, boolean restituito) {
+        this.id = id;
+        this.utente = utente;
+        this.libro = libro;
+        this.dataInizioPrenotazione = dataInizioPrenotazione;
+        this.numeroRinnovi = numRinnovi;
+        this.ritirato = false;
+        this.restituito = restituito;
+    }
+
     public int getId() {
         return id;
     }

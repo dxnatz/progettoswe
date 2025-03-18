@@ -32,13 +32,14 @@
                 <HBox spacing = "10">
                     <Button text="Aggiungi Libro" onAction="#openAddBookWindow"/>
                     <Button fx:id="updateButton" text="Modifica Libro" onAction="#openUpdateBookWindow" disable="true"/>
+                    <Button fx:id="deleteButton" text="Cancella Libro" onAction="#openDeleteDialog" disable="true"/>
                 </HBox>
             </VBox>
             <VBox spacing="10" HBox.hgrow="ALWAYS">
                 <Label text="Prestiti Attivi"/>
                 <ListView fx:id="listaPrestiti" VBox.vgrow="ALWAYS"/>
                 <HBox spacing="5">
-                    <Button text="Libro Restituito" onAction="#returnBook" disable="true"/>
+                    <Button fx:id="returnBookButton" text="Libro Restituito" onAction="#returnBook" disable="true"/>
                 </HBox>
             </VBox>
         </HBox>

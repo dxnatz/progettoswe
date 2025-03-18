@@ -10,12 +10,56 @@ import java.util.ArrayList;
 import com.progettoswe.model.Libro;
 import com.progettoswe.model.Prestito;
 import com.progettoswe.model.Session;
+import com.progettoswe.model.Utente;
 
 public class LoanDAO {
     
     //TODO
     public static ArrayList<Prestito> caricaTuttiPrestiti(){
-        return null;
+        ArrayList<Prestito> prestiti = new ArrayList<>();
+        String query = "SELECT * FROM prestito JOIN libro ON prestito.isbn_libro = libro.isbn JOIN utente ON utente.codice = prestito.codice_utente WHERE restituito = false";
+
+        try (PreparedStatement statement = DatabaseConnection.getConnection().prepareStatement(query);
+             ResultSet resultSet = statement.executeQuery()) {
+
+            while (resultSet.next()) {
+                //prestito
+                int codice = resultSet.getInt("codice");
+                int codiceUtente = resultSet.getInt("codice_utente");
+                String isbnLibro = resultSet.getString("isbn_libro");
+                LocalDate dataInizio = resultSet.getDate("data_inizio").toLocalDate();
+                int numRinnovi = resultSet.getInt("num_rinnovi");
+                boolean restituito = resultSet.getBoolean("restituito");
+
+                //libro del prestito
+                String titolo = (resultSet.getString("titolo"));
+                String autore = (resultSet.getString("autore"));
+                String editore = (resultSet.getString("editore"));
+                int anno = (resultSet.getInt("anno_pubblicazione"));
+                String genere = (resultSet.getString("genere"));
+                int copie = (resultSet.getInt("copie"));
+
+                //utente del prestito
+                String nome = resultSet.getString("nome");
+                String cognome = resultSet.getString("cognome");
+                String cf = resultSet.getString("cf");
+                String email = resultSet.getString("email");
+                String pw = resultSet.getString("pw");
+                String cellulare = resultSet.getString("cellulare");
+                LocalDate dataNascita = resultSet.getDate("data_nascita").toLocalDate();
+                String indirizzo = resultSet.getString("indirizzo");
+                LocalDate dataRegistrazione = resultSet.getDate("data_registrazione").toLocalDate();
+
+                Utente utente = new Utente(codiceUtente, nome, cognome, cf, email, pw, cellulare, dataNascita, indirizzo, dataRegistrazione);
+                Libro libro = new Libro(isbnLibro, titolo, autore, editore, anno, genere, copie);
+
+                Prestito prestito = new Prestito(codice, utente, libro, dataInizio, numRinnovi, restituito);
+                prestiti.add(prestito);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return prestiti;
     }
 
     public static ArrayList<Prestito> caricaPrestiti(){
@@ -162,5 +206,21 @@ public class LoanDAO {
             e.printStackTrace();
         }
         return false;
+    }
+
+    public static boolean returnBook(int codicePrestito){
+        String sql = "UPDATE prestito SET restituito = true WHERE codice = ?";
+
+        try (PreparedStatement statement = DatabaseConnection.getConnection().prepareStatement(sql)) {
+            statement.setInt(1, codicePrestito); // Imposta il codice del prestito come parametro
+
+            int rowsUpdated = statement.executeUpdate(); // Esegue l'operazione di UPDATE
+
+            // Se almeno una riga è stata aggiornata, restituisce true
+            return rowsUpdated > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false; // In caso di errore, restituisce false
+        }
     }
 }

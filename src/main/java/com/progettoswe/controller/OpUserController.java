@@ -2,41 +2,49 @@ package com.progettoswe.controller;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Optional;
 
 import com.progettoswe.App;
-import com.progettoswe.ORM.BookDAO;
 import com.progettoswe.business_logic.BookService;
 import com.progettoswe.business_logic.LoanService;
 import com.progettoswe.model.Catalogo;
-import com.progettoswe.model.Libro;
 import com.progettoswe.model.Prestito;
 import com.progettoswe.model.Session;
 
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
-import javafx.stage.Stage;
 
 public class OpUserController {
     @FXML private ListView<String> listaCatalogo;
     @FXML private TextField ricerca;
     @FXML private ListView<String> listaPrestiti;
-    Catalogo catalogo = new Catalogo();
-    ArrayList<Prestito> prestiti = new ArrayList<Prestito>();
-    private String lastSelected;
+    Catalogo catalogo;
+    ArrayList<Prestito> prestiti;
+    private String lastSelectedISBN;
+    private int lastSelectedLoan;
 
-    @FXML 
-    private Button updateButton;
+    @FXML private Button updateButton;
+    @FXML private Button deleteButton;
+    @FXML private Button returnBookButton;
 
     public void initialize() {
         // Inizializza interfaccia utente
         stampaCatalogo();
         stampaPrestiti();
         listenerCatalogo();
+        listenerPrestiti();
+    }
+
+    private void listenerPrestiti(){
+        listaPrestiti.getSelectionModel().selectedItemProperty().addListener(
+            (observable, oldValue, newValue) -> {
+                // Chiama il metodo che vuoi eseguire quando un elemento viene selezionato
+                prestitoSelezionato(newValue);
+            });
     }
 
     private void listenerCatalogo(){
@@ -47,9 +55,15 @@ public class OpUserController {
             });
     }
 
+    private void prestitoSelezionato(String s){
+        returnBookButton.setDisable(false);
+        lastSelectedLoan = Integer.parseInt(s.split(" ")[0]);
+    }
+
     private void libroSelezionato(String s){
         updateButton.setDisable(false);
-        lastSelected = s.split(" ")[0]; 
+        deleteButton.setDisable(false);
+        lastSelectedISBN = s.split(" ")[0]; 
     }
 
     private void stampaCatalogo() {
@@ -57,7 +71,7 @@ public class OpUserController {
     }
     
     private void stampaPrestiti() {
-        LoanService.stampaPrestiti(prestiti, listaPrestiti);
+        LoanService.stampaTuttiPrestiti(prestiti, listaPrestiti);
     }
 
     @FXML
@@ -72,14 +86,49 @@ public class OpUserController {
 
     @FXML
     private void openUpdateBookWindow() throws IOException{
-        UpdateBookController.isbnLibro = lastSelected;
+        UpdateBookController.isbnLibro = lastSelectedISBN;
         App.setRoot("update_book");
+    }
 
+    @FXML
+    private void openDeleteDialog(){
+        Alert confermaAlert = new Alert(Alert.AlertType.CONFIRMATION);
+            confermaAlert.setTitle("Conferma cancellazione");
+            confermaAlert.setHeaderText("Sei sicuro di voler cancellare questo libro?");
+            confermaAlert.setContentText("Questa azione non può essere annullata.");
+
+            Optional<ButtonType> risultato = confermaAlert.showAndWait();
+
+            if (risultato.isPresent() && risultato.get() == ButtonType.OK){
+                String s = lastSelectedISBN;
+                if (deleteBook()){
+                    stampaCatalogo();
+                }else{
+                    Alert nonCancellato = new Alert(Alert.AlertType.ERROR);
+                    nonCancellato.setTitle("Errore");
+                    nonCancellato.setHeaderText("Errore, controlla se ci sono dei prestiti in atto");
+                    nonCancellato.setContentText(s + " non è stato cancellato");
+                    nonCancellato.showAndWait();
+                }
+            }
+    }
+
+    //TODO
+    private boolean deleteBook(){
+        return BookService.deleteBook(lastSelectedISBN, prestiti);
     }
 
     @FXML
     private void returnBook(){
-        
+        if(LoanService.returnBook(lastSelectedLoan)){
+            stampaPrestiti();
+        }else{
+            Alert a = new Alert(Alert.AlertType.ERROR);
+            a.setTitle("Errore");
+            a.setHeaderText("Errore di connessione col database");
+            a.setContentText("Prestito " + lastSelectedLoan + " non è stato modificato");
+            a.showAndWait();
+        }
     }
 
     @FXML

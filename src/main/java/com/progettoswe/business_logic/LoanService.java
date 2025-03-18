@@ -6,14 +6,42 @@ import java.util.ArrayList;
 import com.progettoswe.ORM.BookDAO;
 import com.progettoswe.ORM.LoanDAO;
 import com.progettoswe.model.Prestito;
+import com.progettoswe.model.Session;
 
 import javafx.scene.control.ListView;
 
 public class LoanService {
     
-    //TODO
     public static void stampaTuttiPrestiti(ArrayList<Prestito> prestiti, ListView<String> listaPrestiti) {
+        prestiti = LoanDAO.caricaTuttiPrestiti();
+        aggiornaListaTuttiPrestiti(prestiti, listaPrestiti);
+    }
 
+    private static void aggiornaListaTuttiPrestiti(ArrayList<Prestito> prestiti, ListView<String> listaPrestiti) {
+        listaPrestiti.getItems().clear();
+        for (int i = 0; i < prestiti.size(); i++) {
+            int codice = prestiti.get(i).getId();
+            String titolo = prestiti.get(i).getLibro().getTitolo();
+            LocalDate dataFine;
+            String isbn = prestiti.get(i).getLibro().getIsbn();
+            boolean restituito = prestiti.get(i).isRestituito();
+
+            Session.setUtente(prestiti.get(i).getUtente());
+            int rinnovi = LoanDAO.rinnoviEsauriti(isbn);
+            switch (rinnovi) {
+                case 2:
+                    dataFine = prestiti.get(i).getDataInizioPrenotazione().plusDays(60);
+                    break;
+                case 1:
+                    dataFine = prestiti.get(i).getDataInizioPrenotazione().plusDays(45);
+                    break;
+                default:
+                    dataFine = prestiti.get(i).getDataInizioPrenotazione().plusDays(30);
+                    break;
+            }
+
+            listaPrestiti.getItems().add(codice + " - Restituito: " + restituito + " - " + isbn + " - " + titolo + " - Data restituzione: " + dataFine + " - Rinnovi: " + rinnovi);
+        }
     }
 
     public static void stampaPrestiti(ArrayList<Prestito> prestiti, ListView<String> listaPrestiti) {
@@ -23,12 +51,16 @@ public class LoanService {
             String autore = prestiti.get(i).getLibro().getAutore();
             LocalDate dataFine;
             String isbn = prestiti.get(i).getLibro().getIsbn();
-            if(LoanDAO.rinnoviEsauriti(isbn) == 2){
-                dataFine = prestiti.get(i).getDataInizioPrenotazione().plusDays(60);
-            }else if(LoanDAO.rinnoviEsauriti(isbn) == 1){
-                dataFine = prestiti.get(i).getDataInizioPrenotazione().plusDays(45);
-            }else{
-                dataFine = prestiti.get(i).getDataInizioPrenotazione().plusDays(30);
+            switch (LoanDAO.rinnoviEsauriti(isbn)) {
+                case 2:
+                    dataFine = prestiti.get(i).getDataInizioPrenotazione().plusDays(60);
+                    break;
+                case 1:
+                    dataFine = prestiti.get(i).getDataInizioPrenotazione().plusDays(45);
+                    break;
+                default:
+                    dataFine = prestiti.get(i).getDataInizioPrenotazione().plusDays(30);
+                    break;
             }
             listaPrestiti.getItems().add(titolo + " - " + autore + " - Da restituire entro il: " + dataFine);
         }
@@ -132,6 +164,10 @@ public class LoanService {
 
     private static int rinnoviEsauriti(String isbn) {
         return LoanDAO.rinnoviEsauriti(isbn);
+    }
+
+    public static boolean returnBook(int codicePrestito){
+        return LoanDAO.returnBook(codicePrestito);
     }
     
 }

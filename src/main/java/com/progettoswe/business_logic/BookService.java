@@ -1,8 +1,11 @@
 package com.progettoswe.business_logic;
 
+import java.util.ArrayList;
+
 import com.progettoswe.ORM.BookDAO;
 import com.progettoswe.model.Catalogo;
 import com.progettoswe.model.Libro;
+import com.progettoswe.model.Prestito;
 
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
@@ -67,6 +70,15 @@ public class BookService {
         }
 
         return BookDAO.aggiungiLibro(l);
+    }
+
+    public static boolean deleteBook(String isbn, ArrayList<Prestito> prestiti){
+        for (Prestito p : prestiti) {
+            if(p.getLibro().getIsbn().contentEquals(isbn) && !p.isRestituito()){
+                return false;
+            }
+        }
+        return BookDAO.cancellaLibro(isbn);
     }
 
 }

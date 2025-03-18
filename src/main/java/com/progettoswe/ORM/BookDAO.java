@@ -196,4 +196,46 @@ public class BookDAO {
         }
     }
 
+    public static boolean aggiornaLibro(String isbn, String titolo, String autore, String editore, int anno, String genere, int copie) {
+        String query = "UPDATE libro SET titolo = ?, autore = ?, editore = ?, anno_pubblicazione = ?, genere = ?, copie = ? WHERE isbn = ?";
+
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setString(1, titolo);
+            statement.setString(2, autore);
+            statement.setString(3, editore);
+            statement.setInt(4, anno);
+            statement.setString(5, genere);
+            statement.setInt(6, copie);
+            statement.setString(7, isbn);
+
+            int rowsUpdated = statement.executeUpdate();
+            if (rowsUpdated > 0) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public static boolean cancellaLibro(String isbn){
+        String query = "DELETE FROM libro WHERE isbn = ?";
+
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setString(1, isbn); // Imposta l'ISBN come parametro
+
+            int rowsDeleted = statement.executeUpdate(); // Esegue l'operazione di DELETE
+
+            // Se almeno una riga è stata cancellata, restituisce true
+            return rowsDeleted > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false; // In caso di errore, restituisce false
+        }
+    }
+
 }

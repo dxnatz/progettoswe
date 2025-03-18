@@ -48,13 +48,7 @@ public class AddBookController {
                             genereField.getText(),
                             Integer.parseInt(copieField.getText()));
         if(BookService.addBook(l)){
-            isbnField.clear();
-            titoloField.clear();
-            autoreField.clear();
-            editoreField.clear();
-            annoField.clear();
-            genereField.clear();
-            copieField.clear();
+            svuotaCampi();
 
             Alert alert = new Alert(AlertType.CONFIRMATION);
                 alert.setTitle("Libro Aggiunto");
@@ -94,5 +88,16 @@ public class AddBookController {
                 aggiungiLibro();
             }
         });
+    }
+
+    @FXML
+    private void svuotaCampi() {
+        isbnField.clear();
+        titoloField.clear();
+        autoreField.clear();
+        editoreField.clear();
+        annoField.clear();
+        genereField.clear();
+        copieField.clear();
     }
 }

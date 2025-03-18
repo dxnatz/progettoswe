@@ -11,6 +11,7 @@ public class Utente {
     private String password;
     private LocalDate dataNascita;
     private String indirizzo;
+    private LocalDate dataRegistrazione;
 
     public Utente(int codice, String nome, String cognome, String cf, String email, String password, String cellulare, LocalDate dataNascita, String indirizzo) {
         this.codice = codice;
@@ -22,6 +23,19 @@ public class Utente {
         this.password = password;
         this.dataNascita = dataNascita;
         this.indirizzo = indirizzo;
+    }
+
+    public Utente(int codice, String nome, String cognome, String cf, String email, String password, String cellulare, LocalDate dataNascita, String indirizzo, LocalDate dataRegistrazione) {
+        this.codice = codice;
+        this.nome = nome;
+        this.cognome = cognome;
+        this.cf = cf;
+        this.email = email;
+        this.cellulare = cellulare;
+        this.password = password;
+        this.dataNascita = dataNascita;
+        this.indirizzo = indirizzo;
+        this.dataRegistrazione = dataRegistrazione;
     }
 
     public Utente(String nome, String cognome, String cf, String email, String password, String cellulare, LocalDate dataNascita, String indirizzo) {
