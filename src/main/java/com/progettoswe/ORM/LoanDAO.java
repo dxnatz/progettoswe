@@ -14,7 +14,6 @@ import com.progettoswe.model.Utente;
 
 public class LoanDAO {
     
-    //TODO
     public static ArrayList<Prestito> caricaTuttiPrestiti(){
         ArrayList<Prestito> prestiti = new ArrayList<>();
         String query = "SELECT * FROM prestito JOIN libro ON prestito.isbn_libro = libro.isbn JOIN utente ON utente.codice = prestito.codice_utente WHERE restituito = false";

@@ -3,7 +3,7 @@ package com.progettoswe.controller;
 import java.io.IOException;
 
 import com.progettoswe.App;
-import com.progettoswe.ORM.BookDAO;
+import com.progettoswe.business_logic.BookService;
 import com.progettoswe.model.Libro;
 
 import javafx.fxml.FXML;
@@ -13,9 +13,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 
 public class UpdateBookController {
-    
+
     protected static String isbnLibro;
-    private Libro book;
 
     @FXML
     private TextField isbnField;
@@ -42,7 +41,13 @@ public class UpdateBookController {
     private Button updateButton;
 
     public void initialize() {
-        book = BookDAO.getLibro(isbnLibro);
+        Libro book = BookService.getBook(isbnLibro);
+        setTextFields(book);
+        isbnField.setDisable(true);
+        updateButtonListener();
+    }
+
+    private void setTextFields(Libro book){
         isbnField.setText(book.getIsbn());
         titoloField.setText(book.getTitolo());
         autoreField.setText(book.getAutore());
@@ -50,27 +55,39 @@ public class UpdateBookController {
         annoField.setText(String.valueOf(book.getAnnoPubblicazione()));
         genereField.setText(book.getGenere());
         copieField.setText(String.valueOf(book.getCopie()));
-
-        isbnField.setDisable(true);
-        updateButtonListener();
     }
 
     private void updateButtonListener(){
         updateButton.setOnAction(event -> {
-            if (checkEmptyFields()) {
+            Libro book = getBookFromTextFields();
 
+            //controlli
+            if (isAnyTextFieldEmpty()) {
                 Alert alert = new Alert(AlertType.ERROR);
                 alert.setTitle("Errore");
                 alert.setHeaderText("Campi vuoti");
                 alert.setContentText("Tutti i campi devono essere compilati.");
                 alert.showAndWait();
+
+            }else if (BookService.isAnyPropertyTooLong(book)) {
+                Alert alert = new Alert(AlertType.ERROR);
+                alert.setTitle("Errore");
+                alert.setHeaderText("Almeno un campo ha troppi caratteri");
+                alert.showAndWait();
+            
+            }else if(!BookService.isCopieValid(book)){
+                Alert alert = new Alert(AlertType.ERROR);
+                alert.setTitle("Errore");
+                alert.setHeaderText("Numero copie non valido");
+                alert.showAndWait();
+
             } else {
                 updateBook();
             }
         });
     }
 
-    private boolean checkEmptyFields(){
+    private boolean isAnyTextFieldEmpty(){
         return (isbnField.getText().isEmpty() || 
         titoloField.getText().isEmpty() || 
         autoreField.getText().isEmpty() || 
@@ -80,20 +97,13 @@ public class UpdateBookController {
         copieField.getText().isEmpty());
     }
 
-    //TODO
     private void updateBook(){
-        String isbn = isbnField.getText();
-        String titolo = titoloField.getText();
-        String autore = autoreField.getText();
-        String editore = editoreField.getText();
-        int anno = Integer.parseInt(annoField.getText());
-        String genere = genereField.getText();
-        int copie = Integer.parseInt(copieField.getText());
+        Libro book = getBookFromTextFields();
 
-        if(BookDAO.aggiornaLibro(isbn, titolo, autore, editore, anno, genere, copie)){
+        if(BookService.updateBook(book)){
             Alert alert = new Alert(AlertType.CONFIRMATION);
             alert.setTitle("Aggiornamento");
-            alert.setHeaderText(titolo + " è stato aggiornato");
+            alert.setHeaderText(book.getTitolo() + " è stato aggiornato");
             alert.setContentText("Modifiche salvate con successo.");
             alert.showAndWait();
         }else{
@@ -103,6 +113,18 @@ public class UpdateBookController {
             alert.setContentText("Non sono state apportate modifiche.");
             alert.showAndWait();
         }
+    }
+
+    private Libro getBookFromTextFields(){
+        String isbn = isbnField.getText();
+        String titolo = titoloField.getText();
+        String autore = autoreField.getText();
+        String editore = editoreField.getText();
+        String genere = genereField.getText();
+        int anno = Integer.parseInt(annoField.getText());
+        int copie = Integer.parseInt(copieField.getText());
+
+        return new Libro(isbn, titolo, autore, editore, anno, genere, copie);
     }
 
     @FXML

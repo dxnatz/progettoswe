@@ -40,14 +40,15 @@ public class OpUserController {
         listenerPrestiti();
     }
 
+    //chiama prestitoSelezionato passando la stringa della riga selezionata dai prestiti
     private void listenerPrestiti(){
         listaPrestiti.getSelectionModel().selectedItemProperty().addListener(
             (observable, oldValue, newValue) -> {
-                // Chiama il metodo che vuoi eseguire quando un elemento viene selezionato
                 prestitoSelezionato(newValue);
             });
     }
 
+    //chiama libroSelezionato passando la stringa della riga selezionata dal catalogo
     private void listenerCatalogo(){
         listaCatalogo.getSelectionModel().selectedItemProperty().addListener(
             (observable, oldValue, newValue) -> {
@@ -77,7 +78,7 @@ public class OpUserController {
 
     @FXML
     private void searchBooks() {
-        BookService.searchBooks(catalogo, listaCatalogo, ricerca);
+        BookService.searchBooksISBN(catalogo, listaCatalogo, ricerca);
     }
 
     @FXML
@@ -97,7 +98,7 @@ public class OpUserController {
     }
 
     @FXML
-    private void openDeleteDialog(){
+    private void openDeleteAlert(){
         Alert confermaAlert = new Alert(Alert.AlertType.CONFIRMATION);
             confermaAlert.setTitle("Conferma cancellazione");
             confermaAlert.setHeaderText("Sei sicuro di voler cancellare questo libro?");

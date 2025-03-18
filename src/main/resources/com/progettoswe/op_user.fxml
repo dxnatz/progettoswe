@@ -34,7 +34,7 @@
                 <HBox spacing = "10">
                     <Button text="Aggiungi Libro" onAction="#openAddBookWindow"/>
                     <Button fx:id="updateButton" text="Modifica Libro" onAction="#openUpdateBookWindow" disable="true"/>
-                    <Button fx:id="deleteButton" text="Cancella Libro" onAction="#openDeleteDialog" disable="true"/>
+                    <Button fx:id="deleteButton" text="Cancella Libro" onAction="#openDeleteAlert" disable="true"/>
                 </HBox>
             </VBox>
             <VBox spacing="10" HBox.hgrow="ALWAYS">

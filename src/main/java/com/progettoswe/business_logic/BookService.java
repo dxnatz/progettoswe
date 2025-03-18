@@ -61,6 +61,13 @@ public class BookService {
         aggiornaCatalogo(catalogo, listaCatalogo);
     }
 
+    public static void searchBooksISBN(Catalogo catalogo, ListView<String> listaCatalogo, TextField ricerca) {
+        String searchText = ricerca.getText();
+        listaCatalogo.getItems().clear();
+        catalogo = BookDAO.ricercaLibro(searchText);
+        aggiornaCatalogoISBN(catalogo, listaCatalogo);
+    }
+
     public static boolean addBook(Libro l){
         if(BookDAO.libroDisponibile(l.getIsbn())){
             for (int i = 0; i < l.getCopie(); i++) {
@@ -80,5 +87,24 @@ public class BookService {
         }
         return BookDAO.cancellaLibro(isbn);
     }
+    
+    public static Libro getBook(String isbn){
+        return BookDAO.getLibro(isbn);
+    }
 
+    public static boolean isAnyPropertyTooLong(Libro l) {
+        return (l.getIsbn().length() > Libro.ISBN_MAX_LENGTH ||
+                l.getTitolo().length() > Libro.TITOLO_MAX_LENGTH ||
+                l.getAutore().length() > Libro.AUTORE_MAX_LENGTH ||
+                l.getEditore().length() > Libro.EDITORE_MAX_LENGTH ||
+                l.getGenere().length() > Libro.GENERE_MAX_LENGTH);
+    }
+
+    public static boolean isCopieValid(Libro l){
+        return l.getCopie() >= Libro.MINIMUM_COPIE;
+    }
+
+    public static boolean updateBook(Libro l){
+        return BookDAO.aggiornaLibro(l);
+    }
 }

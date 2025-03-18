@@ -38,7 +38,7 @@ public class BookDAO {
 
     public static Catalogo ricercaLibro(String ricerca){
         Catalogo catalogo = new Catalogo(); //creo un nuovo catalogo per inserire i libri che corrispondono alla ricerca
-        String query = "SELECT * FROM libro WHERE LOWER(titolo) LIKE LOWER(?) OR LOWER(autore) LIKE LOWER(?) OR LOWER(editore) LIKE LOWER(?) OR LOWER(genere) LIKE LOWER(?)";
+        String query = "SELECT * FROM libro WHERE LOWER(isbn) LIKE LOWER(?) OR LOWER(titolo) LIKE LOWER(?) OR LOWER(autore) LIKE LOWER(?) OR LOWER(editore) LIKE LOWER(?) OR LOWER(genere) LIKE LOWER(?)";
 
         try(Connection connection = DatabaseConnection.getConnection()){
             PreparedStatement statement = connection.prepareStatement(query);
@@ -47,6 +47,7 @@ public class BookDAO {
             statement.setString(2, searchPattern);
             statement.setString(3, searchPattern);
             statement.setString(4, searchPattern);
+            statement.setString(5, searchPattern);
             ResultSet resultSet = statement.executeQuery();
 
             while(resultSet.next()){
@@ -196,18 +197,18 @@ public class BookDAO {
         }
     }
 
-    public static boolean aggiornaLibro(String isbn, String titolo, String autore, String editore, int anno, String genere, int copie) {
+    public static boolean aggiornaLibro(Libro l) {
         String query = "UPDATE libro SET titolo = ?, autore = ?, editore = ?, anno_pubblicazione = ?, genere = ?, copie = ? WHERE isbn = ?";
 
         try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setString(1, titolo);
-            statement.setString(2, autore);
-            statement.setString(3, editore);
-            statement.setInt(4, anno);
-            statement.setString(5, genere);
-            statement.setInt(6, copie);
-            statement.setString(7, isbn);
+            statement.setString(1, l.getTitolo());
+            statement.setString(2, l.getAutore());
+            statement.setString(3, l.getEditore());
+            statement.setInt(4, l.getAnnoPubblicazione());
+            statement.setString(5, l.getGenere());
+            statement.setInt(6, l.getCopie());
+            statement.setString(7, l.getIsbn());
 
             int rowsUpdated = statement.executeUpdate();
             if (rowsUpdated > 0) {
