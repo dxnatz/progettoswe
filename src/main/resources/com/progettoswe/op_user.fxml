@@ -14,6 +14,8 @@
             <HBox spacing="10" alignment="CENTER_LEFT" HBox.hgrow="ALWAYS">
                 <TextField fx:id="ricerca" promptText="Cerca per titolo, autore..."/>
                 <Button text="Cerca" onAction="#searchBooks"/>
+                <TextField fx:id="ricercaPrestito" promptText="Cerca prestito..."/>
+                <Button text="Cerca" onAction="#searchLoans"/>
             </HBox>
             <HBox spacing="10" alignment="CENTER_RIGHT" HBox.hgrow="ALWAYS">
                 <Button text="Logout" onAction="#logout"/>

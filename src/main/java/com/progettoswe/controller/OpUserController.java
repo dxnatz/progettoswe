@@ -21,6 +21,7 @@ import javafx.scene.control.TextField;
 public class OpUserController {
     @FXML private ListView<String> listaCatalogo;
     @FXML private TextField ricerca;
+    @FXML private TextField ricercaPrestito;
     @FXML private ListView<String> listaPrestiti;
     Catalogo catalogo;
     ArrayList<Prestito> prestiti;
@@ -77,6 +78,11 @@ public class OpUserController {
     @FXML
     private void searchBooks() {
         BookService.searchBooks(catalogo, listaCatalogo, ricerca);
+    }
+
+    @FXML
+    private void searchLoans() {
+        LoanService.searchLoans(prestiti, listaPrestiti, ricercaPrestito.getText());
     }
 
     @FXML

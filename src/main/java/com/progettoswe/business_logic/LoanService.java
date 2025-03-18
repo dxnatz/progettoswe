@@ -170,4 +170,10 @@ public class LoanService {
         return LoanDAO.returnBook(codicePrestito);
     }
     
+
+    public static void searchLoans(ArrayList<Prestito> prestiti, ListView<String> listaPrestiti, String ricerca) {
+        listaPrestiti.getItems().clear();
+        prestiti = LoanDAO.ricercaPrestiti(ricerca);
+        aggiornaListaTuttiPrestiti(prestiti, listaPrestiti);
+    }
 }

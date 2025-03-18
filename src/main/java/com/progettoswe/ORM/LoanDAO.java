@@ -223,4 +223,71 @@ public class LoanDAO {
             return false; // In caso di errore, restituisce false
         }
     }
+
+    public static ArrayList<Prestito> ricercaPrestiti(String ricerca) {
+        ArrayList<Prestito> prestitiTrovati = new ArrayList<>(); // Lista per i prestiti trovati
+        String query = "SELECT * " +
+                       "FROM prestito " +
+                       "JOIN libro ON prestito.isbn_libro = libro.isbn " +
+                       "JOIN utente ON utente.codice = prestito.codice_utente " +
+                       "WHERE " +
+                       "    LOWER(prestito.codice::text) LIKE LOWER(?) OR " +
+                       "    LOWER(prestito.codice_utente::text) LIKE LOWER(?) OR " +
+                       "    LOWER(prestito.isbn_libro) LIKE LOWER(?) OR " +
+                       "    LOWER(libro.titolo) LIKE LOWER(?) OR " +
+                       "    LOWER(libro.autore) LIKE LOWER(?)";
+    
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+    
+            String searchPattern = "%" + ricerca + "%"; // Aggiunge i wildcard per la ricerca parziale
+            statement.setString(1, searchPattern); // Ricerca su codice prestito
+            statement.setString(2, searchPattern); // Ricerca su codice utente
+            statement.setString(3, searchPattern); // Ricerca su ISBN libro
+            statement.setString(4, searchPattern); // Ricerca su titolo libro
+            statement.setString(5, searchPattern); // Ricerca su autore libro
+    
+            ResultSet resultSet = statement.executeQuery();
+    
+            while (resultSet.next()) {
+                // Prestito
+                int codice = resultSet.getInt("codice");
+                int codiceUtente = resultSet.getInt("codice_utente");
+                String isbnLibro = resultSet.getString("isbn_libro");
+                LocalDate dataInizio = resultSet.getDate("data_inizio").toLocalDate();
+                int numRinnovi = resultSet.getInt("num_rinnovi");
+                boolean restituito = resultSet.getBoolean("restituito");
+    
+                // Libro del prestito
+                String titolo = resultSet.getString("titolo");
+                String autore = resultSet.getString("autore");
+                String editore = resultSet.getString("editore");
+                int anno = resultSet.getInt("anno_pubblicazione");
+                String genere = resultSet.getString("genere");
+                int copie = resultSet.getInt("copie");
+    
+                // Utente del prestito
+                String nome = resultSet.getString("nome");
+                String cognome = resultSet.getString("cognome");
+                String cf = resultSet.getString("cf");
+                String email = resultSet.getString("email");
+                String pw = resultSet.getString("pw");
+                String cellulare = resultSet.getString("cellulare");
+                LocalDate dataNascita = resultSet.getDate("data_nascita").toLocalDate();
+                String indirizzo = resultSet.getString("indirizzo");
+                LocalDate dataRegistrazione = resultSet.getDate("data_registrazione").toLocalDate();
+    
+                // Creazione degli oggetti
+                Utente utente = new Utente(codiceUtente, nome, cognome, cf, email, pw, cellulare, dataNascita, indirizzo, dataRegistrazione);
+                Libro libro = new Libro(isbnLibro, titolo, autore, editore, anno, genere, copie);
+    
+                // Creazione del prestito
+                Prestito prestito = new Prestito(codice, utente, libro, dataInizio, numRinnovi, restituito);
+                prestitiTrovati.add(prestito); // Aggiunge il prestito alla lista
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return prestitiTrovati; // Restituisce la lista dei prestiti trovati
+    }
 }
