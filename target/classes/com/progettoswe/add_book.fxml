@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.*?>
+
+<GridPane xmlns="http://javafx.com/javafx/8.0.171"
+          xmlns:fx="http://javafx.com/fxml/1"
+          fx:controller="com.progettoswe.controller.AddBookController"
+          alignment="CENTER" hgap="10" vgap="10">
+
+    <!-- Titolo della finestra -->
+    <Label text="Aggiungi Libro" GridPane.columnIndex="0" GridPane.rowIndex="0"
+           style="-fx-font-weight: bold; -fx-font-size: 25px;" GridPane.columnSpan="2"/>
+
+    <!-- Campo ISBN -->
+    <Label text="ISBN:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+    <TextField fx:id="isbnField" promptText="Inserisci l'ISBN" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+
+    <!-- Campo Titolo -->
+    <Label text="Titolo:" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+    <TextField fx:id="titoloField" promptText="Inserisci il titolo" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+
+    <!-- Campo Autore -->
+    <Label text="Autore:" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
+    <TextField fx:id="autoreField" promptText="Inserisci l'autore" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+
+    <!-- Campo Editore -->
+    <Label text="Editore:" GridPane.columnIndex="0" GridPane.rowIndex="4"/>
+    <TextField fx:id="editoreField" promptText="Inserisci l'editore" GridPane.columnIndex="1" GridPane.rowIndex="4"/>
+
+    <!-- Campo Anno di pubblicazione -->
+    <Label text="Anno di pubblicazione:" GridPane.columnIndex="0" GridPane.rowIndex="5"/>
+    <TextField fx:id="annoField" promptText="Inserisci l'anno di pubblicazione" GridPane.columnIndex="1" GridPane.rowIndex="5"/>
+
+    <!-- Campo Genere -->
+    <Label text="Genere:" GridPane.columnIndex="0" GridPane.rowIndex="6"/>
+    <TextField fx:id="genereField" promptText="Inserisci il genere" GridPane.columnIndex="1" GridPane.rowIndex="6"/>
+
+    <!-- Campo Copie -->
+    <Label text="Copie:" GridPane.columnIndex="0" GridPane.rowIndex="7"/>
+    <TextField fx:id="copieField" promptText="Inserisci il numero di copie" GridPane.columnIndex="1" GridPane.rowIndex="7"/>
+
+    <!-- Pulsanti -->
+    <HBox GridPane.columnIndex="1" GridPane.rowIndex="8" alignment="CENTER_RIGHT" spacing="10">
+        <Button fx:id="backButton" text="Indietro" onAction="#backToOpUser"/>
+        <Button fx:id="aggiungiButton" text="Aggiungi Libro" onAction="#addBookHandler"/>
+    </HBox>
+
+</GridPane>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.progettoswe.controller.HomePageController">
+    
+    <top>
+        <HBox spacing="10" alignment="CENTER">
+            <padding>
+                <Insets top="20" right="20" bottom="20" left="20"/>
+            </padding>
+            <HBox spacing="10" alignment="CENTER_LEFT" HBox.hgrow="ALWAYS">
+                <TextField fx:id="ricerca" promptText="Cerca per titolo, autore..."/>
+                <Button text="Cerca" onAction="#searchBooks"/>
+            </HBox>
+            <HBox spacing="10" alignment="CENTER_RIGHT" HBox.hgrow="ALWAYS">
+                <Button text="Profilo" onAction="#visualizzaProfilo"/>
+            </HBox>
+        </HBox>
+    </top>
+    
+    <center>
+        <HBox spacing="5">
+            <padding>
+                <Insets top="20" right="20" bottom="20" left="20"/>
+            </padding>
+            <VBox spacing="10" HBox.hgrow="ALWAYS">
+                <Label text="Catalogo Libri"/>
+                <ListView fx:id="listaCatalogo" VBox.vgrow="ALWAYS"/>
+                <Button fx:id="btnPrenota" text="Prenota" onAction="#prenotaLibro"/>
+            </VBox>
+            <VBox spacing="10" HBox.hgrow="ALWAYS">
+                <Label text="Prestiti Attivi"/>
+                <ListView fx:id="listaPrestiti" VBox.vgrow="ALWAYS"/>
+                <HBox spacing="5">
+                    <Button fx:id="btnProlungaPrestito" text="Prolunga Prestito" onAction="#extendLoan"/>
+                    <Button fx:id="btnCancellaPrestito" text="Cancella Prestito" onAction="#cancellaPrestito"/>
+                </HBox>
+            </VBox>
+        </HBox>
+    </center>
+    
+</BorderPane>

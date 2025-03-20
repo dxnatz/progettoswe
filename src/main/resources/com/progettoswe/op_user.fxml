@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.progettoswe.controller.OpUserController">
+    
+    <top>
+        <HBox spacing="10" alignment="CENTER">
+            <padding>
+                <Insets top="20" right="20" bottom="20" left="20"/>
+            </padding>
+            <HBox spacing="10" alignment="CENTER_LEFT" HBox.hgrow="ALWAYS">
+                <TextField fx:id="ricerca" promptText="Cerca per titolo, autore..."/>
+                <Button text="Cerca" onAction="#searchBooks"/>
+                <TextField fx:id="ricercaPrestito" promptText="Cerca prestito..."/>
+                <Button text="Cerca" onAction="#searchLoans"/>
+            </HBox>
+            <HBox spacing="10" alignment="CENTER_RIGHT" HBox.hgrow="ALWAYS">
+                <Button text="Logout" onAction="#logout"/>
+            </HBox>
+        </HBox>
+    </top>
+    
+    <center>
+        <HBox spacing="5">
+            <padding>
+                <Insets top="20" right="20" bottom="20" left="20"/>
+            </padding>
+            <VBox spacing="10" HBox.hgrow="ALWAYS">
+                    <Label text="Catalogo Libri"/>
+                <ListView fx:id="listaCatalogo" VBox.vgrow="ALWAYS"/>
+                <HBox spacing = "10">
+                    <Button text="Aggiungi Libro" onAction="#openAddBookWindow"/>
+                    <Button fx:id="updateButton" text="Modifica Libro" onAction="#openUpdateBookWindow" disable="true"/>
+                    <Button fx:id="deleteButton" text="Cancella Libro" onAction="#openDeleteAlert" disable="true"/>
+                </HBox>
+            </VBox>
+            <VBox spacing="10" HBox.hgrow="ALWAYS">
+                <Label text="Prestiti Attivi"/>
+                <ListView fx:id="listaPrestiti" VBox.vgrow="ALWAYS"/>
+                <HBox spacing="5">
+                    <Button fx:id="returnBookButton" text="Libro Restituito" onAction="#returnBook" disable="true"/>
+                </HBox>
+            </VBox>
+        </HBox>
+    </center>
+    
+</BorderPane>
