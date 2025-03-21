@@ -165,7 +165,14 @@ public class LoanService {
     }
 
     public static boolean returnBook(int codicePrestito){
-        return LoanDAO.returnBook(codicePrestito);
+        Prestito prestito = LoanDAO.getPrestito(codicePrestito);
+
+        if(LoanDAO.returnBook(codicePrestito)){
+            BookDAO.aumentaCopieLibro(prestito.getLibro().getIsbn());
+
+            return true;
+        }
+        return false;
     }
     
 

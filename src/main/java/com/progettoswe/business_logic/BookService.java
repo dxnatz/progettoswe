@@ -69,7 +69,7 @@ public class BookService {
     }
 
     public static boolean addBook(Libro l){
-        if (BookDAO.getLibro(l.getIsbn()) == null){
+        if (BookDAO.getLibro(l.getIsbn()) != null){
             return false;
         }
         return BookDAO.aggiungiLibro(l);

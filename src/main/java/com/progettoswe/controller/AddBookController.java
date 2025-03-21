@@ -39,7 +39,7 @@ public class AddBookController {
     private Button aggiungiButton;
     
     @FXML
-    private void aggiungiLibro() {
+    private void aggiungiLibro() throws IOException {
         Libro l = getBookFromTextFields();
         if(BookService.addBook(l)){
             svuotaCampi();
@@ -48,6 +48,7 @@ public class AddBookController {
                 alert.setTitle("Libro Aggiunto");
                 alert.setHeaderText("Libro " + l.getTitolo() + " aggiunto con successo");
                 alert.showAndWait();
+                backToOpUser();
         }else{
             Alert alert = new Alert(AlertType.ERROR);
                 alert.setTitle("Errore");
@@ -63,7 +64,7 @@ public class AddBookController {
     }
 
     @FXML
-    private void addBookHandler(){
+    private void addBookHandler() throws IOException{
         if(isAnyTextFieldEmpty()){
             Alert alert = new Alert(AlertType.ERROR);
             alert.setTitle("Errore");

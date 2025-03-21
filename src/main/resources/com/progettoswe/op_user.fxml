@@ -41,7 +41,7 @@
                 <Label text="Prestiti Attivi"/>
                 <ListView fx:id="listaPrestiti" VBox.vgrow="ALWAYS"/>
                 <HBox spacing="5">
-                    <Button fx:id="returnBookButton" text="Libro Restituito" onAction="#returnBook" disable="true"/>
+                    <Button fx:id="returnBookButton" text="Concludi prestito" onAction="#openReturnBookAlert" disable="true"/>
                 </HBox>
             </VBox>
         </HBox>

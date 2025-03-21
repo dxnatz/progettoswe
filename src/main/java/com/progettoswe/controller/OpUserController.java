@@ -27,6 +27,7 @@ public class OpUserController {
     ArrayList<Prestito> prestiti;
     private String lastSelectedISBN;
     private int lastSelectedLoan;
+    private String lastSelectedLoanedBook;
 
     @FXML private Button updateButton;
     @FXML private Button deleteButton;
@@ -62,7 +63,8 @@ public class OpUserController {
     private void prestitoSelezionato(String s){
         if (s != null){
             returnBookButton.setDisable(false);
-            lastSelectedLoan = Integer.parseInt(s.split(" ")[0]);
+            lastSelectedLoan = Integer.parseInt(s.split(" - ")[0]);
+            lastSelectedLoanedBook = s.split(" - ")[3];
         }
     }
 
@@ -116,7 +118,6 @@ public class OpUserController {
                 String s = lastSelectedISBN;
                 if (deleteBook()){
                     stampaCatalogo();
-                    System.out.println("---------------cancellato");
                 }else{
                     Alert nonCancellato = new Alert(Alert.AlertType.ERROR);
                     nonCancellato.setTitle("Errore");
@@ -127,7 +128,6 @@ public class OpUserController {
             }
     }
 
-    //TODO: da risolvere le robe di errore
     private boolean deleteBook(){
         boolean r = BookService.deleteBook(lastSelectedISBN, prestiti);
         if(r){
@@ -138,10 +138,10 @@ public class OpUserController {
         return r;
     }
 
-    @FXML
     private void returnBook(){
         if(LoanService.returnBook(lastSelectedLoan)){
             stampaPrestiti();
+            returnBookButton.setDisable(true);
         }else{
             Alert a = new Alert(Alert.AlertType.ERROR);
             a.setTitle("Errore");
@@ -149,6 +149,20 @@ public class OpUserController {
             a.setContentText("Prestito " + lastSelectedLoan + " non è stato modificato");
             a.showAndWait();
         }
+    }
+
+    @FXML
+    private void openReturnBookAlert(){
+        Alert confermaAlert = new Alert(Alert.AlertType.CONFIRMATION);
+            confermaAlert.setTitle("Conferma restituzione");
+            confermaAlert.setHeaderText("Sei sicuro di voler restituire \"" + lastSelectedLoanedBook + "\"?");
+            confermaAlert.setContentText("Questa azione non può essere annullata.");
+
+            Optional<ButtonType> risultato = confermaAlert.showAndWait();
+
+            if (risultato.isPresent() && risultato.get() == ButtonType.OK){
+                returnBook();
+            }
     }
 
     @FXML
