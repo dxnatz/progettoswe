@@ -23,6 +23,7 @@ public class App extends Application {
         scene = new Scene(loadFXML("op_user"), 800, 600);
         stage.setScene(scene);
         stage.show();
+        System.out.println("App started");
     }
 
     public static void setRoot(String fxml) throws IOException {
