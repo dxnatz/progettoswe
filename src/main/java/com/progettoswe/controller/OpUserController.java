@@ -64,7 +64,7 @@ public class OpUserController {
         if (s != null){
             returnBookButton.setDisable(false);
             lastSelectedLoan = Integer.parseInt(s.split(" - ")[0]);
-            lastSelectedLoanedBook = s.split(" - ")[3];
+            lastSelectedLoanedBook = s.split(" - ")[1];
         }
     }
 

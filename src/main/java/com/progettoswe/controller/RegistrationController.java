@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.util.regex.Pattern;
 import com.progettoswe.App;
+import com.progettoswe.model.Session;
 import com.progettoswe.model.Utente;
 import com.progettoswe.business_logic.UserService;
 
@@ -92,6 +93,15 @@ public class RegistrationController {
             a.setHeaderText("Registrazione fallita");
             a.setTitle("Errore nella registrazione");
             a.showAndWait();
+            return false;
+        }
+
+        if(email.endsWith(Session.ADMIN_EMAIL)) {
+            Alert a = new Alert(AlertType.ERROR, "Non puoi registrarti con un'email che termina con "+Session.ADMIN_EMAIL);
+            a.setHeaderText("Registrazione fallita");
+            a.setTitle("Errore nella registrazione");
+            a.showAndWait();
+            emailTextField.clear();
             return false;
         }
 

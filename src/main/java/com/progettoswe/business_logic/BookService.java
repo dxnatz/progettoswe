@@ -77,7 +77,7 @@ public class BookService {
 
     public static boolean deleteBook(String isbn, ArrayList<Prestito> prestiti){
         for (Prestito p : prestiti) {
-            if(p.getLibro().getIsbn().contentEquals(isbn) && !p.isRestituito()){
+            if(p.getLibro().getIsbn().contentEquals(isbn)){
                 return false;
             }
         }

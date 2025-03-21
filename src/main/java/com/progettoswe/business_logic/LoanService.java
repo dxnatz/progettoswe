@@ -23,7 +23,6 @@ public class LoanService {
             String titolo = prestiti.get(i).getLibro().getTitolo();
             LocalDate dataFine;
             String isbn = prestiti.get(i).getLibro().getIsbn();
-            boolean restituito = prestiti.get(i).isRestituito();
 
             int rinnovi = LoanDAO.rinnoviEsauriti(isbn, codice);
             switch (rinnovi) {
@@ -38,7 +37,7 @@ public class LoanService {
                     break;
             }
 
-            listaPrestiti.getItems().add(codice + " - Restituito: " + restituito + " - " + isbn + " - " + titolo + " - Data restituzione: " + dataFine + " - Rinnovi: " + rinnovi);
+            listaPrestiti.getItems().add(codice + " - "  + titolo + " - Data restituzione: " + dataFine + " - Rinnovi: " + rinnovi);
         }
     }
 

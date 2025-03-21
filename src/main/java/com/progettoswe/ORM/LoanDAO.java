@@ -16,7 +16,7 @@ public class LoanDAO {
     
     public static ArrayList<Prestito> caricaTuttiPrestiti(){
         ArrayList<Prestito> prestiti = new ArrayList<>();
-        String query = "SELECT *, utente.codice AS codiceUtente FROM prestito JOIN libro ON prestito.isbn_libro = libro.isbn JOIN utente ON utente.codice = prestito.codice_utente WHERE restituito = false";
+        String query = "SELECT *, utente.codice AS codiceUtente FROM prestito JOIN libro ON prestito.isbn_libro = libro.isbn JOIN utente ON utente.codice = prestito.codice_utente";
 
         try (PreparedStatement statement = DatabaseConnection.getConnection().prepareStatement(query);
              ResultSet resultSet = statement.executeQuery()) {
@@ -28,7 +28,6 @@ public class LoanDAO {
                 String isbnLibro = resultSet.getString("isbn_libro");
                 LocalDate dataInizio = resultSet.getDate("data_inizio").toLocalDate();
                 int numRinnovi = resultSet.getInt("num_rinnovi");
-                boolean restituito = resultSet.getBoolean("restituito");
 
                 //libro del prestito
                 String titolo = (resultSet.getString("titolo"));
@@ -52,7 +51,7 @@ public class LoanDAO {
                 Utente utente = new Utente(codiceUtente, nome, cognome, cf, email, pw, cellulare, dataNascita, indirizzo, dataRegistrazione);
                 Libro libro = new Libro(isbnLibro, titolo, autore, editore, anno, genere, copie);
 
-                Prestito prestito = new Prestito(codice, utente, libro, dataInizio, numRinnovi, restituito);
+                Prestito prestito = new Prestito(codice, utente, libro, dataInizio, numRinnovi);
                 prestiti.add(prestito);
             }
         } catch (SQLException e) {
@@ -274,8 +273,7 @@ public class LoanDAO {
                 String isbnLibro = resultSet.getString("isbn_libro");
                 LocalDate dataInizio = resultSet.getDate("data_inizio").toLocalDate();
                 int numRinnovi = resultSet.getInt("num_rinnovi");
-                boolean restituito = resultSet.getBoolean("restituito");
-    
+
                 // Libro del prestito
                 String titolo = resultSet.getString("titolo");
                 String autore = resultSet.getString("autore");
@@ -300,7 +298,7 @@ public class LoanDAO {
                 Libro libro = new Libro(isbnLibro, titolo, autore, editore, anno, genere, copie);
     
                 // Creazione del prestito
-                Prestito prestito = new Prestito(codice, utente, libro, dataInizio, numRinnovi, restituito);
+                Prestito prestito = new Prestito(codice, utente, libro, dataInizio, numRinnovi);
                 prestitiTrovati.add(prestito); // Aggiunge il prestito alla lista
             }
         } catch (SQLException e) {
@@ -324,9 +322,7 @@ public class LoanDAO {
                 String isbnLibro = resultSet.getString("isbn_libro");
                 LocalDate dataInizio = resultSet.getDate("data_inizio").toLocalDate();
                 int numRinnovi = resultSet.getInt("num_rinnovi");
-                boolean restituito = resultSet.getBoolean("restituito");
 
-                //int codiceLibro = resultSet.getInt("codiceLibro");
                 String titolo = resultSet.getString("titolo");
                 String autore = resultSet.getString("autore");
                 String editore = resultSet.getString("editore");
@@ -347,7 +343,7 @@ public class LoanDAO {
                 Utente utente = new Utente(codiceUtente, nome, cognome, cf, email, pw, cellulare, dataNascita, indirizzo, dataRegistrazione);
                 Libro libro = new Libro(isbnLibro, titolo, autore, editore, anno, genere, copie);
 
-                prestito = new Prestito(codicePrestito, utente, libro, dataInizio, numRinnovi, restituito);
+                prestito = new Prestito(codicePrestito, utente, libro, dataInizio, numRinnovi);
             }
 
         }catch(SQLException e){
