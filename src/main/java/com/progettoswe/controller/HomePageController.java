@@ -86,16 +86,16 @@ public class HomePageController {
         BookService.searchBooks(catalogo, listaCatalogo, ricerca);
     }
     
+    //TODO: Usare metodi AlertUtil con button custom quando ci sono
     @FXML
     private void extendLoan() {
         // logica per prolungare il prestito nel database se il prestito non scade entro 2 giorni dalla data attuale, se c'è un'altra copia disponibile e se non è già stato prolungato una volta
         
         String selectedLoan = listaPrestiti.getSelectionModel().getSelectedItem();
         if (selectedLoan != null) {
-            Alert confirmAlert = new Alert(Alert.AlertType.CONFIRMATION);
-            confirmAlert.setTitle("Conferma Prolungamento Prestito");
-            confirmAlert.setHeaderText("Conferma Prolungamento Prestito");
-            confirmAlert.setContentText("Sei sicuro di voler prolungare il prestito del libro: " + selectedLoan + "?\n\n" + "Il prestito verrà prolungato di 15 giorni.");
+            Alert confirmAlert = AlertUtil.showConfirmationAlert("Conferma Prolungamento Prestito", 
+                                            "Conferma Prolungamento Prestito", 
+                                            "Sei sicuro di voler prolungare il prestito del libro: " + selectedLoan + "?", false);
 
             ButtonType buttonTypeYes = new ButtonType("Sì");
             ButtonType buttonTypeNo = new ButtonType("No", ButtonBar.ButtonData.CANCEL_CLOSE);
@@ -126,6 +126,7 @@ public class HomePageController {
         }
     }
     
+    //TODO: Usare metodi AlertUtil con button custom quando ci sono
     @FXML
     private void cancellaPrestito() {
         // logica per annullare il prestito nel database se non sono passati più di 3 giorni dalla prenotazione, altrimenti restituire un errore
@@ -133,7 +134,7 @@ public class HomePageController {
         if (selectedLoan != null) {
             Alert confirmAlert = AlertUtil.showConfirmationAlert("Conferma Annullamento Prestito", 
                                             "Conferma Annullamento Prestito", 
-                                            "Sei sicuro di voler annullare il prestito del libro: " + selectedLoan + "?");
+                                            "Sei sicuro di voler annullare il prestito del libro: " + selectedLoan + "?", false);
 
             ButtonType buttonTypeYes = new ButtonType("Sì");
             ButtonType buttonTypeNo = new ButtonType("No", ButtonBar.ButtonData.CANCEL_CLOSE);
@@ -164,6 +165,7 @@ public class HomePageController {
         }
     }
 
+    //TODO: Usare metodi AlertUtil con button custom quando ci sono
     @FXML
     private void prenotaLibro(){
         String selectedBook = listaCatalogo.getSelectionModel().getSelectedItem();

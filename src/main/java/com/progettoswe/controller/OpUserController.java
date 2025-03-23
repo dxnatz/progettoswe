@@ -105,6 +105,7 @@ public class OpUserController {
         App.setRoot("update_book");
     }
 
+    //TODO: Usare metodi AlertUtil con button custom quando ci sono
     @FXML
     private void openDeleteAlert(){
         Alert confermaAlert = AlertUtil.showConfirmationAlert("Conferma cancellazione", 
@@ -146,6 +147,7 @@ public class OpUserController {
         }
     }
 
+    //TODO: Usare metodi AlertUtil con button custom quando ci sono
     @FXML
     private void openReturnBookAlert(){
         Alert confermaAlert = AlertUtil.showConfirmationAlert("Conferma restituzione", 
