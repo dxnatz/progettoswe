@@ -1,18 +1,19 @@
 package com.progettoswe.controller;
 
-import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.Button;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.TextField;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.regex.Pattern;
+
 import com.progettoswe.App;
+import com.progettoswe.business_logic.UserService;
 import com.progettoswe.model.Session;
 import com.progettoswe.model.Utente;
-import com.progettoswe.business_logic.UserService;
+import com.progettoswe.utilities.AlertUtil;
+
+import javafx.fxml.FXML;
+import javafx.scene.control.Button;
+import javafx.scene.control.DatePicker;
+import javafx.scene.control.TextField;
 
 
 public class RegistrationController {
@@ -89,106 +90,94 @@ public class RegistrationController {
 
         //controllo se tutte le informazioni sono state inserite
         if(nome.isEmpty() || cognome.isEmpty() || cf.isEmpty() || email.isEmpty() || password.isEmpty() || cellulare.isEmpty() || dataNascita == null || indirizzo.isEmpty()) {
-            Alert a = new Alert(AlertType.INFORMATION, "Devi inserire tutte le informazioni richieste\n\nNon ci possono essere campi vuoti");
-            a.setHeaderText("Registrazione fallita");
-            a.setTitle("Errore nella registrazione");
-            a.showAndWait();
+            AlertUtil.showWarningAlert("Registrazione fallita", 
+            "Devi inserire tutte le informazioni richieste", 
+            "Non ci possono essere campi vuoti");
             return false;
         }
 
         if(email.endsWith(Session.ADMIN_EMAIL)) {
-            Alert a = new Alert(AlertType.ERROR, "Non puoi registrarti con un'email che termina con "+Session.ADMIN_EMAIL);
-            a.setHeaderText("Registrazione fallita");
-            a.setTitle("Errore nella registrazione");
-            a.showAndWait();
+            AlertUtil.showErrorAlert("Registrazione fallita",
+                                    "Non puoi registrarti con questa email",
+                                    "Questa email è riservata agli amministratori");
             emailTextField.clear();
             return false;
         }
 
         //verifiche di validità dei campi
         if(!isValidCf(cf)){
-            Alert a = new Alert(AlertType.ERROR, "Codice fiscale non valido\n\nIl codice fiscale deve essere conforme e non deve contenere spazi.");
-            a.setHeaderText("Registrazione fallita");
-            a.setTitle("Codice fiscale non valido");
-            a.showAndWait();
+            AlertUtil.showErrorAlert("Registrazione fallita", 
+                                    "Codice fiscale non valido", 
+                                    "Il codice fiscale deve essere composto da 16 caratteri alfanumerici.");
             codiceFiscaleTextField.clear();
             return false;
         }
         if(!isValidEmail(email)){
-            Alert a = new Alert(AlertType.ERROR, "Email non valida\n\nL'email deve essere valida e non deve contenere spazi (es. esempio@prova.com).");
-            a.setHeaderText("Registrazione fallita");
-            a.setTitle("Email non valida");
-            a.showAndWait();
+            AlertUtil.showErrorAlert("Registrazione fallita", 
+                                    "Email non valida", 
+                                    "Inserisci un'email valida");
             emailTextField.clear();
             return false;
         }
         if(!isValidPassword(password)){
-            Alert a = new Alert(AlertType.ERROR, "Password non valida\n\nLa password deve contenere almeno 5 caratteri, un numero e un carattere speciale (_,-,+,@,$,!,%,*,?,&).");
-            a.setHeaderText("Registrazione fallita");
-            a.setTitle("Password non valida");
-            a.showAndWait();
+            AlertUtil.showErrorAlert("Registrazione fallita", 
+                                    "Password non valida", 
+                                    "La password deve contenere almeno 5 caratteri, un numero e un carattere speciale.");
             passwordTextField.clear();
             return false;
         }
         if(!isValidPhone(cellulare)){
-            Alert a = new Alert(AlertType.ERROR, "Numero di cellulare non valido\n\nIl numero di cellulare deve contenere tra le 8 e le 15 cifre e non deve contenere spazi.");
-            a.setHeaderText("Registrazione fallita");
-            a.setTitle("Numero di cellulare non valido");
-            a.showAndWait();
+            AlertUtil.showErrorAlert("Registrazione fallita", 
+                                    "Numero di cellulare non valido", 
+                                    "Inserisci un numero di cellulare valido");
             cellulareTextField.clear();
             return false;
         }
         if(!isValidDate(dataNascita)){
-            Alert a = new Alert(AlertType.ERROR, "Data di nascita non valida\n\nL'età dell'utente deve essere compresa tra i 10 e i 100 anni.");
-            a.setHeaderText("Registrazione fallita");
-            a.setTitle("Data di nascita non valida");
-            a.showAndWait();
+            AlertUtil.showErrorAlert("Registrazione fallita", 
+                                    "Data di nascita non valida", 
+                                    "Devi avere almeno 10 anni e non più di 100");
             dataNascitaPicker.getEditor().clear();
             return false;
         }
         
         //verifico se l'email è già presente nel database
         if(UserService.emailEsistente(email)) {
-            Alert a = new Alert(AlertType.ERROR, "Questa email è già stata utilizzata");
-            a.setHeaderText("Registrazione fallita");
-            a.setTitle("Errore nella registrazione");
-            a.showAndWait();
+            AlertUtil.showErrorAlert("Registrazione fallita", 
+                                    "Questa email non può essere utilizzata", 
+                                    "È gia presente nel nostro database");
             emailTextField.clear();
             return false;
         }
 
         //verifico se il codice fiscale è già presente nel database
         if(UserService.cfEsistente(cf)) {
-            Alert a = new Alert(AlertType.ERROR, "Questo codice fiscale non può essere utilizzato\n\nÈ gia presente nel nostro database");
-            a.setHeaderText("Registrazione fallita");
-            a.setTitle("Errore nella registrazione");
-            a.showAndWait();
+            AlertUtil.showErrorAlert("Registrazione fallita", 
+                                    "Questo codice fiscale non può essere utilizzato", 
+                                    "È gia presente nel nostro database");
             codiceFiscaleTextField.clear();
             return false;
         }
 
         //verifico se il numero di cellulare è già presente nel database
         if(UserService.cellulareEsistente(cellulare)) {
-            Alert a = new Alert(AlertType.ERROR, "Questo numero di cellulare non può essere utilizzato\n\nÈ gia presente nel nostro database");
-            a.setHeaderText("Registrazione fallita");
-            a.setTitle("Errore nella registrazione");
-            a.showAndWait();
+            AlertUtil.showErrorAlert("Registrazione fallita", 
+                                    "Questo numero di cellulare non può essere utilizzato", 
+                                    "È gia presente nel nostro database");
             cellulareTextField.clear();
             return false;
         }
 
         if(UserService.inserimentoUtente(utente)) {
-            Alert a = new Alert(AlertType.INFORMATION, "Ti sei registrato con successo, verrai reindirizzato alla pagina di login");
-            a.setHeaderText("Registrazione avvenuta con successo");
-            a.setTitle("Registrazione avvenuta");
-            a.showAndWait();
+            AlertUtil.showInfoAlert("Registrazione avvenuta con successo", 
+                                    "Benvenuto in BookStore", 
+                                    "Ora puoi effettuare il login");
             switchToLogin();
             return true; //se l'utente è stato registrato con successo
         }else{
-            Alert a = new Alert(AlertType.ERROR, "Errore non previsto nella registrazione");
-            a.setHeaderText("Registrazione fallita");
-            a.setTitle("Errore nella registrazione");
-            a.showAndWait();
+            AlertUtil.showErrorAlert("Registrazione fallita", 
+                                    "Errore durante la registrazione", 
+                                    "Riprova più tardi");
             return false; //se non è stato possibile registrare l'utente a causa di un errore
         }
     }

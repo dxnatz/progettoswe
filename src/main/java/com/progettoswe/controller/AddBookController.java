@@ -5,10 +5,9 @@ import java.io.IOException;
 import com.progettoswe.App;
 import com.progettoswe.business_logic.BookService;
 import com.progettoswe.model.Libro;
+import com.progettoswe.utilities.AlertUtil;
 
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 
@@ -44,17 +43,14 @@ public class AddBookController {
         if(BookService.addBook(l)){
             svuotaCampi();
 
-            Alert alert = new Alert(AlertType.CONFIRMATION);
-                alert.setTitle("Libro Aggiunto");
-                alert.setHeaderText("Libro " + l.getTitolo() + " aggiunto con successo");
-                alert.showAndWait();
-                backToOpUser();
+            AlertUtil.showConfirmationAlert("Libro Aggiunto", 
+                                            "Libro " + l.getTitolo() + " aggiunto con successo", 
+                                            "Il libro è stato aggiunto con successo.");
+
         }else{
-            Alert alert = new Alert(AlertType.ERROR);
-                alert.setTitle("Errore");
-                alert.setHeaderText("Il libro non è stato aggiunto...");
-                alert.setContentText("Controlla che l'ISBN non sia già presente nel catalogo.");
-                alert.showAndWait();
+            AlertUtil.showErrorAlert("Errore", 
+                                    "Il libro non è stato aggiunto...", 
+                                    "Controlla che l'ISBN non sia già presente nel catalogo.");
         }
     }
 
@@ -66,34 +62,27 @@ public class AddBookController {
     @FXML
     private void addBookHandler() throws IOException{
         if(isAnyTextFieldEmpty()){
-            Alert alert = new Alert(AlertType.ERROR);
-            alert.setTitle("Errore");
-            alert.setHeaderText("Campi vuoti");
-            alert.setContentText("Tutti i campi devono essere compilati.");
-            alert.showAndWait();
+            AlertUtil.showErrorAlert("Errore", 
+                                    "Campi vuoti", 
+                                    "Tutti i campi devono essere compilati.");
 
         }else if(BookService.isNumeric(annoField.getText()) == false || BookService.isNumeric(copieField.getText()) == false){
-            Alert alert = new Alert(AlertType.ERROR);
-            alert.setTitle("Errore");
-            alert.setHeaderText("Anno e copie non validi");
-            alert.setContentText("Anno e copie devono essere numeri interi.\n\nNumero copie non valido");
-            alert.showAndWait();
+            AlertUtil.showErrorAlert("Errore", 
+                                    "Anno e copie devono essere numeri", 
+                                    "Anno e copie devono essere numeri interi.");
 
         }else if(isbnField.getText().length() != 13){
-            Alert alert = new Alert(AlertType.ERROR);
-            alert.setTitle("Errore");
-            alert.setHeaderText("ISBN non valido");
-            alert.setContentText("L'ISBN deve essere composto da 13 cifre.");
-            alert.showAndWait();
+            AlertUtil.showErrorAlert("Errore", 
+                                    "ISBN non valido", 
+                                    "L'ISBN deve essere composto da 13 cifre.");
 
         }else{
             Libro book = getBookFromTextFields();
 
                 if (BookService.isAnyPropertyTooLong(book)) {
-                    Alert alert = new Alert(AlertType.ERROR);
-                    alert.setTitle("Errore");
-                    alert.setHeaderText("Almeno un campo ha troppi caratteri");
-                    alert.showAndWait();
+                    AlertUtil.showErrorAlert("Errore", 
+                                            "Proprietà troppo lunghe", 
+                                            "Controlla che le proprietà non siano troppo lunghe.");
                 
                 }else {
                     aggiungiLibro();
@@ -101,6 +90,7 @@ public class AddBookController {
         }
     }
 
+    //TODO: sposta in InputValidator
     private boolean isAnyTextFieldEmpty(){
         return (isbnField.getText().isEmpty() || 
         titoloField.getText().isEmpty() || 

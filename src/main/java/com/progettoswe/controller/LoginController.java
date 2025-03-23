@@ -5,10 +5,9 @@ import java.io.IOException;
 import com.progettoswe.App;
 import com.progettoswe.business_logic.UserService;
 import com.progettoswe.model.Session;
+import com.progettoswe.utilities.AlertUtil;
 
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 
@@ -54,10 +53,7 @@ public class LoginController {
     private void authenticate(String email, String password) {
 
         if (email.isEmpty() || password.isEmpty()) {
-            Alert a = new Alert(AlertType.ERROR, "Inserisci email e password");
-            a.setHeaderText("Errore di accesso");
-            a.setTitle("Errore durante l'accesso");
-            a.showAndWait();
+            AlertUtil.showErrorAlert("Errore", "Campi vuoti", "Inserisci email e password");
             return;
         }
 
@@ -73,16 +69,10 @@ public class LoginController {
                 e.printStackTrace();
             }
         } else if(UserService.checkPassword(email, password)) {
-            Alert a = new Alert(AlertType.ERROR, "La password inserta è errata");
-            a.setHeaderText("Errore di accesso");
-            a.setTitle("Errore durante l'accesso");
-            a.showAndWait();
+            AlertUtil.showErrorAlert("Errore", "Password errata", "La password inserita non è corretta");
             passwordTextField.clear();
         }else{
-            Alert a = new Alert(AlertType.ERROR, "L'email e la password non sono corretti\n\nSe non sei ancora registrato, fallo ora!");
-            a.setHeaderText("Errore di accesso");
-            a.setTitle("Errore durante l'accesso");
-            a.showAndWait();
+            AlertUtil.showErrorAlert("Errore", "Email non registrata", "L'email inserita non è registrata");
             emailTextField.clear();
             passwordTextField.clear();
         }

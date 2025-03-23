@@ -8,6 +8,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.util.Callback;
 import javafx.util.Duration;
+
 import com.progettoswe.App;
 import com.progettoswe.model.Catalogo;
 import com.progettoswe.model.Prestito;
@@ -17,6 +18,8 @@ import com.progettoswe.business_logic.LoanService;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+
+import com.progettoswe.utilities.AlertUtil;
 
 public class HomePageController {
     @FXML private ListView<String> listaCatalogo;
@@ -29,7 +32,6 @@ public class HomePageController {
     ArrayList<Prestito> prestiti = new ArrayList<Prestito>();
     
     public void initialize() {
-        // Inizializza interfaccia utente
         stampaCatalogo();
         stampaPrestiti();
 
@@ -107,26 +109,20 @@ public class HomePageController {
                         listaPrestiti.getItems().clear();
                         BookService.stampaCatalogo(catalogo, listaCatalogo);
                         stampaPrestiti();
-                        Alert successAlert = new Alert(Alert.AlertType.INFORMATION);
-                        successAlert.setContentText("Prestito prolungato con successo.\n\nIl libro è da restituire entro 15 giorni dalla data attuale.");
-                        successAlert.setHeaderText("Successo");
-                        successAlert.setTitle("Prolungamento prestito avvenuto con successo");
-                        successAlert.showAndWait();
+                        AlertUtil.showInfoAlert("Successo", 
+                                                "Prestito prolungato con successo.", 
+                                                "Il libro è da restituire entro 15 giorni dalla data attuale.");
                     } else {
-                        Alert errorAlert = new Alert(Alert.AlertType.ERROR);
-                        errorAlert.setContentText("Il prestito non è stato selezionato correttamente.\n\nNon è possibile prolungare il prestito perchè è già stato prolungato due volte.\n\nNon c'è un'altra copia disponibile.\n\n Il prestito è scaduto.");
-                        errorAlert.setHeaderText("Errore");
-                        errorAlert.setTitle("Errore durante il prolungamento del prestito");
-                        errorAlert.showAndWait();
+                        AlertUtil.showErrorAlert("Errore", 
+                                                "Il prestito non è stato selezionato correttamente.\nNon è possibile prolungare il prestito perchè sono passati più di 2 giorni dalla data attuale.\nNon è possibile prolungare il prestito perchè non c'è un'altra copia disponibile.\n\nNon è possibile prolungare il prestito perchè è già stato prolungato una volta.", 
+                                                "Errore durante il prolungamento del prestito.");
                     }
                 }
             });
         } else {
-            Alert errorAlert = new Alert(Alert.AlertType.ERROR);
-            errorAlert.setContentText("Seleziona un prestito da prolungare.");
-            errorAlert.setHeaderText("Errore");
-            errorAlert.setTitle("Errore durante il prolungamento del prestito");
-            errorAlert.showAndWait();
+            AlertUtil.showErrorAlert("Errore", 
+                                    "Seleziona un prestito da prolungare.", 
+                                    "Errore durante il prolungamento del prestito.");
         }
     }
     
@@ -135,10 +131,9 @@ public class HomePageController {
         // logica per annullare il prestito nel database se non sono passati più di 3 giorni dalla prenotazione, altrimenti restituire un errore
         String selectedLoan = listaPrestiti.getSelectionModel().getSelectedItem();
         if (selectedLoan != null) {
-            Alert confirmAlert = new Alert(Alert.AlertType.CONFIRMATION);
-            confirmAlert.setTitle("Conferma Annullamento Prestito");
-            confirmAlert.setHeaderText("Conferma Annullamento Prestito");
-            confirmAlert.setContentText("Sei sicuro di voler annullare il prestito del libro: " + selectedLoan + "?");
+            Alert confirmAlert = AlertUtil.showConfirmationAlert("Conferma Annullamento Prestito", 
+                                            "Conferma Annullamento Prestito", 
+                                            "Sei sicuro di voler annullare il prestito del libro: " + selectedLoan + "?");
 
             ButtonType buttonTypeYes = new ButtonType("Sì");
             ButtonType buttonTypeNo = new ButtonType("No", ButtonBar.ButtonData.CANCEL_CLOSE);
@@ -152,26 +147,20 @@ public class HomePageController {
                         listaPrestiti.getItems().clear();
                         BookService.stampaCatalogo(catalogo, listaCatalogo);
                         stampaPrestiti();
-                        Alert successAlert = new Alert(Alert.AlertType.INFORMATION);
-                        successAlert.setContentText("Prestito annullato con successo.");
-                        successAlert.setHeaderText("Successo");
-                        successAlert.setTitle("Annullamento prestito avvenuto con successo");
-                        successAlert.showAndWait();
+                        AlertUtil.showInfoAlert("Successo", 
+                                                "Prestito annullato con successo.", 
+                                                "Il libro è stato restituito con successo.");
                     } else {
-                        Alert errorAlert = new Alert(Alert.AlertType.ERROR);
-                        errorAlert.setContentText("Il prestito non è stato selezionato correttamente.\n\nNon è possibile annullare il prestito perchè sono passati più di 3 giorni dalla prenotazione.");
-                        errorAlert.setHeaderText("Errore");
-                        errorAlert.setTitle("Errore durante l'annullamento del prestito");
-                        errorAlert.showAndWait();
+                        AlertUtil.showErrorAlert("Errore", 
+                                                "Il prestito non è stato selezionato correttamente.\nNon è possibile annullare il prestito perchè sono passati più di 3 giorni dalla data attuale.", 
+                                                "Errore durante l'annullamento del prestito.");
                     }
                 }
             });
         } else {
-            Alert errorAlert = new Alert(Alert.AlertType.ERROR);
-            errorAlert.setContentText("Seleziona un prestito da annullare.");
-            errorAlert.setHeaderText("Errore");
-            errorAlert.setTitle("Errore durante l'annullamento del prestito");
-            errorAlert.showAndWait();
+            AlertUtil.showErrorAlert("Errore", 
+                                    "Seleziona un prestito da annullare.", 
+                                    "Errore durante l'annullamento del prestito.");
         }
     }
 
@@ -179,10 +168,9 @@ public class HomePageController {
     private void prenotaLibro(){
         String selectedBook = listaCatalogo.getSelectionModel().getSelectedItem();
         if (selectedBook != null) {
-            Alert confirmAlert = new Alert(Alert.AlertType.CONFIRMATION);
-            confirmAlert.setTitle("Conferma Prenotazione");
-            confirmAlert.setHeaderText("Conferma Prenotazione");
-            confirmAlert.setContentText("Sei sicuro di voler prenotare il libro: " + selectedBook + "?");
+            Alert confirmAlert = AlertUtil.showConfirmationAlert("Conferma Prenotazione", 
+                                            "Conferma Prenotazione", 
+                                            "Sei sicuro di voler prenotare il libro: " + selectedBook + "?", false);
 
             ButtonType buttonTypeYes = new ButtonType("Sì");
             ButtonType buttonTypeNo = new ButtonType("No", ButtonBar.ButtonData.CANCEL_CLOSE);
@@ -196,26 +184,20 @@ public class HomePageController {
                         listaPrestiti.getItems().clear();
                         BookService.stampaCatalogo(catalogo, listaCatalogo);
                         stampaPrestiti();
-                        Alert successAlert = new Alert(Alert.AlertType.INFORMATION);
-                        successAlert.setContentText("Libro prenotato con successo.");
-                        successAlert.setHeaderText("Successo");
-                        successAlert.setTitle("Prenotazione avvenuta con successo");
-                        successAlert.showAndWait();
+                        AlertUtil.showInfoAlert("Successo", 
+                                                "Libro prenotato con successo.", 
+                                                "Il libro è stato prenotato con successo.");
                     } else {
-                        Alert errorAlert = new Alert(Alert.AlertType.ERROR);
-                        errorAlert.setContentText("Il libro non è stato selezionato correttamente.\n\nIl libro non è disponibile.\n\nHai già un prestito attivo per questo libro.\n\n Il libro è appena stato prenotato da un altro utente.\n\nHai raggiunto il numero massimo di prestiti.");
-                        errorAlert.setHeaderText("Errore");
-                        errorAlert.setTitle("Errore durante la prenotazione del libro");
-                        errorAlert.showAndWait();
+                        AlertUtil.showErrorAlert("Errore", 
+                                                "Il libro non è stato selezionato correttamente.\nNon è possibile prenotare il libro perchè non c'è una copia disponibile.", 
+                                                "Errore durante la prenotazione del libro.");
                     }
                 }
             });
         } else {
-            Alert errorAlert = new Alert(Alert.AlertType.ERROR);
-            errorAlert.setContentText("Seleziona un libro da prenotare.");
-            errorAlert.setHeaderText("Errore");
-            errorAlert.setTitle("Errore durante la prenotazione del libro");
-            errorAlert.showAndWait();
+            AlertUtil.showErrorAlert("Errore", 
+                                    "Seleziona un libro da prenotare.", 
+                                    "Errore durante la prenotazione del libro.");
         }
     }
 

@@ -10,6 +10,7 @@ import com.progettoswe.business_logic.LoanService;
 import com.progettoswe.model.Catalogo;
 import com.progettoswe.model.Prestito;
 import com.progettoswe.model.Session;
+import com.progettoswe.utilities.AlertUtil;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -55,7 +56,6 @@ public class OpUserController {
     private void listenerCatalogo(){
         listaCatalogo.getSelectionModel().selectedItemProperty().addListener(
             (observable, oldValue, newValue) -> {
-                // Chiama il metodo che vuoi eseguire quando un elemento viene selezionato
                 libroSelezionato(newValue);
             });
     }
@@ -107,10 +107,9 @@ public class OpUserController {
 
     @FXML
     private void openDeleteAlert(){
-        Alert confermaAlert = new Alert(Alert.AlertType.CONFIRMATION);
-            confermaAlert.setTitle("Conferma cancellazione");
-            confermaAlert.setHeaderText("Sei sicuro di voler cancellare questo libro?");
-            confermaAlert.setContentText("Questa azione non può essere annullata.");
+        Alert confermaAlert = AlertUtil.showConfirmationAlert("Conferma cancellazione", 
+                                                                    "Sei sicuro di voler cancellare \"" + lastSelectedISBN + "\"?", 
+                                                                    "Questa azione non può essere annullata.", false);
 
             Optional<ButtonType> risultato = confermaAlert.showAndWait();
 
@@ -119,11 +118,9 @@ public class OpUserController {
                 if (deleteBook()){
                     stampaCatalogo();
                 }else{
-                    Alert nonCancellato = new Alert(Alert.AlertType.ERROR);
-                    nonCancellato.setTitle("Errore");
-                    nonCancellato.setHeaderText("Errore, controlla se ci sono dei prestiti in atto");
-                    nonCancellato.setContentText(s + " non è stato cancellato");
-                    nonCancellato.showAndWait();
+                    AlertUtil.showErrorAlert("Errore", 
+                    "Errore di connessione col database", 
+                    "Libro " + s + " non è stato cancellato");
                 }
             }
     }
@@ -143,20 +140,17 @@ public class OpUserController {
             stampaPrestiti();
             returnBookButton.setDisable(true);
         }else{
-            Alert a = new Alert(Alert.AlertType.ERROR);
-            a.setTitle("Errore");
-            a.setHeaderText("Errore di connessione col database");
-            a.setContentText("Prestito " + lastSelectedLoan + " non è stato modificato");
-            a.showAndWait();
+            AlertUtil.showErrorAlert("Errore",
+                                    "Errore di connessione col database",
+                                    "Libro " + lastSelectedLoanedBook + " non è stato restituito");
         }
     }
 
     @FXML
     private void openReturnBookAlert(){
-        Alert confermaAlert = new Alert(Alert.AlertType.CONFIRMATION);
-            confermaAlert.setTitle("Conferma restituzione");
-            confermaAlert.setHeaderText("Sei sicuro di voler restituire \"" + lastSelectedLoanedBook + "\"?");
-            confermaAlert.setContentText("Questa azione non può essere annullata.");
+        Alert confermaAlert = AlertUtil.showConfirmationAlert("Conferma restituzione", 
+                                                                    "Sei sicuro di voler restituire \"" + lastSelectedLoanedBook + "\"?", 
+                                                                    "Questa azione non può essere annullata.", false);
 
             Optional<ButtonType> risultato = confermaAlert.showAndWait();
 

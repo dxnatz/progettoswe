@@ -5,10 +5,9 @@ import java.io.IOException;
 import com.progettoswe.App;
 import com.progettoswe.business_logic.BookService;
 import com.progettoswe.model.Libro;
+import com.progettoswe.utilities.AlertUtil;
 
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 
@@ -62,33 +61,27 @@ public class UpdateBookController {
 
             //controlli
             if (isAnyTextFieldEmpty()) {
-                Alert alert = new Alert(AlertType.ERROR);
-                alert.setTitle("Errore");
-                alert.setHeaderText("Campi vuoti");
-                alert.setContentText("Tutti i campi devono essere compilati.");
-                alert.showAndWait();
+                AlertUtil.showErrorAlert("Errore", 
+                                        "Campi vuoti", 
+                                        "Compilare tutti i campi.");
 
             }else if(BookService.isNumeric(annoField.getText()) == false || BookService.isNumeric(copieField.getText()) == false){
-                Alert alert = new Alert(AlertType.ERROR);
-                alert.setTitle("Errore");
-                alert.setHeaderText("Anno e copie non validi");
-                alert.setContentText("Anno e copie devono essere numeri interi.");
-                alert.showAndWait();
+                AlertUtil.showErrorAlert("Errore", 
+                                        "Anno e copie devono essere numeri", 
+                                        "Inserire un numero valido.");
 
             }else{
                 Libro book = getBookFromTextFields();
 
                 if (BookService.isAnyPropertyTooLong(book)) {
-                    Alert alert = new Alert(AlertType.ERROR);
-                    alert.setTitle("Errore");
-                    alert.setHeaderText("Almeno un campo ha troppi caratteri");
-                    alert.showAndWait();
+                    AlertUtil.showErrorAlert("Errore", 
+                                        "Proprietà troppo lunghe", 
+                                        "Una o più proprietà sono troppo lunghe.");
                 
                 }else if(!BookService.isCopieValid(book)){
-                    Alert alert = new Alert(AlertType.ERROR);
-                    alert.setTitle("Errore");
-                    alert.setHeaderText("Numero copie non valido");
-                    alert.showAndWait();
+                    AlertUtil.showErrorAlert("Errore", 
+                                        "Numero di copie non valido", 
+                                        "Inserire un numero di copie valido.");
     
                 } else {
                     updateBook();
@@ -111,17 +104,13 @@ public class UpdateBookController {
         Libro book = getBookFromTextFields();
 
         if(BookService.updateBook(book)){
-            Alert alert = new Alert(AlertType.CONFIRMATION);
-            alert.setTitle("Aggiornamento");
-            alert.setHeaderText(book.getTitolo() + " è stato aggiornato");
-            alert.setContentText("Modifiche salvate con successo.");
-            alert.showAndWait();
+            AlertUtil.showInfoAlert("Modifica effettuata", 
+                                    "Modifica effettuata",
+                                    "Il libro è stato modificato con successo.");
         }else{
-            Alert alert = new Alert(AlertType.ERROR);
-            alert.setTitle("Errore");
-            alert.setHeaderText("Errore di connessione col database");
-            alert.setContentText("Non sono state apportate modifiche.");
-            alert.showAndWait();
+            AlertUtil.showErrorAlert("Errore", 
+                                    "Errore durante la modifica", 
+                                    "Si è verificato un errore durante la modifica del libro.");
         }
     }
 
