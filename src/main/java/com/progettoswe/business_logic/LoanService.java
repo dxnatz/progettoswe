@@ -19,7 +19,7 @@ public class LoanService {
     private static void aggiornaListaTuttiPrestiti(ArrayList<Prestito> prestiti, ListView<String> listaPrestiti) {
         listaPrestiti.getItems().clear();
         for (int i = 0; i < prestiti.size(); i++) {
-            int codice = prestiti.get(i).getId();
+            int codice = prestiti.get(i).getId_prestito();
             String titolo = prestiti.get(i).getLibro().getTitolo();
             LocalDate dataFine;
             String isbn = prestiti.get(i).getLibro().getIsbn();

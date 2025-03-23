@@ -94,7 +94,7 @@ public class LoanDAO {
 
         try(Connection connection = DatabaseConnection.getConnection()){
             PreparedStatement statement = connection.prepareStatement(query);
-            statement.setInt(1, Session.getUtente().getCodice());
+            statement.setInt(1, Session.getUtente().getId_utente());
             statement.setString(2, isbn);
 
             int rowsInserted = statement.executeUpdate();
@@ -112,7 +112,7 @@ public class LoanDAO {
         try(Connection connection = DatabaseConnection.getConnection()){
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, isbn);
-            statement.setInt(2, Session.getUtente().getCodice());
+            statement.setInt(2, Session.getUtente().getId_utente());
             ResultSet resultSet = statement.executeQuery();
             return resultSet.next();
 
@@ -128,7 +128,7 @@ public class LoanDAO {
         try(Connection connection = DatabaseConnection.getConnection()){
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, isbn);
-            statement.setInt(2, Session.getUtente().getCodice());
+            statement.setInt(2, Session.getUtente().getId_utente());
             ResultSet resultSet = statement.executeQuery();
             return resultSet.next();
 
@@ -144,7 +144,7 @@ public class LoanDAO {
         try(Connection connection = DatabaseConnection.getConnection()){
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, isbn);
-            statement.setInt(2, Session.getUtente().getCodice());
+            statement.setInt(2, Session.getUtente().getId_utente());
 
             int rowsDeleted = statement.executeUpdate();
             return rowsDeleted > 0;
@@ -161,7 +161,7 @@ public class LoanDAO {
         try(Connection connection = DatabaseConnection.getConnection()){
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, isbn);
-            statement.setInt(2, Session.getUtente().getCodice());
+            statement.setInt(2, Session.getUtente().getId_utente());
             statement.executeUpdate();
 
         }catch(SQLException e){
@@ -176,7 +176,7 @@ public class LoanDAO {
         try(Connection connection = DatabaseConnection.getConnection()){
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, isbn);
-            statement.setInt(2, Session.getUtente().getCodice());
+            statement.setInt(2, Session.getUtente().getId_utente());
             ResultSet resultSet = statement.executeQuery();
             if(resultSet.next()){
                 num_rinnovi = resultSet.getInt("num_rinnovi");
@@ -212,7 +212,7 @@ public class LoanDAO {
 
         try(Connection connection = DatabaseConnection.getConnection()){
             PreparedStatement statement = connection.prepareStatement(query);
-            statement.setInt(1, Session.getUtente().getCodice());
+            statement.setInt(1, Session.getUtente().getId_utente());
             ResultSet resultSet = statement.executeQuery();
             if(resultSet.next()){
                 int num_prestiti = resultSet.getInt(1);

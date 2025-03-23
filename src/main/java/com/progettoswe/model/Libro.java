@@ -2,6 +2,8 @@ package com.progettoswe.model;
 
 public class Libro {
 
+    //TODO: classe da cancellare
+
     public static final int ISBN_MAX_LENGTH = 13;
     public static final int TITOLO_MAX_LENGTH = 100;
     public static final int AUTORE_MAX_LENGTH = 50;

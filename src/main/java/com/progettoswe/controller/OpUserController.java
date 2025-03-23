@@ -1,22 +1,17 @@
 package com.progettoswe.controller;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Optional;
-
 import com.progettoswe.App;
 import com.progettoswe.business_logic.BookService;
 import com.progettoswe.business_logic.LoanService;
 import com.progettoswe.model.Catalogo;
 import com.progettoswe.model.Prestito;
 import com.progettoswe.model.Session;
-
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Optional;
 
 public class OpUserController {
     @FXML private ListView<String> listaCatalogo;

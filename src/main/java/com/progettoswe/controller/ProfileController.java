@@ -80,7 +80,7 @@ public class ProfileController {
             }
 
             // Aggiorna la password solo se è stata inserita una nuova password
-            utente.setPassword(nuovaPassword);
+            utente.setPw(nuovaPassword);
         }
 
         if (!isValidEmail(nuovaEmail)) {
