@@ -2,22 +2,23 @@ package com.progettoswe.model;
 import java.util.ArrayList;
 
 public class Catalogo {
-    private ArrayList<Libro> libri;
+    private final ArrayList<Volume> volumi;
 
     public Catalogo() {
-        this.libri = new ArrayList<Libro>();
+        this.volumi = new ArrayList<Volume>();
     }
 
-    public void aggiungiLibro(Libro libro) {
-        libri.add(libro); //it is possible to add multiple copies of the same book
+    public void aggiungiVolume(Volume volume) {
+        volumi.add(volume);
+
     }
 
-    public void rimuoviLibro(Libro libro) {
-        libri.remove(libro);
+    public void rimuoviVolume(Volume volume) {
+        volumi.remove(volume);
     }
 
-    public ArrayList<Libro> getLibri() {
-        return libri;
+    public ArrayList<Volume> getVolumi() {
+        return volumi;
     }
 
 

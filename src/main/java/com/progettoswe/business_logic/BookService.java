@@ -1,59 +1,66 @@
 package com.progettoswe.business_logic;
 
-import java.util.ArrayList;
-
 import com.progettoswe.ORM.BookDAO;
+import com.progettoswe.ORM.VolumeDAO;
 import com.progettoswe.model.Catalogo;
 import com.progettoswe.model.Libro;
 import com.progettoswe.model.Prestito;
-
+import com.progettoswe.model.Volume;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+
+import java.sql.SQLException;
+import java.util.ArrayList;
 
 
 public class BookService {
 
+    //aggiornato
     private static void aggiornaCatalogoISBN(Catalogo catalogo, ListView<String> listaCatalogo) {
         listaCatalogo.getItems().clear();
-        for (int i = 0; i < catalogo.getLibri().size(); i++) {
-            String isbn = catalogo.getLibri().get(i).getIsbn();
-            String titolo = catalogo.getLibri().get(i).getTitolo();
-            String autore = catalogo.getLibri().get(i).getAutore();
+        for (int i = 0; i < catalogo.getVolumi().size(); i++) {
+            String isbn = catalogo.getVolumi().get(i).edizione().getIsbn();
+            String titolo = catalogo.getVolumi().get(i).edizione().getOpera().getTitolo();
+            String autore = catalogo.getVolumi().get(i).edizione().getOpera().getAutore();
             String disponibile;
-            if(catalogo.getLibri().get(i).getCopie() == 0){
-                disponibile = "Non disponibile";
-            }else{
+            if(catalogo.getVolumi().get(i).getStato().contentEquals("disponibile")){
                 disponibile = "Disponibile";
+            }else{
+                disponibile = "Non Disponibile";
             }
             listaCatalogo.getItems().add(isbn + " - " + titolo + " - " + autore + " - " + disponibile);
         }
     }
 
+    //aggiornato
     private static void aggiornaCatalogo(Catalogo catalogo, ListView<String> listaCatalogo) {
         listaCatalogo.getItems().clear();
-        for (int i = 0; i < catalogo.getLibri().size(); i++) {
-            String titolo = catalogo.getLibri().get(i).getTitolo();
-            String autore = catalogo.getLibri().get(i).getAutore();
+        for (int i = 0; i < catalogo.getVolumi().size(); i++) {
+            String titolo = catalogo.getVolumi().get(i).edizione().getOpera().getTitolo();
+            String autore = catalogo.getVolumi().get(i).edizione().getOpera().getAutore();
             String disponibile;
-            if(catalogo.getLibri().get(i).getCopie() == 0){
-                disponibile = "Non disponibile";
-            }else{
+            if(catalogo.getVolumi().get(i).getStato().contentEquals("disponibile")){
                 disponibile = "Disponibile";
+            }else{
+                disponibile = "Non Disponibile";
             }
             listaCatalogo.getItems().add(titolo + " - " + autore + " - " + disponibile);
         }
     }
 
+    //aggiornato
     public static void stampaCatalogo(Catalogo catalogo, ListView<String> listaCatalogo) {
         catalogo = BookDAO.caricaCatalogo();
         aggiornaCatalogo(catalogo, listaCatalogo);
     }
 
+    //aggiornato
     public static void stampaCatalogoISBN(Catalogo catalogo, ListView<String> listaCatalogo) {
         catalogo = BookDAO.caricaCatalogo();
         aggiornaCatalogoISBN(catalogo, listaCatalogo);
     }
-    
+
+    //aggiornato
     public static void searchBooks(Catalogo catalogo, ListView<String> listaCatalogo, TextField ricerca) {
         String searchText = ricerca.getText();
         listaCatalogo.getItems().clear();
@@ -61,6 +68,7 @@ public class BookService {
         aggiornaCatalogo(catalogo, listaCatalogo);
     }
 
+    //aggiornato
     public static void searchBooksISBN(Catalogo catalogo, ListView<String> listaCatalogo, TextField ricerca) {
         String searchText = ricerca.getText();
         listaCatalogo.getItems().clear();
@@ -68,24 +76,27 @@ public class BookService {
         aggiornaCatalogoISBN(catalogo, listaCatalogo);
     }
 
-    public static boolean addBook(Libro l){
-        if (BookDAO.getLibro(l.getIsbn()) != null){
+    //TODO: da ricontrollare
+    public static boolean addVolume(Volume v) throws SQLException {
+        if (BookDAO.getVolume(v.edizione().getIsbn()) != null){
             return false;
         }
-        return BookDAO.aggiungiLibro(l);
+        return VolumeDAO.aggiungiVolume(v);
     }
 
+    //TODO: da ricontrollare
     public static boolean deleteBook(String isbn, ArrayList<Prestito> prestiti){
         for (Prestito p : prestiti) {
-            if(p.getLibro().getIsbn().contentEquals(isbn)){
+            if(p.getVolume().edizione().getIsbn().contentEquals(isbn)){
                 return false;
             }
         }
-        return BookDAO.cancellaLibro(isbn);
+        return BookDAO.cancellaVolume(isbn);
     }
-    
-    public static Libro getBook(String isbn){
-        return BookDAO.getLibro(isbn);
+
+    //TODO: da ricontrollare
+    public static Volume getVolume(String isbn){
+        return VolumeDAO.getVolume(isbn);
     }
 
     public static boolean isAnyPropertyTooLong(Libro l) {

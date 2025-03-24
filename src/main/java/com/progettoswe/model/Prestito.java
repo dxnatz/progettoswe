@@ -25,4 +25,28 @@ public class Prestito {
         this.utente = utente;
         this.libro = libro;
     }
+
+    public int getId_prestito() {
+        return id_prestito;
+    }
+
+    public Volume getVolume() {
+        return volume;
+    }
+
+    public Utente getUtente() {
+        return utente;
+    }
+
+    public Libro getLibro() {
+        return libro;
+    }
+
+    public LocalDate getDataInizio() {
+        return dataInizio;
+    }
+
+    public Boolean getRestituito() {
+        return restituito;
+    }
 }

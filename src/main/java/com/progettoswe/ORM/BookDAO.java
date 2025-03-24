@@ -1,34 +1,49 @@
 package com.progettoswe.ORM;
 
+import com.progettoswe.model.*;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import com.progettoswe.model.Catalogo;
-import com.progettoswe.model.Libro;
-
 public class BookDAO {
-    
+
+    //aggiornato
     public static Catalogo caricaCatalogo() {
         Catalogo catalogo = new Catalogo(); //creo un nuovo catalogo per inserire i libri
-        String query = "SELECT * FROM libro";
+        String query = "SELECT * FROM opera JOIN edizione ON opera.id_opera = edizione.id_opera JOIN volume ON edizione.id_edizione = volume.id_edizione;";
 
         try (Connection connection = DatabaseConnection.getConnection()) {
             PreparedStatement statement = connection.prepareStatement(query);
             ResultSet resultSet = statement.executeQuery();
             
             while (resultSet.next()) {
+                int id_opera = resultSet.getInt("id_opera");
+                int id_edizione = resultSet.getInt("id_edizione");
+                int id_volume = resultSet.getInt("id_volume");
+                int numero_edizione = resultSet.getInt("numero_edizione");
+                String descrizione = resultSet.getString("descrizione");
                 String isbn = resultSet.getString("isbn");
                 String titolo = resultSet.getString("titolo");
                 String autore = resultSet.getString("autore");
                 String editore = resultSet.getString("editore");
+                int anno_pubblicazione_originale = resultSet.getInt("anno_pubblicazione_originale");
                 int anno_pubblicazione = resultSet.getInt("anno_pubblicazione");
                 String genere = resultSet.getString("genere");
-                int copie = resultSet.getInt("copie");
+                String stato = resultSet.getString("stato");
+                String posizione = resultSet.getString("posizione");
 
-                Libro libro = new Libro(isbn, titolo, autore, editore, anno_pubblicazione, genere, copie);
-                catalogo.aggiungiLibro(libro);
+                //da completare per bene
+
+                Opera opera = new Opera(id_opera, titolo, autore, genere, anno_pubblicazione_originale, descrizione);
+                Edizione edizione = new Edizione(isbn, anno_pubblicazione, editore, numero_edizione, opera, id_edizione);
+                Volume volume = new Volume(id_volume, edizione, stato, posizione);
+
+                catalogo.aggiungiVolume(volume);
+
+                //Libro libro = new Libro(isbn, titolo, autore, editore, anno_pubblicazione, genere);
+                //catalogo.aggiungiLibro(libro);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -36,9 +51,13 @@ public class BookDAO {
         return catalogo;
     }
 
+    //aggiornato
     public static Catalogo ricercaLibro(String ricerca){
         Catalogo catalogo = new Catalogo(); //creo un nuovo catalogo per inserire i libri che corrispondono alla ricerca
-        String query = "SELECT * FROM libro WHERE LOWER(isbn) LIKE LOWER(?) OR LOWER(titolo) LIKE LOWER(?) OR LOWER(autore) LIKE LOWER(?) OR LOWER(editore) LIKE LOWER(?) OR LOWER(genere) LIKE LOWER(?)";
+        String query =  "SELECT *"+
+                        "FROM opera JOIN edizione ON opera.id_opera = edizione.id_opera JOIN volume ON edizione.id_edizione = volume.id_edizione" +
+                        "WHERE LOWER(opera.titolo) LIKE ? OR LOWER(opera.autore) LIKE ? OR LOWER(opera.genere) LIKE ? " +
+                        "OR LOWER(edizione.editore) LIKE ? OR LOWER(edizione.isbn) LIKE ?;";
 
         try(Connection connection = DatabaseConnection.getConnection()){
             PreparedStatement statement = connection.prepareStatement(query);
@@ -51,16 +70,26 @@ public class BookDAO {
             ResultSet resultSet = statement.executeQuery();
 
             while(resultSet.next()){
+                int id_opera = resultSet.getInt("id_opera");
+                int id_edizione = resultSet.getInt("id_edizione");
+                int id_volume = resultSet.getInt("id_volume");
+                int numero_edizione = resultSet.getInt("numero_edizione");
+                String descrizione = resultSet.getString("descrizione");
                 String isbn = resultSet.getString("isbn");
                 String titolo = resultSet.getString("titolo");
                 String autore = resultSet.getString("autore");
                 String editore = resultSet.getString("editore");
+                int anno_pubblicazione_originale = resultSet.getInt("anno_pubblicazione_originale");
                 int anno_pubblicazione = resultSet.getInt("anno_pubblicazione");
                 String genere = resultSet.getString("genere");
-                int copie = resultSet.getInt("copie");
+                String stato = resultSet.getString("stato");
+                String posizione = resultSet.getString("posizione");
 
-                Libro libro = new Libro(isbn, titolo, autore, editore, anno_pubblicazione, genere, copie);
-                catalogo.aggiungiLibro(libro);
+                Opera opera = new Opera(id_opera, titolo, autore, genere, anno_pubblicazione_originale, descrizione);
+                Edizione edizione = new Edizione(isbn, anno_pubblicazione, editore, numero_edizione, opera, id_edizione);
+                Volume volume = new Volume(id_volume, edizione, stato, posizione);
+
+                catalogo.aggiungiVolume(volume);
             }
         }catch(SQLException e){
             e.printStackTrace();
@@ -167,26 +196,34 @@ public class BookDAO {
         }
     }
 
-    public static Libro getLibro(String isbn) {
-        String query = "SELECT * FROM libro WHERE isbn = ?";
+    public static Volume getVolume(String isbn) {
+        String query = "SELECT * FROM volume JOIN edizione ON volume.id_edizione = edizione.id_edizione JOIN opera ON edizione.id_opera = opera.id_opera WHERE isbn = ?";
         try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
-    
+
             statement.setString(1, isbn);
             ResultSet resultSet = statement.executeQuery();
     
             if (resultSet.next()) {
-                String ISBN = (resultSet.getString("isbn"));
-                String titolo = (resultSet.getString("titolo"));
-                String autore = (resultSet.getString("autore"));
-                String editore = (resultSet.getString("editore"));
-                int anno = (resultSet.getInt("anno_pubblicazione"));
-                String genere = (resultSet.getString("genere"));
-                int copie = (resultSet.getInt("copie"));
-    
-                Libro libro = new Libro(ISBN, titolo, autore, editore, anno, genere, copie);
+                int id_opera = resultSet.getInt("id_opera");
+                int id_edizione = resultSet.getInt("id_edizione");
+                int id_volume = resultSet.getInt("id_volume");
+                int numero_edizione = resultSet.getInt("numero_edizione");
+                String descrizione = resultSet.getString("descrizione");
+                String titolo = resultSet.getString("titolo");
+                String autore = resultSet.getString("autore");
+                String editore = resultSet.getString("editore");
+                int anno_pubblicazione_originale = resultSet.getInt("anno_pubblicazione_originale");
+                int anno_pubblicazione = resultSet.getInt("anno_pubblicazione");
+                String genere = resultSet.getString("genere");
+                String stato = resultSet.getString("stato");
+                String posizione = resultSet.getString("posizione");
 
-                return libro;
+                Opera opera = new Opera(id_opera, titolo, autore, genere, anno_pubblicazione_originale, descrizione);
+                Edizione edizione = new Edizione(isbn, anno_pubblicazione, editore, numero_edizione, opera, id_edizione);
+                Volume volume = new Volume(id_volume, edizione, stato, posizione);
+
+                return volume;
             } else {
                 return null;
             }
@@ -222,20 +259,16 @@ public class BookDAO {
         }
     }
 
-    public static boolean cancellaLibro(String isbn){
-        String query = "DELETE FROM libro WHERE isbn = ?";
+    public static boolean cancellaVolume(String isbn){
 
-        try (Connection connection = DatabaseConnection.getConnection();
-             PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setString(1, isbn); // Imposta l'ISBN come parametro
-
-            int rowsDeleted = statement.executeUpdate(); // Esegue l'operazione di DELETE
-
-            // Se almeno una riga è stata cancellata, restituisce true
-            return rowsDeleted > 0;
-        } catch (SQLException e) {
+        String query = "DELETE FROM volume WHERE id_edizione = (SELECT id_edizione FROM edizione WHERE isbn = ?)";
+        try(Connection connection = DatabaseConnection.getConnection();
+            PreparedStatement statement = connection.prepareStatement(query)){
+            statement.setString(1, isbn);
+            return statement.executeUpdate() > 0;
+        }catch(SQLException e){
             e.printStackTrace();
-            return false; // In caso di errore, restituisce false
+            return false;
         }
     }
 

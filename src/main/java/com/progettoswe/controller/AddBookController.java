@@ -1,16 +1,18 @@
 package com.progettoswe.controller;
 
-import java.io.IOException;
-
 import com.progettoswe.App;
 import com.progettoswe.business_logic.BookService;
+import com.progettoswe.business_logic.VolumeService;
 import com.progettoswe.model.Libro;
-
+import com.progettoswe.model.Volume;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+
+import java.io.IOException;
+import java.sql.SQLException;
 
 public class AddBookController {
 
@@ -39,14 +41,14 @@ public class AddBookController {
     private Button aggiungiButton;
     
     @FXML
-    private void aggiungiLibro() throws IOException {
-        Libro l = getBookFromTextFields();
-        if(BookService.addBook(l)){
+    private void aggiungiVolume() throws IOException, SQLException {
+        Volume v = getVolumeFromTextFields();
+        if(VolumeService.addVolume(v)){
             svuotaCampi();
 
             Alert alert = new Alert(AlertType.CONFIRMATION);
                 alert.setTitle("Libro Aggiunto");
-                alert.setHeaderText("Libro " + l.getTitolo() + " aggiunto con successo");
+                alert.setHeaderText("Libro " + v.edizione().getOpera().getTitolo() + " aggiunto con successo");
                 alert.showAndWait();
                 backToOpUser();
         }else{
@@ -87,7 +89,7 @@ public class AddBookController {
             alert.showAndWait();
 
         }else{
-            Libro book = getBookFromTextFields();
+            Libro book = getVolumeFromTextFields();
 
                 if (BookService.isAnyPropertyTooLong(book)) {
                     Alert alert = new Alert(AlertType.ERROR);
@@ -122,15 +124,11 @@ public class AddBookController {
         copieField.clear();
     }
 
-    private Libro getBookFromTextFields(){
-        String isbn = isbnField.getText();
-        String titolo = titoloField.getText();
-        String autore = autoreField.getText();
-        String editore = editoreField.getText();
-        String genere = genereField.getText();
-        int anno = Integer.parseInt(annoField.getText());
-        int copie = Integer.parseInt(copieField.getText());
+    private Volume getVolumeFromTextFields(){
 
-        return new Libro(isbn, titolo, autore, editore, anno, genere, copie);
+        Volume v = new Volume();
+
+
+
     }
 }

@@ -41,7 +41,7 @@ public class UpdateBookController {
     private Button updateButton;
 
     public void initialize() {
-        Libro book = BookService.getBook(isbnLibro);
+        Libro book = BookService.getVolume(isbnLibro);
         setTextFields(book);
         isbnField.setDisable(true);
         updateButtonListener();

@@ -1,17 +1,15 @@
 package com.progettoswe.model;
 
-import java.time.LocalDate;
-
 public class Opera {
     private int id_opera;
     private String titolo;
     private String autore;
     private String genere;
-    private LocalDate annoPubblicazioneOrinale;
+    private int annoPubblicazioneOrinale;
     private String Descrizione;
 
     //costruttore con id_opera (usato quando leggiamo i dati dal database)
-    public Opera(int id_opera, String titolo, String autore, String genere, LocalDate annoPubblicazioneOrinale, String descrizione) {
+    public Opera(int id_opera, String titolo, String autore, String genere, int annoPubblicazioneOrinale, String descrizione) {
         this.id_opera = id_opera;
         this.titolo = titolo;
         this.autore = autore;
@@ -21,7 +19,7 @@ public class Opera {
     }
 
     //costruttore senza id_opera (usato quando creiamo un nuovo oggetto)
-    public Opera(String titolo, String autore, String descrizione, LocalDate annoPubblicazioneOrinale, String genere) {
+    public Opera(String titolo, String autore, String descrizione, int annoPubblicazioneOrinale, String genere) {
         this.titolo = titolo;
         this.autore = autore;
         Descrizione = descrizione;
@@ -41,7 +39,7 @@ public class Opera {
         return genere;
     }
 
-    public LocalDate getAnnoPubblicazioneOrinale() {
+    public int getAnnoPubblicazioneOrinale() {
         return annoPubblicazioneOrinale;
     }
 
