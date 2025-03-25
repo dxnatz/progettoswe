@@ -1,113 +1,100 @@
 package com.progettoswe.utilities;
 
+import java.util.Optional;
+
 import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonType;
 
 public class AlertUtil {
 
-    public static Alert showErrorAlert(String title, String header, String content) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
+    /**
+     * Mostra un alert con pulsanti personalizzati. Ritorna la stringa del pulsante premuto.
+     *
+     * @param title   Il titolo dell'alert.
+     * @param content Il contenuto dell'alert.
+     */
+    public static String showCustomButtonAlert(String title, String header, String content, String... buttonTexts) {
+        Alert alert = new Alert(AlertType.NONE);
         alert.setTitle(title);
         alert.setHeaderText(header);
         alert.setContentText(content);
-        alert.showAndWait();
-        return alert;
+
+        // Aggiungi i pulsanti personalizzati
+        for (String buttonText : buttonTexts) {
+            ButtonType buttonType = new ButtonType(buttonText);
+            alert.getButtonTypes().add(buttonType);
+        }
+
+        // Mostra l'alert e aspetta la risposta dell'utente
+        Optional<ButtonType> result = alert.showAndWait();
+
+        // Restituisci il testo del pulsante premuto, se presente
+        return result.map(ButtonType::getText).orElse(null);
     }
 
     /**
-     * To use when you want to check which button was pressed as you need to call showAndWait() later
-     * @param title
-     * @param header
-     * @param content
-     * @param showAndWait
-     * @return
+     * Mostra un alert di tipo INFORMATION con un contenuto personalizzato.
+     *
+     * @param title   Il titolo dell'alert.
+     * @param content Il contenuto dell'alert.
      */
-    public static Alert showErrorAlert(String title, String header, String content, boolean showAndWait) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
+    public static void showInfoAlert(String title, String header, String content) {
+        showAlert(AlertType.INFORMATION, title, header, content);
+    }
+
+    /**
+     * Mostra un alert di tipo WARNING con un contenuto personalizzato.
+     *
+     * @param title   Il titolo dell'alert.
+     * @param content Il contenuto dell'alert.
+     */
+    public static void showWarningAlert(String title, String header, String content) {
+        showAlert(AlertType.WARNING, title, header, content);
+    }
+
+    /**
+     * Mostra un alert di tipo ERROR con un contenuto personalizzato.
+     *
+     * @param title   Il titolo dell'alert.
+     * @param content Il contenuto dell'alert.
+     */
+    public static void showErrorAlert(String title, String header, String content) {
+        showAlert(AlertType.ERROR, title, header, content);
+    }
+
+    /**
+     * Mostra un alert di tipo CONFIRMATION con un contenuto personalizzato.
+     * Restituisce true se l'utente ha confermato, false altrimenti.
+     *
+     * @param title   Il titolo dell'alert.
+     * @param content Il contenuto dell'alert.
+     * @return true se l'utente ha premuto OK/Conferma, false altrimenti.
+     */
+    public static boolean showConfirmationAlert(String title, String header, String content) {
+        Alert alert = new Alert(AlertType.CONFIRMATION);
         alert.setTitle(title);
         alert.setHeaderText(header);
         alert.setContentText(content);
-        if(showAndWait) alert.showAndWait();
-        return alert;
+
+        Optional<ButtonType> result = alert.showAndWait();
+        return result.isPresent() && result.get() == ButtonType.OK;
     }
 
-    public static Alert showInfoAlert(String title, String header, String content) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+    /**
+     * Metodo privato generico per mostrare un alert.
+     *
+     * @param type    Il tipo di alert (INFORMATION, WARNING, ERROR, ecc.).
+     * @param title   Il titolo dell'alert.
+     * @param header  L'header dell'alert (può essere null).
+     * @param content Il contenuto dell'alert.
+     */
+    private static void showAlert(AlertType type, String title, String header, String content) {
+        Alert alert = new Alert(type);
         alert.setTitle(title);
         alert.setHeaderText(header);
         alert.setContentText(content);
         alert.showAndWait();
-        return alert;
     }
-
-        /**
-     * To use when you want to check which button was pressed as you need to call showAndWait() later
-     * @param title
-     * @param header
-     * @param content
-     * @param showAndWait
-     * @return
-     */
-    public static Alert showInfoAlert(String title, String header, String content, boolean showAndWait) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(title);
-        alert.setHeaderText(header);
-        alert.setContentText(content);
-        if(showAndWait) alert.showAndWait();
-        return alert;
-    }
-
-    public static Alert showWarningAlert(String title, String header, String content) {
-        Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setTitle(title);
-        alert.setHeaderText(header);
-        alert.setContentText(content);
-        alert.showAndWait();
-        return alert;
-    }
-
-        /**
-     * To use when you want to check which button was pressed as you need to call showAndWait() later
-     * @param title
-     * @param header
-     * @param content
-     * @param showAndWait
-     * @return
-     */
-    public static Alert showWarningAlert(String title, String header, String content, boolean showAndWait) {
-        Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setTitle(title);
-        alert.setHeaderText(header);
-        alert.setContentText(content);
-        if(showAndWait) alert.showAndWait();
-        return alert;
-    }
-
-    public static Alert showConfirmationAlert(String title, String header, String content) {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle(title);
-        alert.setHeaderText(header);
-        alert.setContentText(content);
-        alert.showAndWait();
-        return alert;
-    }
-
-        /**
-     * To use when you want to check which button was pressed as you need to call showAndWait() later
-     * @param title
-     * @param header
-     * @param content
-     * @param showAndWait
-     * @return
-     */
-    public static Alert showConfirmationAlert(String title, String header, String content, boolean showAndWait) {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle(title);
-        alert.setHeaderText(header);
-        alert.setContentText(content);
-        if(showAndWait) alert.showAndWait();
-        return alert;
-    }
-
-        //TODO: da fare nuovi alert con button custom come quelli di prenotaLibro su HomePageController
 
 }

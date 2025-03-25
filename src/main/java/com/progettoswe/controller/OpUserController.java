@@ -105,19 +105,22 @@ public class OpUserController {
         App.setRoot("update_book");
     }
 
-    //TODO: Usare metodi AlertUtil con button custom quando ci sono
+    //TODO: Verifica se i button funzionano ancora
     @FXML
     private void openDeleteAlert(){
-        Alert confermaAlert = AlertUtil.showConfirmationAlert("Conferma cancellazione", 
-                                                                    "Sei sicuro di voler cancellare \"" + lastSelectedISBN + "\"?", 
-                                                                    "Questa azione non può essere annullata.", false);
 
-            Optional<ButtonType> risultato = confermaAlert.showAndWait();
+        String annulla = "Annulla";
+        String cancella = "Cancella";
+        String result = AlertUtil.showCustomButtonAlert("Conferma cancellazione", 
+                                                        "Sei sicuro di voler cancellare \"" + lastSelectedISBN + "\"?", 
+                                                        "Questa azione non può essere annullata.", 
+                                                        annulla, cancella);
 
-            if (risultato.isPresent() && risultato.get() == ButtonType.OK){
+            if (result != null && result.equals(cancella)){
                 String s = lastSelectedISBN;
                 if (deleteBook()){
                     stampaCatalogo();
+                    stampaPrestiti();
                 }else{
                     AlertUtil.showErrorAlert("Errore", 
                     "Errore di connessione col database", 
@@ -147,16 +150,17 @@ public class OpUserController {
         }
     }
 
-    //TODO: Usare metodi AlertUtil con button custom quando ci sono
+    //TODO: Verifica se i button funzionano ancora
     @FXML
     private void openReturnBookAlert(){
-        Alert confermaAlert = AlertUtil.showConfirmationAlert("Conferma restituzione", 
-                                                                    "Sei sicuro di voler restituire \"" + lastSelectedLoanedBook + "\"?", 
-                                                                    "Questa azione non può essere annullata.", false);
+        String annulla = "Annulla";
+        String restituisci = "Restituisci";
+        String result = AlertUtil.showCustomButtonAlert("Conferma restituzione", 
+                                                        "Sei sicuro di voler restituire \"" + lastSelectedLoanedBook + "\"?", 
+                                                        "Questa azione non può essere annullata.", 
+                                                        annulla, restituisci);
 
-            Optional<ButtonType> risultato = confermaAlert.showAndWait();
-
-            if (risultato.isPresent() && risultato.get() == ButtonType.OK){
+            if (result != null && result.equals(restituisci)){
                 returnBook();
             }
     }

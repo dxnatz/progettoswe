@@ -15,4 +15,5 @@ public class InputValidator {
     //TODO: implementare metodi per controllare la validità di un input e variabili
     //inserire var statiche costanti per lunghezza massima di campi per database
     //inserire anche i regex per email e password che tanto i controlli si fanno qua
+
 }

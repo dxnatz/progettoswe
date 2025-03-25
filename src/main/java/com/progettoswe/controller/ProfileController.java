@@ -1,7 +1,6 @@
 package com.progettoswe.controller;
 
 import java.io.IOException;
-import java.util.Optional;
 import java.util.regex.Pattern;
 
 import com.progettoswe.App;
@@ -11,8 +10,6 @@ import com.progettoswe.model.Utente;
 import com.progettoswe.utilities.AlertUtil;
 
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 
@@ -113,15 +110,17 @@ public class ProfileController {
         }
     }
 
-    //TODO: Usare metodi AlertUtil con button custom quando ci sono
+    //TODO: Verifica se i button funzionano ancora
     @FXML
     private void cancellaUtente() throws IOException {
-        Alert confirmAlert = AlertUtil.showConfirmationAlert("Conferma", 
-                                                            "Cancellazione account", 
-                                                            "Sei sicuro di voler cancellare il tuo account?", false);
+        String annulla = "Annulla";
+        String cancella = "Cancella account";
+        String result = AlertUtil.showCustomButtonAlert("Conferma cancellazione", 
+                                                        "Sei sicuro di voler cancellare il tuo account?", 
+                                                        "Questa azione non può essere annullata.", 
+                                                        annulla, cancella);
 
-        Optional<ButtonType> result = confirmAlert.showAndWait();
-        if (result.isPresent() && result.get() == ButtonType.OK) {
+        if (result != null && result.equals(cancella)) {
             Utente utente = Session.getUtente();
             if (UserService.deleteUtente(utente)) {
                 AlertUtil.showInfoAlert("Successo", 
