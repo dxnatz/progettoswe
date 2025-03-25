@@ -58,6 +58,7 @@ public class ProfileController {
                 alert.setHeaderText("Vecchia password errata");
                 alert.setContentText("La vecchia password inserita non è corretta.");
                 alert.showAndWait();
+                vecchiaPassword.clear();
                 return;
             }
 
@@ -67,6 +68,7 @@ public class ProfileController {
                 alert.setHeaderText("Le password non coincidono");
                 alert.setContentText("Per favore, inserisci la stessa password in entrambi i campi.");
                 alert.showAndWait();
+                confermaPassword.clear();
                 return;
             }
 

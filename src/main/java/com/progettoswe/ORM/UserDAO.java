@@ -1,11 +1,9 @@
 package com.progettoswe.ORM;
 
-import java.sql.Connection;
-import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import com.progettoswe.model.Utente;
+
+import java.sql.*;
+import java.time.LocalDate;
 
 public class UserDAO {
 
@@ -102,22 +100,24 @@ public class UserDAO {
             preparedStatement.setString(1, email);
             preparedStatement.setString(2, password);
 
-            try(ResultSet rs = preparedStatement.executeQuery()) {
-
+            try (ResultSet rs = preparedStatement.executeQuery()) {
+                // Verifica se la query ha restituito risultati
                 if (rs.next() && rs.getInt(1) > 0) {
                     return true;
+                } else {
+                    return false;  // Restituisce false se non ci sono risultati
                 }
-                throw new SQLException();
-            } 
-            catch (SQLException e) {
+            } catch (SQLException e) {
+                // Gestisci eventuali eccezioni nella query
                 e.printStackTrace();
                 return false;
             }
 
         } catch (SQLException e) {
+            // Gestisci eccezioni di connessione
             e.printStackTrace();
+            return false;
         }
-        return false;
     }
 
     // Metodo per controllare se l'email è corretta e la password è errata
@@ -153,15 +153,16 @@ public class UserDAO {
             ResultSet resultSet = statement.executeQuery();
 
             if (resultSet.next()) {
-                int codice = resultSet.getInt("codice");
+                int id_utente = resultSet.getInt("id_utente");
                 String nome = resultSet.getString("nome");
                 String cognome = resultSet.getString("cognome");
                 String codiceFiscale = resultSet.getString("cf");
                 String cellulare = resultSet.getString("cellulare");
-                Date dataNascita = resultSet.getDate("data_nascita");
+                LocalDate dataNascita = resultSet.getDate("data_nascita").toLocalDate();
                 String indirizzo = resultSet.getString("indirizzo");
+                LocalDate dataRegistrazione = resultSet.getDate("data_registrazione").toLocalDate();
 
-                return new Utente(codice, nome, cognome, codiceFiscale, email, "", cellulare, dataNascita.toLocalDate(), indirizzo);
+                return new Utente(id_utente, nome, cognome, codiceFiscale, email, cellulare, "", dataNascita, indirizzo, dataRegistrazione);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -172,47 +173,41 @@ public class UserDAO {
     public static boolean updateUtente(Utente utente) {
         String query;
         if (utente.getPassword() == null || utente.getPassword().isEmpty()) {
-            query = "UPDATE utente SET nome = ?, cognome = ?, cf = ?, email = ?, cellulare = ?, data_nascita = ?, indirizzo = ? WHERE codice = ?";
+            query = "UPDATE utente SET nome = ?, cognome = ?, cf = ?, email = ? WHERE id_utente = ?";
         } else {
-            query = "UPDATE utente SET nome = ?, cognome = ?, cf = ?, email = ?, pw = ?, cellulare = ?, data_nascita = ?, indirizzo = ? WHERE codice = ?";
+            query = "UPDATE utente SET nome = ?, cognome = ?, cf = ?, email = ?, pw = ? WHERE id_utente = ?";
         }
 
-        try(Connection conn = DatabaseConnection.getConnection()) {
+        try (Connection conn = DatabaseConnection.getConnection()) {
             PreparedStatement pstmt = conn.prepareStatement(query);
-            //imposto i parametri della query
-            Date sqlDate = Date.valueOf(utente.getDataNascita());
+
             pstmt.setString(1, utente.getNome());
             pstmt.setString(2, utente.getCognome());
             pstmt.setString(3, utente.getCodiceFiscale());
             pstmt.setString(4, utente.getEmail());
+
             if (utente.getPassword() == null || utente.getPassword().isEmpty()) {
-                pstmt.setString(5, utente.getCellulare());
-                pstmt.setDate(6, sqlDate);
-                pstmt.setString(7, utente.getIndirizzo());
-                pstmt.setInt(8, utente.getCodice());
+                pstmt.setInt(5, utente.getId_utente());
             } else {
                 pstmt.setString(5, utente.getPassword());
-                pstmt.setString(6, utente.getCellulare());
-                pstmt.setDate(7, sqlDate);
-                pstmt.setString(8, utente.getIndirizzo());
-                pstmt.setInt(9, utente.getCodice());
+                pstmt.setInt(6, utente.getId_utente());
             }
 
-            int rowsUpdated = pstmt.executeUpdate(); //eseguo la query
-            return rowsUpdated > 0; //restituisce true se l'utente è stato aggiornato con successo
+            int rowsUpdated = pstmt.executeUpdate();
+            return rowsUpdated > 0;
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return false; //se non è stato possibile aggiornare l'utente a causa di un errore
+        return false;
     }
 
     public static boolean deleteUtente(Utente utente) {
-        String query = "DELETE FROM utente WHERE codice = ?";
+        String query = "DELETE FROM utente WHERE id_utente = ?";
 
         try(Connection conn = DatabaseConnection.getConnection()) {
             PreparedStatement pstmt = conn.prepareStatement(query);
-            pstmt.setInt(1, utente.getCodice());
+            pstmt.setInt(1, utente.getId_utente()); //imposto il parametro della query, sostituisco il ? con l'id dell'utente
 
             int rowsDeleted = pstmt.executeUpdate(); //eseguo la query
             return rowsDeleted > 0; //restituisce true se l'utente è stato eliminato con successo

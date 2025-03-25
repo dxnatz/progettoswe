@@ -2,86 +2,51 @@ package com.progettoswe.model;
 import java.time.LocalDate;
 
 public class Prestito {
-    private int id;
+    private int id_prestito;
+    private Volume volume;
     private Utente utente;
-    private Libro libro;
-    private LocalDate dataInizioPrestito;
-    private int numeroRinnovi;
-    private boolean ritirato;
-    private boolean restituito;
-    private LocalDate dataInizioPrenotazione;
+    private LocalDate dataInizio;
+    private Boolean restituito;
+    private int num_rinnovi;
 
-    public Prestito(int id, Utente utente, Libro libro) {
-        this.id = id;
+    //costruttore con id_prestito, dataInizio e restituito (usato quando leggiamo i dati dal database)
+    public Prestito(int id_prestito, Volume volume, Utente utente, LocalDate dataInizio, Boolean restituito, int num_rinnovi) {
+        this.id_prestito = id_prestito;
+        this.volume = volume;
         this.utente = utente;
-        this.libro = libro;
-        this.dataInizioPrenotazione = LocalDate.now();
-        this.numeroRinnovi = 0;
-        this.ritirato = false;
-        this.restituito = false;
+        this.dataInizio = dataInizio;
+        this.restituito = restituito;
+        this.num_rinnovi = num_rinnovi;
     }
 
-    public Prestito(int id, Utente utente, Libro libro, LocalDate dataInizioPrenotazione) {
-        this.id = id;
+    //costruttore senza id_prestito, dataInizio e restituito (usato quando creiamo un nuovo oggetto)
+    public Prestito(Volume volume, Utente utente) {
+        this.volume = volume;
         this.utente = utente;
-        this.libro = libro;
-        this.dataInizioPrenotazione = dataInizioPrenotazione;
-        this.numeroRinnovi = 0;
-        this.ritirato = false;
-        this.restituito = false;
+        this.num_rinnovi = 0;
     }
 
-    public int getId() {
-        return id;
+    public int getId_prestito() {
+        return id_prestito;
+    }
+
+    public Volume getVolume() {
+        return volume;
     }
 
     public Utente getUtente() {
         return utente;
     }
 
-    public Libro getLibro() {
-        return libro;
+    public LocalDate getDataInizio() {
+        return dataInizio;
     }
 
-    public LocalDate getDataInizioPrestito() {
-        return dataInizioPrestito;
-    }
-
-    public LocalDate getDataInizioPrenotazione() {
-        return dataInizioPrenotazione;
-    }
-
-    public int getNumeroRinnovi() {
-        return numeroRinnovi;
-    }
-
-    public boolean isRitirato() {
-        return ritirato;
-    }
-
-    public boolean isRestituito() {
+    public Boolean getRestituito() {
         return restituito;
     }
 
-    public void ritirato(){
-        if(!ritirato && !restituito){
-            ritirato = true;
-            libro.setCopie(libro.getCopie() - 1);
-            dataInizioPrestito = LocalDate.now();
-        }
-    }
-
-    public void restituito(){
-        if(ritirato && !restituito){
-            restituito = true;
-            libro.setCopie(libro.getCopie() + 1);
-        }
-    }
-
-    //handle with exceptions
-    public void rinnovaPrestito(){
-        if(ritirato && !restituito && numeroRinnovi < 3){
-            numeroRinnovi++;
-        }
+    public int getNum_rinnovi() {
+        return num_rinnovi;
     }
 }

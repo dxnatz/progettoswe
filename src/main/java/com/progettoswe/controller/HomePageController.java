@@ -37,7 +37,7 @@ public class HomePageController {
         listaCatalogo.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 String[] bookDetails = newValue.split(" - ");
-                String disponibilita = bookDetails[2];
+                String disponibilita = bookDetails[4];
                 btnPrenota.setDisable(disponibilita.equals("Non disponibile"));
             }
         });
@@ -46,14 +46,14 @@ public class HomePageController {
         listaPrestiti.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 String[] loanDetails = newValue.split(" - ");
-                String dataFine = loanDetails[2].split("Da restituire entro il: ")[1];
+                String dataFine = loanDetails[4].split("Da restituire entro il: ")[1];
                 btnCancellaPrestito.setDisable(LoanService.prenotazioneScaduta(dataFine));
                 btnProlungaPrestito.setDisable(LocalDate.parse(dataFine).minusDays(2).isBefore(LocalDate.now()));
             }
         });
 
         // Timeline per aggiornare la pagina ogni 20 secondi
-        Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(10), event -> {
+        Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(20), event -> {
             listaCatalogo.getItems().clear();
             listaPrestiti.getItems().clear();
             stampaCatalogo();
@@ -194,6 +194,8 @@ public class HomePageController {
                     if (LoanService.prenotaLibro(selectedBook)) {
                         listaCatalogo.getItems().clear();
                         listaPrestiti.getItems().clear();
+                        //modificare lo stato del volume in prestito
+
                         BookService.stampaCatalogo(catalogo, listaCatalogo);
                         stampaPrestiti();
                         Alert successAlert = new Alert(Alert.AlertType.INFORMATION);
@@ -236,16 +238,16 @@ public class HomePageController {
     
             if (item != null && !empty) {
                 String[] bookDetails = item.split(" - ");
-                String disponibilita = bookDetails[2];
+                String disponibilita = bookDetails[4];
     
                 if (disponibilita.equals("Non disponibile")) {
                     Label disponibilitaLabel = new Label(disponibilita);
                     disponibilitaLabel.setTextFill(Color.RED);
-                    HBox hbox = new HBox(new Label(bookDetails[0] + " - "), new Label(bookDetails[1] + " - "), disponibilitaLabel);
+                    HBox hbox = new HBox(new Label(bookDetails[0] + " - "), new Label(bookDetails[1] + " - "), new Label(bookDetails[2] + " - "), new Label(bookDetails[3] + " - ") ,disponibilitaLabel);
                     setGraphic(hbox);
                     setText(null); // Evita conflitti tra testo e grafica
                 } else {
-                    setText(bookDetails[0] + " - " + bookDetails[1] + " - " + disponibilita);
+                    setText(bookDetails[0] + " - " + bookDetails[1] + " - " + bookDetails[2] + " - " + bookDetails[3] + " - " + disponibilita);
                     setGraphic(null);
                 }
             } else {

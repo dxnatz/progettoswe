@@ -2,25 +2,31 @@ package com.progettoswe.business_logic;
 
 import com.progettoswe.ORM.BookDAO;
 import com.progettoswe.model.Catalogo;
+import com.progettoswe.model.Volume;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 
 
 public class BookService {
-    
+
 
     private static void aggiornaCatalogo(Catalogo catalogo, ListView<String> listaCatalogo) {
         listaCatalogo.getItems().clear();
-        for (int i = 0; i < catalogo.getLibri().size(); i++) {
-            String titolo = catalogo.getLibri().get(i).getTitolo();
-            String autore = catalogo.getLibri().get(i).getAutore();
-            String disponibile;
-            if(catalogo.getLibri().get(i).getCopie() == 0){
-                disponibile = "Non disponibile";
-            }else{
-                disponibile = "Disponibile";
+
+        for (Volume volume : catalogo.getVolumi()) {
+            String statoDisponibile = "Non disponibile"; // Default "Non disponibile"
+            boolean disponibile = BookDAO.operaDisponibile(volume.edizione().getIsbn());
+            if (disponibile) {
+                statoDisponibile = "Disponibile"; // Se c'è almeno una copia disponibile
             }
-            listaCatalogo.getItems().add(titolo + " - " + autore + " - " + disponibile);
+
+            String editore = volume.edizione().getEditore();
+            int numeroEdizione = volume.edizione().getNumero();
+            String titolo = volume.edizione().getOpera().getTitolo();
+            String autore = volume.edizione().getOpera().getAutore();
+
+            // Aggiungi la stringa con il titolo, autore e stato
+            listaCatalogo.getItems().add(titolo + " - " + numeroEdizione + " edizione - " + editore + " - " + autore + " - " + statoDisponibile);
         }
     }
 
