@@ -203,19 +203,31 @@ public class UserDAO {
     }
 
     public static boolean deleteUtente(Utente utente) {
-        String query = "DELETE FROM utente WHERE id_utente = ?";
+        String checkQuery = "SELECT COUNT(*) FROM prestito WHERE id_utente = ?";
+        String deleteQuery = "DELETE FROM utente WHERE id_utente = ?";
 
-        try(Connection conn = DatabaseConnection.getConnection()) {
-            PreparedStatement pstmt = conn.prepareStatement(query);
-            pstmt.setInt(1, utente.getId_utente()); //imposto il parametro della query, sostituisco il ? con l'id dell'utente
+        try (Connection conn = DatabaseConnection.getConnection()) {
+            //Controllo se ha prestiti attivi
+            PreparedStatement checkStmt = conn.prepareStatement(checkQuery);
+            checkStmt.setInt(1, utente.getId_utente());
+            ResultSet rs = checkStmt.executeQuery();
 
-            int rowsDeleted = pstmt.executeUpdate(); //eseguo la query
-            return rowsDeleted > 0; //restituisce true se l'utente è stato eliminato con successo
+            if (rs.next() && rs.getInt(1) > 0) {
+                return false;
+            }
+
+            //Se non ha prestiti attivi, procedo con l'eliminazione
+            PreparedStatement deleteStmt = conn.prepareStatement(deleteQuery);
+            deleteStmt.setInt(1, utente.getId_utente());
+            int rowsDeleted = deleteStmt.executeUpdate();
+
+            return rowsDeleted > 0; //Ritorna true se l'utente è stato eliminato
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return false; //se non è stato possibile eliminare l'utente a causa di un errore
+
+        return false; //Se c'è un errore, ritorna false
     }
 
 }

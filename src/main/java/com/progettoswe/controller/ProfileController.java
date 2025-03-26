@@ -151,7 +151,7 @@ public class ProfileController {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("Errore");
                 alert.setHeaderText("Errore durante la cancellazione");
-                alert.setContentText("Si è verificato un errore durante la cancellazione dell'account.");
+                alert.setContentText("Si è verificato un errore durante la cancellazione dell'account.\n\nCiò può essere dovuto al fatto che l'utente ha ancora prestiti attivi.");
                 alert.showAndWait();
             }
         }
