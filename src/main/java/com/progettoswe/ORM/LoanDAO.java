@@ -59,57 +59,80 @@ public class LoanDAO {
         return prestiti;
     }
 
-    //corretto
-    public static boolean prenotaLibro(String isbn) {
-        // Prima, otteniamo l'id_volume disponibile
-        String getIdVolumeQuery =   "SELECT id_volume " +
-                                    "FROM volume " +
-                                    "WHERE id_edizione = (SELECT id_edizione FROM edizione WHERE isbn = ?) " +
-                                    "AND stato = 'disponibile' " +
-                                    "ORDER BY id_volume ASC LIMIT 1";  // Ottieni il primo volume disponibile
-
-        // Secondo, aggiorniamo il volume per marcarlo come "in prestito"
-        String updateQuery = "UPDATE volume " +
-                             "SET stato = 'in prestito' " +
-                             "WHERE id_volume = ?";  // Aggiorna lo stato del volume
-
-        // Terzo, inseriamo il prestito nel database
-        String insertPrestitoQuery = "INSERT INTO prestito (id_volume, id_utente) " +
-                                     "VALUES (?, ?)";  // Inserisce il prestito
+    public static ArrayList<Prestito> caricaTuttiPrestiti() {
+        ArrayList<Prestito> prestiti = new ArrayList<>();
+        String query = "SELECT opera.id_opera, titolo, autore, genere, anno_pubblicazione_originale, descrizione, "
+                + "edizione.id_edizione, numero_edizione, editore, anno_pubblicazione, isbn, "
+                + "volume.id_volume, stato, posizione, "
+                + "prestito.id_prestito, data_inizio, restituito, num_rinnovi, "
+                + "utente.id_utente, nome, cognome, cf, email, pw, cellulare, data_nascita, indirizzo "
+                + "FROM prestito "
+                + "JOIN utente ON prestito.id_utente = utente.id_utente "
+                + "JOIN volume ON prestito.id_volume = volume.id_volume "
+                + "JOIN edizione ON edizione.id_edizione = volume.id_edizione "
+                + "JOIN opera ON opera.id_opera = edizione.id_opera";
 
         try (Connection connection = DatabaseConnection.getConnection()) {
-            // 1. Ottenere l'id_volume disponibile
-            PreparedStatement getIdVolumeStatement = connection.prepareStatement(getIdVolumeQuery);
-            getIdVolumeStatement.setString(1, isbn);  // Imposta l'ISBN
+            PreparedStatement statement = connection.prepareStatement(query);
+            ResultSet resultSet = statement.executeQuery();
 
-            ResultSet getIdVolumeResultSet = getIdVolumeStatement.executeQuery();
-            if (getIdVolumeResultSet.next()) {
-                int idVolume = getIdVolumeResultSet.getInt("id_volume");  // Ottieni l'ID del volume disponibili
+            while (resultSet.next()) {
+                // Creazione oggetto Opera
+                Opera opera = new Opera(
+                        resultSet.getInt("id_opera"),
+                        resultSet.getString("titolo"),
+                        resultSet.getString("autore"),
+                        resultSet.getString("genere"),
+                        resultSet.getInt("anno_pubblicazione_originale"),
+                        resultSet.getString("descrizione")
+                );
 
-                // 2. Aggiorna lo stato del volume selezionato come "in prestito"
-                PreparedStatement updateStatement = connection.prepareStatement(updateQuery);
-                updateStatement.setInt(1, idVolume);  // Imposta l'ID del volume
+                // Creazione oggetto Edizione
+                Edizione edizione = new Edizione(
+                        resultSet.getString("isbn"),
+                        resultSet.getInt("anno_pubblicazione"),
+                        resultSet.getString("editore"),
+                        resultSet.getInt("numero_edizione"),
+                        opera,
+                        resultSet.getInt("id_edizione")
+                );
 
-                int rowsUpdated = updateStatement.executeUpdate();  // Esegui l'UPDATE
-                if (rowsUpdated > 0) {
-                    // Aggiornamento avvenuto correttamente
+                // Creazione oggetto Volume
+                Volume volume = new Volume(
+                        resultSet.getInt("id_volume"),
+                        edizione,
+                        resultSet.getString("stato"),
+                        resultSet.getString("posizione")
+                );
 
-                    // 3. Inserisci il prestito nel database
-                    PreparedStatement insertStatement = connection.prepareStatement(insertPrestitoQuery);
-                    insertStatement.setInt(1, idVolume);  // Imposta l'ID del volume selezionato
-                    insertStatement.setInt(2, Session.getUtente().getId_utente());  // Imposta l'ID dell'utente
+                // Creazione oggetto Utente
+                Utente utente = new Utente(
+                        resultSet.getInt("id_utente"),
+                        resultSet.getString("nome"),
+                        resultSet.getString("cognome"),
+                        resultSet.getString("cf"),
+                        resultSet.getString("email"),
+                        resultSet.getString("cellulare"),
+                        resultSet.getDate("data_nascita").toLocalDate(),
+                        resultSet.getString("indirizzo")
+                );
 
-                    int rowsInserted = insertStatement.executeUpdate();
-                    if (rowsInserted > 0) {
-                        // Se l'inserimento del prestito è andato a buon fine, ritorna true
-                        return true;
-                    }
-                }
+                // Creazione oggetto Prestito
+                Prestito prestito = new Prestito(
+                        resultSet.getInt("id_prestito"),
+                        volume,
+                        utente,
+                        resultSet.getDate("data_inizio").toLocalDate(),
+                        resultSet.getBoolean("restituito"),
+                        resultSet.getInt("num_rinnovi")
+                );
+
+                prestiti.add(prestito);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return false;  // Ritorna false in caso di errore
+        return prestiti;
     }
 
     //aggiornato
@@ -209,6 +232,58 @@ public class LoanDAO {
         }catch(SQLException e){
             e.printStackTrace();
         }
+    }
+
+    public static boolean prenotaLibro(String isbn) {
+        // Prima, otteniamo l'id_volume disponibile
+        String getIdVolumeQuery =   "SELECT id_volume " +
+                "FROM volume " +
+                "WHERE id_edizione = (SELECT id_edizione FROM edizione WHERE isbn = ?) " +
+                "AND stato = 'disponibile' " +
+                "ORDER BY id_volume ASC LIMIT 1";  // Ottieni il primo volume disponibile
+
+        // Secondo, aggiorniamo il volume per marcarlo come "in prestito"
+        String updateQuery = "UPDATE volume " +
+                "SET stato = 'in prestito' " +
+                "WHERE id_volume = ?";  // Aggiorna lo stato del volume
+
+        // Terzo, inseriamo il prestito nel database
+        String insertPrestitoQuery = "INSERT INTO prestito (id_volume, id_utente) " +
+                "VALUES (?, ?)";  // Inserisce il prestito
+
+        try (Connection connection = DatabaseConnection.getConnection()) {
+            // 1. Ottenere l'id_volume disponibile
+            PreparedStatement getIdVolumeStatement = connection.prepareStatement(getIdVolumeQuery);
+                    getIdVolumeStatement.setString(1, isbn);  // Imposta l'ISBN
+
+            ResultSet getIdVolumeResultSet = getIdVolumeStatement.executeQuery();
+            if (getIdVolumeResultSet.next()) {
+                int idVolume = getIdVolumeResultSet.getInt("id_volume");  // Ottieni l'ID del volume disponibili
+
+                // 2. Aggiorna lo stato del volume selezionato come "in prestito"
+                PreparedStatement updateStatement = connection.prepareStatement(updateQuery);
+                updateStatement.setInt(1, idVolume);  // Imposta l'ID del volume
+
+                int rowsUpdated = updateStatement.executeUpdate();  // Esegui l'UPDATE
+                if (rowsUpdated > 0) {
+                    // Aggiornamento avvenuto correttamente
+
+                    // 3. Inserisci il prestito nel database
+                    PreparedStatement insertStatement = connection.prepareStatement(insertPrestitoQuery);
+                    insertStatement.setInt(1, idVolume);  // Imposta l'ID del volume selezionato
+                    insertStatement.setInt(2, Session.getUtente().getId_utente());  // Imposta l'ID dell'utente
+
+                    int rowsInserted = insertStatement.executeUpdate();
+                    if (rowsInserted > 0) {
+                        // Se l'inserimento del prestito è andato a buon fine, ritorna true
+                        return true;
+                    }
+                }
+            }
+        } catch (SQLException e) {
+                e.printStackTrace();
+                }
+        return false;  // Ritorna false in caso di errore
     }
 
     //Corretto

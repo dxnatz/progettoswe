@@ -39,6 +39,15 @@ public class Utente {
         this.indirizzo = indirizzo;
     }
 
+    public Utente(int id_utente, String nome, String cognome, String cf, String email, String cellulare, LocalDate dataNascita, String indirizzo) {
+        this.id_utente = id_utente;
+        this.nome = nome;
+        this.cognome = cognome;
+        this.cf = cf;
+        this.email = email;
+
+    }
+
     public int getId_utente() {
         return id_utente;
     }

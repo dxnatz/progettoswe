@@ -1,5 +1,6 @@
 package com.progettoswe.controller;
 
+import com.progettoswe.utilities.InputValidator;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -33,6 +34,11 @@ public class LoginController {
     }
 
     @FXML
+    private void switchToOpUser() throws IOException {
+        App.setRoot("op_user");
+    }
+
+    @FXML
     private void handleLogin() {
         String mail = emailTextField.getText();
         String password = passwordTextField.getText();
@@ -40,19 +46,35 @@ public class LoginController {
         authenticate(mail, password);
     }
 
+    private void loginByEmailType(String email) throws IOException {
+        if(!email.endsWith(Session.ADMIN_EMAIL)){
+            switchToHomePage();
+        }else{
+            switchToOpUser();
+        }
+    }
+
     private void authenticate(String email, String password) {
 
-        if (email.isEmpty() || password.isEmpty()) {
-            Alert a = new Alert(AlertType.ERROR, "Inserisci email e password");
-            a.setHeaderText("Errore di accesso");
-            a.setTitle("Errore durante l'accesso");
-            a.showAndWait();
+        //TODO: serve solo per testing, togliere dopo
+        if(email.equals("admin")){
+            try {
+                switchToOpUser();
+                return;
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        if (!InputValidator.validateNotEmpty(emailTextField, "Email")
+        || !InputValidator.validateNotEmpty(passwordTextField, "Password")) {
             return;
         }
 
         if(UserService.login(email, password)) {
             try {
-                switchToHomePage();
+                loginByEmailType(email);
+                return;
             } catch (IOException e) {
                 e.printStackTrace();
             }
