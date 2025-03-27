@@ -1,18 +1,20 @@
 package com.progettoswe.controller;
 
+import com.progettoswe.App;
+import com.progettoswe.business_logic.BookService;
+import com.progettoswe.business_logic.LoanService;
+import com.progettoswe.model.Catalogo;
+import com.progettoswe.model.Prestito;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.util.Callback;
 import javafx.util.Duration;
-import com.progettoswe.App;
-import com.progettoswe.model.Catalogo;
-import com.progettoswe.model.Prestito;
-import com.progettoswe.business_logic.BookService;
-import com.progettoswe.business_logic.LoanService;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -24,14 +26,27 @@ public class HomePageController {
     @FXML private ListView<String> listaPrestiti;
     @FXML private Button btnPrenota;
     @FXML private Button btnCancellaPrestito;
-    @FXML private Button btnProlungaPrestito; // Aggiungi il pulsante Prolunga Prestito
+    @FXML private Button btnProlungaPrestito;
+    @FXML private Button btnInfoComm;
+    @FXML private ImageView imgPrenota;
+    private Image prenotaStatic;
+    private Image prenotaGif;
     Catalogo catalogo = new Catalogo();
-    ArrayList<Prestito> prestiti = new ArrayList<Prestito>();
+    ArrayList<Prestito> prestiti = new ArrayList<>();
     
     public void initialize() {
         // Inizializza interfaccia utente
         stampaCatalogo();
         stampaPrestiti();
+
+        prenotaStatic = new Image(getClass().getResource("/images/prenota.png").toExternalForm());
+        prenotaGif = new Image(getClass().getResource("/images/prenota.gif").toExternalForm());
+
+        imgPrenota.setImage(prenotaStatic);
+
+        btnPrenota.setOnMouseEntered(e -> imgPrenota.setImage(prenotaGif));
+        btnPrenota.setOnMouseExited(e -> imgPrenota.setImage(prenotaStatic));
+
 
         // Listener alla ListView per controllare la disponibilità del libro selezionato
         listaCatalogo.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
@@ -223,6 +238,15 @@ public class HomePageController {
 
     @FXML
     private void visualizzaProfilo() {
+        try {
+            App.setRoot("profile");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void visualizzaInfoComm() {
         try {
             App.setRoot("profile");
         } catch (IOException e) {

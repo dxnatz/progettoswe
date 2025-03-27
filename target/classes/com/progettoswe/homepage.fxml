@@ -2,6 +2,9 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+        <?import javafx.scene.image.Image?>
+        <?import javafx.scene.image.ImageView?>
+        <?import javafx.scene.control.Button?>
 
 <BorderPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.progettoswe.controller.HomePageController">
@@ -29,7 +32,14 @@
             <VBox spacing="10" HBox.hgrow="ALWAYS">
                 <Label text="Catalogo Libri"/>
                 <ListView fx:id="listaCatalogo" VBox.vgrow="ALWAYS"/>
-                <Button fx:id="btnPrenota" text="Prenota" onAction="#prenotaLibro"/>
+                <HBox spacing="5">
+                    <Button text="prenota" fx:id="btnPrenota" onAction="#prenotaLibro" style=" -fx-pref-width: 150px; -fx-background-radius: 20px; -fx-padding: 10px 20px; -fx-border-color: black; -fx-border-width: 1px; -fx-border-radius: 20px; -fx-background-color: white; -fx-font-size: 18px; -fx-graphic-size: 40px 40px;">
+                        <graphic>
+                            <ImageView fx:id="imgPrenota" fitHeight="40" fitWidth="40"/>
+                        </graphic>
+                    </Button>
+                    <Button fx:id="btnInfoComm" text="Informazioni-Commenti" onAction="#visualizzaInfoComm"/>
+                </HBox>
             </VBox>
             <VBox spacing="10" HBox.hgrow="ALWAYS">
                 <Label text="Prestiti Attivi"/>

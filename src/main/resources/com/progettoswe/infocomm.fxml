@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.progettoswe.controller.InfoCommController">
+
+    <center>
+        <HBox spacing="20" alignment="CENTER">
+            <!-- Descrizione opera a sinistra -->
+            <VBox alignment="TOP_LEFT" spacing="10">
+                <Label text="Descrizione dell'Opera" style="-fx-font-size: 18px; -fx-font-style: italic;"/>
+                <TextArea fx:id="descrizioneOpera" wrapText="true" editable="false" prefHeight="200"/>
+            </VBox>
+
+            <!-- Sezione commenti a destra -->
+            <VBox alignment="TOP_CENTER" spacing="10">
+                <Label text="Commenti" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+
+                <!-- ScrollPane per i commenti -->
+                <ScrollPane fx:id="scrollPane" fitToWidth="true" fitToHeight="true" prefHeight="500">
+                    <VBox fx:id="commentiContainer" spacing="10"/>
+                </ScrollPane>
+            </VBox>
+        </HBox>
+    </center>
+
+</BorderPane>
