@@ -14,19 +14,20 @@ public class BookService {
 
         for (Volume volume : catalogo.getVolumi()) {
             String statoDisponibile = "Non disponibile"; // Default "Non disponibile"
-            boolean disponibile = BookDAO.operaDisponibile(volume.edizione().getIsbn());
+            boolean disponibile = BookDAO.operaDisponibile(volume.getEdizione().getIsbn());
             if (disponibile) {
                 statoDisponibile = "Disponibile"; // Se c'è almeno una copia disponibile
             }
 
-            String editore = volume.edizione().getEditore();
-            int numeroEdizione = volume.edizione().getNumero();
-            String titolo = volume.edizione().getOpera().getTitolo();
-            String autore = volume.edizione().getOpera().getAutore();
-            String isbn = volume.edizione().getIsbn();
+            String editore = volume.getEdizione().getEditore();
+            int numeroEdizione = volume.getEdizione().getNumero();
+            String titolo = volume.getEdizione().getOpera().getTitolo();
+            String autore = volume.getEdizione().getOpera().getAutore();
+            String isbn = volume.getEdizione().getIsbn();
+            int codice_edizione = volume.getEdizione().getId_edizione();
 
             // Aggiungi la stringa con il titolo, autore e stato
-            listaCatalogo.getItems().add(isbn + " - " + titolo + " - " + numeroEdizione + " edizione - " + editore + " - " + autore + " - " + statoDisponibile);
+            listaCatalogo.getItems().add(isbn + " - " + titolo + " - " + codice_edizione + " - " + numeroEdizione + " edizione - " + editore + " - " + autore + " - " + statoDisponibile);
         }
     }
 
@@ -35,15 +36,15 @@ public class BookService {
 
         for (Volume volume : catalogo.getVolumi()) {
             String statoDisponibile = "Non disponibile"; // Default "Non disponibile"
-            boolean disponibile = BookDAO.operaDisponibile(volume.edizione().getIsbn());
+            boolean disponibile = BookDAO.operaDisponibile(volume.getEdizione().getIsbn());
             if (disponibile) {
                 statoDisponibile = "Disponibile"; // Se c'è almeno una copia disponibile
             }
 
-            String editore = volume.edizione().getEditore();
-            int numeroEdizione = volume.edizione().getNumero();
-            String titolo = volume.edizione().getOpera().getTitolo();
-            String autore = volume.edizione().getOpera().getAutore();
+            String editore = volume.getEdizione().getEditore();
+            int numeroEdizione = volume.getEdizione().getNumero();
+            String titolo = volume.getEdizione().getOpera().getTitolo();
+            String autore = volume.getEdizione().getOpera().getAutore();
 
             // Aggiungi la stringa con il titolo, autore e stato
             listaCatalogo.getItems().add(titolo + " - " + numeroEdizione + " edizione - " + editore + " - " + autore + " - " + statoDisponibile);

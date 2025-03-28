@@ -5,6 +5,7 @@ import com.progettoswe.business_logic.BookService;
 import com.progettoswe.business_logic.LoanService;
 import com.progettoswe.model.Catalogo;
 import com.progettoswe.model.Prestito;
+import com.progettoswe.utilities.AlertUtil;
 import com.progettoswe.utilities.InputValidator;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -32,7 +33,9 @@ public class OpUserController {
     ArrayList<Prestito> prestiti = new ArrayList<>();
 
     String lastSelectedBook = null;
+    int lastSelectedEdition = -1;
     String lastSelectedLoan = null;
+    boolean itemSelected = false;
 
     // Metodi per le azioni dei bottoni
 
@@ -62,15 +65,49 @@ public class OpUserController {
     }
 
     @FXML
-    private void openAddBookWindow() {
-        // Implementa l'apertura della finestra per aggiungere un libro
-        // TODO: Creare e mostrare una nuova finestra/dialog
-    }
-
-    @FXML
     private void openUpdateBookWindow() {
         // Implementa l'apertura della finestra per modificare un libro
         // TODO: Verificare che un libro sia selezionato e aprire la finestra di modifica
+    }
+
+    @FXML
+    private void openAddBookAlert() throws IOException {
+        String result;
+        if(itemSelected){
+            result = AlertUtil.showCustomButtonAlert("Aggiungi libro",
+                    "Scegli se vuoi aggiungere una nuova opera, edizione o un nuovo volume",
+                    "", "Nuova opera", "Nuova edizione", "Nuovo volume");
+        }else{
+            result = AlertUtil.showCustomButtonAlert("Aggiungi libro",
+                    "Scegli se vuoi aggiungere una nuova opera o edizione",
+                    "", "Nuova opera", "Nuova edizione");
+        }
+        setAddBookWindowType(result);
+        openAddBookWindow();
+    }
+
+    private void openAddBookWindow() throws IOException {
+        App.setRoot("add_book");
+    }
+
+    private void setAddBookWindowType(String type) {
+        if (type.equals("Nuova opera")) {
+            AddBookController.typeToAdd = AddBookController.ADD_OPERA;
+        } else if (type.equals("Nuova edizione")) {
+            AddBookController.typeToAdd = AddBookController.ADD_EDIZIONE;
+        } else if (type.equals("Nuovo volume")) {
+            AddBookController.typeToAdd = AddBookController.ADD_VOLUME;
+        }
+        if (itemSelected) {
+            AddBookController.isbnOpera = lastSelectedBook;
+            AddBookController.idEdizione = lastSelectedEdition;
+        }
+    }
+
+    @FXML
+    private void openUpdateBookAlert() {
+        // Implementa l'apertura dell'alert per confermare la cancellazione
+        // TODO: Verificare che un libro sia selezionato e mostrare un alert di conferma
     }
 
     @FXML
@@ -96,12 +133,18 @@ public class OpUserController {
 
     private void listenerCatalogo(){
         listaCatalogo.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
-            boolean itemSelected = newVal != null;
+            itemSelected = newVal != null;
             updateButton.setDisable(!itemSelected);
             deleteButton.setDisable(!itemSelected);
 
             if(newVal != null){
-                lastSelectedBook = newVal.split(" - ")[0]; // Assuming the first part is the ISBN
+                var s = newVal.split(" - ");
+                lastSelectedBook = s[0]; // Assuming the first part is the ISBN
+                if(InputValidator.isNumber(s[2])){
+                    lastSelectedEdition = Integer.parseInt(s[2]); // Assuming the third part is the edition number
+                }else{
+                    System.err.println("Error: Edition number is not a number");
+                }
             }
         });
     }

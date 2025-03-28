@@ -1,12 +1,11 @@
 package com.progettoswe.utilities;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
-import javafx.scene.control.Alert;
+import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.DialogPane;
-import javafx.scene.control.Labeled;
 
 public class AlertUtil {
 
@@ -22,17 +21,19 @@ public class AlertUtil {
         alert.setHeaderText(header);
         alert.setContentText(content);
 
-        // Aggiungi i pulsanti personalizzati
+        // Aggiungi pulsante Annulla come ultima opzione
+        List<ButtonType> buttons = new ArrayList<>();
         for (String buttonText : buttonTexts) {
-            ButtonType buttonType = new ButtonType(buttonText);
-            alert.getButtonTypes().add(buttonType);
+            buttons.add(new ButtonType(buttonText));
         }
+        buttons.add(new ButtonType("Annulla", ButtonBar.ButtonData.CANCEL_CLOSE));
 
-        // Mostra l'alert e aspetta la risposta dell'utente
+        alert.getButtonTypes().setAll(buttons);
+
         Optional<ButtonType> result = alert.showAndWait();
-
-        // Restituisci il testo del pulsante premuto, se presente
-        return result.map(ButtonType::getText).orElse(null);
+        return result.isPresent() && !result.get().getButtonData().isCancelButton()
+                ? result.get().getText()
+                : null;
     }
 
     /**

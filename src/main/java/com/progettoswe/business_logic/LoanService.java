@@ -28,13 +28,13 @@ public class LoanService {
         // Filtra i prestiti in base al testo di ricerca
         for (Prestito prestito : prestiti) {
             // Crea la stringa di rappresentazione del prestito (come in stampaTuttiPrestiti)
-            String titolo = prestito.getVolume().edizione().getOpera().getTitolo();
-            String autore = prestito.getVolume().edizione().getOpera().getAutore();
-            String editore = prestito.getVolume().edizione().getEditore();
+            String titolo = prestito.getVolume().getEdizione().getOpera().getTitolo();
+            String autore = prestito.getVolume().getEdizione().getOpera().getAutore();
+            String editore = prestito.getVolume().getEdizione().getEditore();
             int id_prestito = prestito.getId_prestito();
-            int numero_edizione = prestito.getVolume().edizione().getNumero();
+            int numero_edizione = prestito.getVolume().getEdizione().getNumero();
             LocalDate dataFine;
-            String isbn = prestito.getVolume().edizione().getIsbn();
+            String isbn = prestito.getVolume().getEdizione().getIsbn();
 
             // Calcola la data di restituzione in base ai rinnovi
             if(prestito.getNum_rinnovi() == 2) {
@@ -66,12 +66,12 @@ public class LoanService {
         prestiti = LoanDAO.caricaPrestiti();
         listaPrestiti.getItems().clear();
         for (int i = 0; i < prestiti.size(); i++) {
-            String titolo = prestiti.get(i).getVolume().edizione().getOpera().getTitolo();
-            String autore = prestiti.get(i).getVolume().edizione().getOpera().getAutore();
-            String editore = prestiti.get(i).getVolume().edizione().getEditore();
-            int numero_edizione = prestiti.get(i).getVolume().edizione().getNumero();
+            String titolo = prestiti.get(i).getVolume().getEdizione().getOpera().getTitolo();
+            String autore = prestiti.get(i).getVolume().getEdizione().getOpera().getAutore();
+            String editore = prestiti.get(i).getVolume().getEdizione().getEditore();
+            int numero_edizione = prestiti.get(i).getVolume().getEdizione().getNumero();
             LocalDate dataFine;
-            String isbn = prestiti.get(i).getVolume().edizione().getIsbn();
+            String isbn = prestiti.get(i).getVolume().getEdizione().getIsbn();
             if(LoanDAO.rinnovi(isbn) == 2){
                 dataFine = prestiti.get(i).getDataInizio().plusDays(60);
             }else if(LoanDAO.rinnovi(isbn) == 1){
@@ -88,13 +88,13 @@ public class LoanService {
         Utente utente = Session.getUtente();
         listaPrestiti.getItems().clear();
         for (int i = 0; i < prestiti.size(); i++) {
-            String titolo = prestiti.get(i).getVolume().edizione().getOpera().getTitolo();
-            String autore = prestiti.get(i).getVolume().edizione().getOpera().getAutore();
-            String editore = prestiti.get(i).getVolume().edizione().getEditore();
+            String titolo = prestiti.get(i).getVolume().getEdizione().getOpera().getTitolo();
+            String autore = prestiti.get(i).getVolume().getEdizione().getOpera().getAutore();
+            String editore = prestiti.get(i).getVolume().getEdizione().getEditore();
             int id_prestito = prestiti.get(i).getId_prestito();
-            int numero_edizione = prestiti.get(i).getVolume().edizione().getNumero();
+            int numero_edizione = prestiti.get(i).getVolume().getEdizione().getNumero();
             LocalDate dataFine;
-            String isbn = prestiti.get(i).getVolume().edizione().getIsbn();
+            String isbn = prestiti.get(i).getVolume().getEdizione().getIsbn();
 
             Session.setUtente(prestiti.get(i).getUtente());
             if(LoanDAO.rinnovi(isbn) == 2){

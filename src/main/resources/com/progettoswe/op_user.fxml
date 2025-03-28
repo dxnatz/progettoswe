@@ -32,8 +32,8 @@
                 <Label text="Catalogo Libri"/>
                 <ListView fx:id="listaCatalogo" VBox.vgrow="ALWAYS"/>
                 <HBox spacing = "10">
-                    <Button text="Aggiungi Libro" onAction="#openAddBookWindow"/>
-                    <Button fx:id="updateButton" text="Modifica Libro" onAction="#openUpdateBookWindow" disable="true"/>
+                    <Button text="Aggiungi Libro" onAction="#openAddBookAlert"/>
+                    <Button fx:id="updateButton" text="Modifica Libro" onAction="#openUpdateBookAlert" disable="true"/>
                     <Button fx:id="deleteButton" text="Cancella Libro" onAction="#openDeleteAlert" disable="true"/>
                 </HBox>
             </VBox>
