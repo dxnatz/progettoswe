@@ -35,25 +35,29 @@
                         <ColumnConstraints hgrow="ALWAYS" minWidth="300"/>
                     </columnConstraints>
 
-                    <!-- Riga 0: Titolo -->
-                    <Label text="Titolo*" style="-fx-text-fill: #495057; -fx-font-size: 13;" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
-                    <TextField fx:id="titoloField" style="-fx-control-inner-background: #f8f9fa; -fx-background-radius: 6; -fx-border-radius: 6; -fx-border-color: #e9ecef; -fx-border-width: 1; -fx-pref-height: 38; -fx-font-size: 13; -fx-padding: 0 12;" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+                    <!-- Riga 0: Codice -->
+                    <Label text="Codice*" style="-fx-text-fill: #495057; -fx-font-size: 13;" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                    <TextField fx:id="codiceOperaField" style="-fx-control-inner-background: #f8f9fa; -fx-background-radius: 6; -fx-border-radius: 6; -fx-border-color: #e9ecef; -fx-border-width: 1; -fx-pref-height: 38; -fx-font-size: 13; -fx-padding: 0 12;" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
 
-                    <!-- Riga 1: Autore -->
-                    <Label text="Autore*" style="-fx-text-fill: #495057; -fx-font-size: 13;" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
-                    <TextField fx:id="autoreField" style="-fx-control-inner-background: #f8f9fa; -fx-background-radius: 6; -fx-border-radius: 6; -fx-border-color: #e9ecef; -fx-border-width: 1; -fx-pref-height: 38; -fx-font-size: 13; -fx-padding: 0 12;" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+                    <!-- Riga 1: Titolo -->
+                    <Label text="Titolo*" style="-fx-text-fill: #495057; -fx-font-size: 13;" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+                    <TextField fx:id="titoloField" style="-fx-control-inner-background: #f8f9fa; -fx-background-radius: 6; -fx-border-radius: 6; -fx-border-color: #e9ecef; -fx-border-width: 1; -fx-pref-height: 38; -fx-font-size: 13; -fx-padding: 0 12;" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
 
-                    <!-- Riga 2: Genere -->
-                    <Label text="Genere" style="-fx-text-fill: #495057; -fx-font-size: 13;" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
-                    <TextField fx:id="genereField" style="-fx-control-inner-background: #f8f9fa; -fx-background-radius: 6; -fx-border-radius: 6; -fx-border-color: #e9ecef; -fx-border-width: 1; -fx-pref-height: 38; -fx-font-size: 13; -fx-padding: 0 12;" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+                    <!-- Riga 2: Autore -->
+                    <Label text="Autore*" style="-fx-text-fill: #495057; -fx-font-size: 13;" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+                    <TextField fx:id="autoreField" style="-fx-control-inner-background: #f8f9fa; -fx-background-radius: 6; -fx-border-radius: 6; -fx-border-color: #e9ecef; -fx-border-width: 1; -fx-pref-height: 38; -fx-font-size: 13; -fx-padding: 0 12;" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
 
-                    <!-- Riga 3: Anno Pubblicazione -->
-                    <Label text="Anno Pubblicazione" style="-fx-text-fill: #495057; -fx-font-size: 13;" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
-                    <TextField fx:id="annoField" style="-fx-control-inner-background: #f8f9fa; -fx-background-radius: 6; -fx-border-radius: 6; -fx-border-color: #e9ecef; -fx-border-width: 1; -fx-pref-height: 38; -fx-font-size: 13; -fx-padding: 0 12;" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+                    <!-- Riga 3: Genere -->
+                    <Label text="Genere" style="-fx-text-fill: #495057; -fx-font-size: 13;" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+                    <TextField fx:id="genereField" style="-fx-control-inner-background: #f8f9fa; -fx-background-radius: 6; -fx-border-radius: 6; -fx-border-color: #e9ecef; -fx-border-width: 1; -fx-pref-height: 38; -fx-font-size: 13; -fx-padding: 0 12;" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
 
-                    <!-- Riga 4: Descrizione -->
-                    <Label text="Descrizione" style="-fx-text-fill: #495057; -fx-font-size: 13;" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
-                    <TextArea fx:id="descrizioneArea" style="-fx-control-inner-background: #f8f9fa; -fx-background-radius: 6; -fx-border-radius: 6; -fx-border-color: #e9ecef; -fx-border-width: 1; -fx-pref-height: 100; -fx-font-size: 13; -fx-padding: 8 12;" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+                    <!-- Riga 4: Anno Pubblicazione -->
+                    <Label text="Anno Pubblicazione" style="-fx-text-fill: #495057; -fx-font-size: 13;" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+                    <TextField fx:id="annoField" style="-fx-control-inner-background: #f8f9fa; -fx-background-radius: 6; -fx-border-radius: 6; -fx-border-color: #e9ecef; -fx-border-width: 1; -fx-pref-height: 38; -fx-font-size: 13; -fx-padding: 0 12;" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+
+                    <!-- Riga 5: Descrizione -->
+                    <Label text="Descrizione" style="-fx-text-fill: #495057; -fx-font-size: 13;" GridPane.rowIndex="5" GridPane.columnIndex="0"/>
+                    <TextArea fx:id="descrizioneArea" style="-fx-control-inner-background: #f8f9fa; -fx-background-radius: 6; -fx-border-radius: 6; -fx-border-color: #e9ecef; -fx-border-width: 1; -fx-pref-height: 100; -fx-font-size: 13; -fx-padding: 8 12;" GridPane.rowIndex="5" GridPane.columnIndex="1"/>
                 </GridPane>
             </Tab>
 

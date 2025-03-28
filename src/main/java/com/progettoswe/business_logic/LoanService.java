@@ -13,51 +13,47 @@ import java.util.ArrayList;
 public class LoanService {
 
     public static void searchLoansBibliotecario(ArrayList<Prestito> prestiti, ListView<String> listaPrestiti, String searchText) {
-        // Pulisci la ListView prima di mostrare i nuovi risultati
         listaPrestiti.getItems().clear();
 
-        // Se il testo di ricerca è vuoto, mostra tutti i prestiti
         if (searchText == null || searchText.trim().isEmpty()) {
             stampaTuttiPrestiti(prestiti, listaPrestiti);
             return;
         }
 
-        // Normalizza il testo di ricerca (minuscolo e senza spazi extra)
         String searchTerm = searchText.toLowerCase().trim();
 
-        // Filtra i prestiti in base al testo di ricerca
         for (Prestito prestito : prestiti) {
-            // Crea la stringa di rappresentazione del prestito (come in stampaTuttiPrestiti)
-            String titolo = prestito.getVolume().getEdizione().getOpera().getTitolo();
-            String autore = prestito.getVolume().getEdizione().getOpera().getAutore();
-            String editore = prestito.getVolume().getEdizione().getEditore();
-            int id_prestito = prestito.getId_prestito();
-            int numero_edizione = prestito.getVolume().getEdizione().getNumero();
-            LocalDate dataFine;
-            String isbn = prestito.getVolume().getEdizione().getIsbn();
+            String loanString = formatLoanString(prestito);
 
-            // Calcola la data di restituzione in base ai rinnovi
-            if(prestito.getNum_rinnovi() == 2) {
-                dataFine = prestito.getDataInizio().plusDays(60);
-            } else if(prestito.getNum_rinnovi() == 1) {
-                dataFine = prestito.getDataInizio().plusDays(45);
-            } else {
-                dataFine = prestito.getDataInizio().plusDays(30);
-            }
-
-            // Crea la stringa completa per la ricerca
-            String loanString = String.format("%d - %s - %d edizione - %s - %s - Da restituire entro il: %s",
-                    id_prestito, titolo, numero_edizione, editore, autore, dataFine.toString());
-
-            // Cerca il termine in tutte le parti della stringa
             if (loanString.toLowerCase().contains(searchTerm)) {
                 listaPrestiti.getItems().add(loanString);
             }
         }
 
-        // Se non ci sono risultati, mostra un messaggio
         if (listaPrestiti.getItems().isEmpty()) {
             listaPrestiti.getItems().add("Nessun prestito trovato per: " + searchText);
+        }
+    }
+
+    private static String formatLoanString(Prestito prestito) {
+        return String.format(
+                "ID Prestito: %d | ID Volume: %d | %s (Ed.%d) - %s | Utente ID: %d | Stato: %s | Scadenza: %s",
+                prestito.getId_prestito(),
+                prestito.getVolume().getId_volume(),
+                prestito.getVolume().getEdizione().getOpera().getTitolo(),
+                prestito.getVolume().getEdizione().getNumero(),
+                prestito.getVolume().getEdizione().getEditore(),
+                prestito.getUtente().getId_utente(),
+                prestito.getRestituito() ? "restituito" : "in prestito",
+                calculateDueDate(prestito)
+        );
+    }
+
+    private static LocalDate calculateDueDate(Prestito prestito) {
+        switch (prestito.getNum_rinnovi()) {
+            case 2: return prestito.getDataInizio().plusDays(60);
+            case 1: return prestito.getDataInizio().plusDays(45);
+            default: return prestito.getDataInizio().plusDays(30);
         }
     }
 
@@ -217,5 +213,8 @@ public class LoanService {
         return LoanDAO.rinnovi(isbn);
     }
 
+    public static boolean concludiPrestito(int id){
+        return LoanDAO.concludiPrestito(id);
+    }
 
 }

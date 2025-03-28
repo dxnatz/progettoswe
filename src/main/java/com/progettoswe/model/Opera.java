@@ -39,7 +39,7 @@ public class Opera {
         return genere;
     }
 
-    public int getAnnoPubblicazioneOrinale() {
+    public int getAnnoPubblicazioneOriginale() {
         return annoPubblicazioneOrinale;
     }
 

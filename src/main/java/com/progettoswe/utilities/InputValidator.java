@@ -1,10 +1,13 @@
 package com.progettoswe.utilities;
 
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.paint.Color;
 import javafx.scene.layout.*;
 import javafx.util.Duration;
 import javafx.animation.PauseTransition;
+
+import javax.swing.*;
 
 public class InputValidator {
 
@@ -33,6 +36,27 @@ public class InputValidator {
         pause.play();
     }
 
+    private static void applyErrorEffect(TextArea textArea) {
+        // Crea un bordo rosso
+        BorderStroke borderStroke = new BorderStroke(
+                Color.RED,
+                BorderStrokeStyle.SOLID,
+                new CornerRadii(3),
+                new BorderWidths(1)
+        );
+
+        // Applica il bordo rosso
+        textArea.setBorder(new Border(borderStroke));
+
+        // Crea una pausa di 3 secondi
+        PauseTransition pause = new PauseTransition(Duration.seconds(3));
+        pause.setOnFinished(event -> {
+            // Ripristina il bordo originale
+            textArea.setBorder(Border.EMPTY);
+        });
+        pause.play();
+    }
+
     /**
      * Valida se un TextField è vuoto.
      */
@@ -40,6 +64,15 @@ public class InputValidator {
         if (textField.getText() == null || textField.getText().trim().isEmpty()) {
             AlertUtil.showErrorAlert("Errore di validazione", "Il campo " + fieldName + " non può essere vuoto.", "");
             applyErrorEffect(textField);
+            return false;
+        }
+        return true;
+    }
+
+    public static boolean validateNotEmpty(TextArea textArea, String fieldName) {
+        if (textArea.getText() == null || textArea.getText().trim().isEmpty()) {
+            AlertUtil.showErrorAlert("Errore di validazione", "Il campo " + fieldName + " non può essere vuoto.", "");
+            applyErrorEffect(textArea);
             return false;
         }
         return true;

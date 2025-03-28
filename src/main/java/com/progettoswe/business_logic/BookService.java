@@ -2,6 +2,8 @@ package com.progettoswe.business_logic;
 
 import com.progettoswe.ORM.BookDAO;
 import com.progettoswe.model.Catalogo;
+import com.progettoswe.model.Edizione;
+import com.progettoswe.model.Opera;
 import com.progettoswe.model.Volume;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
@@ -23,11 +25,11 @@ public class BookService {
             int numeroEdizione = volume.getEdizione().getNumero();
             String titolo = volume.getEdizione().getOpera().getTitolo();
             String autore = volume.getEdizione().getOpera().getAutore();
-            String isbn = volume.getEdizione().getIsbn();
+            int codiceOpera = volume.getEdizione().getOpera().getId_opera();
             int codice_edizione = volume.getEdizione().getId_edizione();
 
             // Aggiungi la stringa con il titolo, autore e stato
-            listaCatalogo.getItems().add(isbn + " - " + titolo + " - " + codice_edizione + " - " + numeroEdizione + " edizione - " + editore + " - " + autore + " - " + statoDisponibile);
+            listaCatalogo.getItems().add(codiceOpera + " - " + titolo + " - " + codice_edizione + " - " + numeroEdizione + " edizione - " + editore + " - " + autore + " - " + statoDisponibile);
         }
     }
 

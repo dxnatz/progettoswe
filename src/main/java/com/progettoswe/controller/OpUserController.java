@@ -32,29 +32,30 @@ public class OpUserController {
     @FXML private Button returnBookButton;
     ArrayList<Prestito> prestiti = new ArrayList<>();
 
-    String lastSelectedBook = null;
+    int lastSelectedBook = -1;
     int lastSelectedEdition = -1;
-    String lastSelectedLoan = null;
+    int lastSelectedLoanId = -1;
     boolean itemSelected = false;
 
     // Metodi per le azioni dei bottoni
 
     @FXML
     private void searchBooks() {
-        String searchText = ricerca.getText();
-        if(searchText.isEmpty()){
+        String searchText = ricerca.getText().trim();
+        if(searchText.isEmpty()) {
             BookService.stampaCatalogoBibliotecario(catalogo, listaCatalogo);
         } else {
             BookService.searchBooksBibliotecario(catalogo, listaCatalogo, ricerca);
         }
     }
 
+    //TODO: Fixare che qua non funziona niente
     @FXML
     private void searchLoans() {
-        String searchText = ricercaPrestito.getText();
+        String searchText = ricercaPrestito.getText().trim();
         if(searchText.isEmpty()) {
             LoanService.stampaTuttiPrestiti(prestiti, listaPrestiti);
-        }else{
+        } else {
             LoanService.searchLoansBibliotecario(prestiti, listaPrestiti, searchText);
         }
     }
@@ -72,7 +73,7 @@ public class OpUserController {
 
     @FXML
     private void openAddBookAlert() throws IOException {
-        String result;
+        String result = null;
         if(itemSelected){
             result = AlertUtil.showCustomButtonAlert("Aggiungi libro",
                     "Scegli se vuoi aggiungere una nuova opera, edizione o un nuovo volume",
@@ -81,6 +82,9 @@ public class OpUserController {
             result = AlertUtil.showCustomButtonAlert("Aggiungi libro",
                     "Scegli se vuoi aggiungere una nuova opera o edizione",
                     "", "Nuova opera", "Nuova edizione");
+        }
+        if(result == null){
+            return;
         }
         setAddBookWindowType(result);
         openAddBookWindow();
@@ -91,6 +95,9 @@ public class OpUserController {
     }
 
     private void setAddBookWindowType(String type) {
+        if (type == null) {
+            return;
+        }
         if (type.equals("Nuova opera")) {
             AddBookController.typeToAdd = AddBookController.ADD_OPERA;
         } else if (type.equals("Nuova edizione")) {
@@ -99,7 +106,7 @@ public class OpUserController {
             AddBookController.typeToAdd = AddBookController.ADD_VOLUME;
         }
         if (itemSelected) {
-            AddBookController.isbnOpera = lastSelectedBook;
+            AddBookController.codiceOpera = lastSelectedBook;
             AddBookController.idEdizione = lastSelectedEdition;
         }
     }
@@ -118,8 +125,41 @@ public class OpUserController {
 
     @FXML
     private void openReturnBookAlert() {
-        // Implementa l'apertura dell'alert per confermare la restituzione
-        // TODO: Verificare che un prestito sia selezionato e mostrare un alert di conferma
+        if (lastSelectedLoanId != -1) {
+            boolean confirmed = AlertUtil.showConfirmationAlert(
+                    "Concludi prestito",
+                    "Sei sicuro di voler concludere questo prestito?",
+                    "ID Prestito: " + lastSelectedLoanId
+            );
+
+            if (confirmed) {
+                boolean success = LoanService.concludiPrestito(lastSelectedLoanId);
+                if (success) {
+                    AlertUtil.showInfoAlert("Successo", "Prestito concluso con successo", null);
+                    refreshPrestiti();
+                } else {
+                    AlertUtil.showErrorAlert("Errore", "Impossibile concludere il prestito", null);
+                }
+            }
+        }
+    }
+
+    @FXML
+    private void openViewAlert() throws IOException {
+        String result = AlertUtil.showCustomButtonAlert("Visualizza Catalogo",
+                "Scegli un'opzione da visualizzare", null,
+                "Opere", "Edizioni", "Volumi");
+        if(result == null){
+            return;
+        }
+        if(result.equals("Opere")){
+            ViewCatalogueController.whatToView = ViewCatalogueController.SHOW_OPERE;
+        } else if (result.equals("Edizioni")) {
+            ViewCatalogueController.whatToView = ViewCatalogueController.SHOW_EDIZIONI;
+        } else if (result.equals("Volumi")) {
+            ViewCatalogueController.whatToView = ViewCatalogueController.SHOW_VOLUMI;
+        }
+        App.setRoot("view_catalogue");
     }
 
     // Metodi di inizializzazione e utility
@@ -139,7 +179,9 @@ public class OpUserController {
 
             if(newVal != null){
                 var s = newVal.split(" - ");
-                lastSelectedBook = s[0]; // Assuming the first part is the ISBN
+                if(InputValidator.isNumber(s[0])){
+                    lastSelectedBook = Integer.parseInt(s[0]); // Assuming the first part is the ISBN
+                }
                 if(InputValidator.isNumber(s[2])){
                     lastSelectedEdition = Integer.parseInt(s[2]); // Assuming the third part is the edition number
                 }else{
@@ -156,12 +198,38 @@ public class OpUserController {
         });
     }
 
+    private void refreshPrestiti() {
+        prestiti.clear();
+        LoanService.stampaTuttiPrestiti(prestiti, listaPrestiti);
+    }
+
+    private void setupListeners() {
+        // Listener per la selezione nella lista dei prestiti
+        listaPrestiti.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal != null) {
+                // Estrai l'ID prestito dalla stringa selezionata
+                String[] parts = newVal.split(" \\| ");
+                if (parts.length > 0) {
+                    String idPart = parts[0]; // "ID Prestito: 123"
+                    lastSelectedLoanId = Integer.parseInt(idPart.replace("ID Prestito: ", "").trim());
+                }
+                returnBookButton.setDisable(false);
+            } else {
+                returnBookButton.setDisable(true);
+                lastSelectedLoanId = -1;
+            }
+        });
+    }
+
     @FXML
     private void initialize() {
-        // Abilita/disabilita i bottoni in base alla selezione
-        listenerCatalogo();
-        listenerPrestiti();
-        stampaCatalogo();
-        stampaPrestiti();
+        setupListeners();
+        BookService.stampaCatalogoBibliotecario(catalogo, listaCatalogo);
+        LoanService.stampaTuttiPrestiti(prestiti, listaPrestiti);
+
+        // Disabilita i bottoni inizialmente
+        updateButton.setDisable(true);
+        deleteButton.setDisable(true);
+        returnBookButton.setDisable(true);
     }
 }

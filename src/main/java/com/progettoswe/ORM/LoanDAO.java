@@ -324,4 +324,19 @@ public class LoanDAO {
         }
         return false;
     }
+
+    public static boolean concludiPrestito(int id) {
+        try {
+            String query = "UPDATE prestito SET restituito = true WHERE id_prestito = ?";
+
+            try (Connection conn = DatabaseConnection.getConnection();
+                 PreparedStatement stmt = conn.prepareStatement(query)) {
+                stmt.setInt(1, id);
+                return stmt.executeUpdate() > 0;
+            }
+        } catch (SQLException | NumberFormatException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 }
