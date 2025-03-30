@@ -5,12 +5,11 @@ import com.progettoswe.business_logic.BookService;
 import com.progettoswe.business_logic.LoanService;
 import com.progettoswe.model.Catalogo;
 import com.progettoswe.model.Prestito;
+import com.progettoswe.model.Session;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.util.Callback;
@@ -28,9 +27,6 @@ public class HomePageController {
     @FXML private Button btnCancellaPrestito;
     @FXML private Button btnProlungaPrestito;
     @FXML private Button btnInfoComm;
-    @FXML private ImageView imgPrenota;
-    private Image prenotaStatic;
-    private Image prenotaGif;
     Catalogo catalogo = new Catalogo();
     ArrayList<Prestito> prestiti = new ArrayList<>();
     
@@ -39,17 +35,12 @@ public class HomePageController {
         stampaCatalogo();
         stampaPrestiti();
 
-        prenotaStatic = new Image(getClass().getResource("/images/prenota.png").toExternalForm());
-        prenotaGif = new Image(getClass().getResource("/images/prenota.gif").toExternalForm());
-
-        imgPrenota.setImage(prenotaStatic);
-
-        btnPrenota.setOnMouseEntered(e -> imgPrenota.setImage(prenotaGif));
-        btnPrenota.setOnMouseExited(e -> imgPrenota.setImage(prenotaStatic));
+        btnInfoComm.setDisable(true);
 
 
         // Listener alla ListView per controllare la disponibilità del libro selezionato
         listaCatalogo.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            btnInfoComm.setDisable(false);
             if (newValue != null) {
                 String[] bookDetails = newValue.split(" - ");
                 String disponibilita = bookDetails[4];
@@ -247,8 +238,12 @@ public class HomePageController {
 
     @FXML
     private void visualizzaInfoComm() {
+        String selectedBook = listaCatalogo.getSelectionModel().getSelectedItem();
+        String [] bookDetails = selectedBook.split(" - ");
+        Session.setNomeOpera(bookDetails[0]);
+        Session.setEdizione(bookDetails[1].split(" edizione")[0]);
         try {
-            App.setRoot("profile");
+            App.setRoot("infocomm");
         } catch (IOException e) {
             e.printStackTrace();
         }

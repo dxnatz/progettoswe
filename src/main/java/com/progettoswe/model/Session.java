@@ -4,6 +4,8 @@ import com.progettoswe.ORM.UserDAO;
 public class Session {
     private static String userEmail;
     private static Utente utente;
+    private static String nomeOpera;
+    private static int edizione;
 
     public static void setUserEmail(String email) {
         userEmail = email;
@@ -20,5 +22,21 @@ public class Session {
 
     public static void setUtente(Utente user) {
         utente = user;
+    }
+
+    public static String getNomeOpera() {
+        return nomeOpera;
+    }
+
+    public static void setNomeOpera(String nomeOpera) {
+        Session.nomeOpera = nomeOpera;
+    }
+
+    public static int getEdizione() {
+        return edizione;
+    }
+
+    public static void setEdizione(String edizione) {
+        Session.edizione = Integer.parseInt(edizione);
     }
 }

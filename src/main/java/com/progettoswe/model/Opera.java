@@ -5,25 +5,25 @@ public class Opera {
     private String titolo;
     private String autore;
     private String genere;
-    private int annoPubblicazioneOrinale;
+    private int annoPubblicazioneOriginale;
     private String Descrizione;
 
     //costruttore con id_opera (usato quando leggiamo i dati dal database)
-    public Opera(int id_opera, String titolo, String autore, String genere, int annoPubblicazioneOrinale, String descrizione) {
+    public Opera(int id_opera, String titolo, String autore, String genere, int annoPubblicazioneOriginale, String descrizione) {
         this.id_opera = id_opera;
         this.titolo = titolo;
         this.autore = autore;
         this.genere = genere;
-        this.annoPubblicazioneOrinale = annoPubblicazioneOrinale;
+        this.annoPubblicazioneOriginale = annoPubblicazioneOriginale;
         Descrizione = descrizione;
     }
 
     //costruttore senza id_opera (usato quando creiamo un nuovo oggetto)
-    public Opera(String titolo, String autore, String descrizione, int annoPubblicazioneOrinale, String genere) {
+    public Opera(String titolo, String autore, String descrizione, int annoPubblicazioneOriginale, String genere) {
         this.titolo = titolo;
         this.autore = autore;
         Descrizione = descrizione;
-        this.annoPubblicazioneOrinale = annoPubblicazioneOrinale;
+        this.annoPubblicazioneOriginale = annoPubblicazioneOriginale;
         this.genere = genere;
     }
 
@@ -39,8 +39,8 @@ public class Opera {
         return genere;
     }
 
-    public int getAnnoPubblicazioneOrinale() {
-        return annoPubblicazioneOrinale;
+    public int getAnnoPubblicazioneOriginale() {
+        return annoPubblicazioneOriginale;
     }
 
     public String getDescrizione() {

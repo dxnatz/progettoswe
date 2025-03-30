@@ -1,14 +1,21 @@
 package com.progettoswe.controller;
 
+import com.progettoswe.App;
+import com.progettoswe.business_logic.EdizioneService;
+import com.progettoswe.business_logic.InfoCommService;
+import com.progettoswe.model.Edizione;
+import com.progettoswe.model.Session;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextArea;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextBoundsType;
 
-import java.util.Arrays;
+import java.io.IOException;
 import java.util.List;
 
 public class InfoCommController {
@@ -19,17 +26,40 @@ public class InfoCommController {
     @FXML
     private ScrollPane scrollPane; // ScrollPane per evitare compressione
 
+    @FXML
+    private TextArea informazioniOpera;
+
+    @FXML
+    private Button indietroButton;
+
     public void initialize() {
-        // Rimuove i limiti di altezza per permettere al VBox di crescere liberamente
+
+        Edizione edizione = EdizioneService.getEdizione(Session.getNomeOpera(), Session.getEdizione());
+
+        if(edizione != null) {
+            informazioniOpera.setText("Titolo: " + edizione.getOpera().getTitolo() + "\n" +
+                    "Autore: " + edizione.getOpera().getAutore() + "\n" +
+                    "Genere: " + edizione.getOpera().getGenere() + "\n" +
+                    "Anno di pubblicazione dell'opera: " + edizione.getOpera().getAnnoPubblicazioneOriginale() + "\n" +
+                    "Editore: " + edizione.getEditore() + "\n" +
+                    "Anno di pubblicazione dell'edizione: " + edizione.getAnnoPubblicazione() + "\n" +
+                    "ISBN edizione: " + edizione.getIsbn() + "\n" +
+                    "Descrizione: " + edizione.getOpera().getDescrizione());
+        }
 
         commentiContainer.setSpacing(10); // Aggiunge spazio tra i commenti
 
         // Recupera i commenti (simulati)
-        List<String> commenti = getCommenti();
+        List<String> commenti = InfoCommService.getCommentiOpera();
 
         if (commenti.isEmpty()) {
             Label noCommentLabel = new Label("Non ci sono commenti.");
-            noCommentLabel.setStyle("-fx-font-size: 14px; -fx-text-fill: white;");
+            noCommentLabel.setStyle("-fx-font-size: 14px;" +
+                    "-fx-text-alignment: center;" +
+                    "-fx-padding: 10;" +
+                    "-fx-background-color: #D3D3D3; " +
+                    "-fx-background-radius: 10; " +
+                    "-fx-border-radius: 10;");
             commentiContainer.getChildren().add(noCommentLabel);
         } else {
             for (String commento : commenti) {
@@ -66,6 +96,17 @@ public class InfoCommController {
         scrollPane.setContent(commentiContainer);
     }
 
+    @FXML
+    private void handleIndietroAction() {
+        Session.setNomeOpera(null);
+        Session.setEdizione("-1");
+        try {
+            App.setRoot("homepage");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     // Metodo per calcolare l'altezza necessaria per ogni commento
     private double calcolaAltezzaCommento(String commento, double maxWidth) {
         Text text = new Text(commento);
@@ -74,21 +115,6 @@ public class InfoCommController {
         text.setBoundsType(TextBoundsType.LOGICAL);
 
         double righe = Math.ceil(text.getLayoutBounds().getHeight() / 16); // Stima delle righe
-        return Math.max(20, righe * 25); // Minimo 28px, altrimenti altezza dinamica
-    }
-
-    // Metodo simulato per ottenere i commenti
-    private List<String> getCommenti() {
-        return Arrays.asList(
-                "Commento 1:\nQuesto è un commento breve.",
-                "Commento 2:\nQuesto è un commento un po' più lungo per testare la visualizzazione.",
-                "Commento 2:\nQuesto è un commento molto lungo che dovrebbe occupare più righe e adattarsi automaticamente senza essere ristretto. L'idea è che possiamo vedere l'intero testo senza dover cliccare nulla.",
-                "Commento 2:\nAltro commento medio per verificare che tutto funzioni bene.",
-                "Commento 2:\nAncora un commento lungo per testare l'adattamento. Dovrebbe andare a capo in modo corretto senza essere tagliato. In questo modo, possiamo leggere il commento completo direttamente nel container.",
-                "Commento 2:\nQuesto è un altro commento per testare lo scrolling. Se ci sono troppi commenti, possiamo scorrere liberamente senza problemi.",
-                "Commento 2:\nUn commento ancora più lungo per testare cosa succede quando il testo è veramente lungo. Dovrebbe occuparsi dello spazio necessario senza comprimere gli altri commenti e senza farli restringere in una sola riga.",
-                "Commento 2:\nBreve commento.",
-                "Commento 2:\nUn altro commento breve."
-        );
+        return Math.max(20, righe * 20);
     }
 }
