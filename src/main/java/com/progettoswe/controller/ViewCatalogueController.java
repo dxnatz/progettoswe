@@ -7,9 +7,11 @@ import com.progettoswe.model.Opera;
 import com.progettoswe.model.Volume;
 import com.progettoswe.business_logic.EdizioneService;
 import com.progettoswe.business_logic.VolumeService;
+import com.progettoswe.utilities.AlertUtil;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
@@ -25,17 +27,19 @@ public class ViewCatalogueController {
     public static final String SHOW_VOLUMI = "volume";
     public static String whatToView = null;
 
-    @FXML
-    private ListView<String> itemsListView;
-    @FXML
-    private Label titleLabel;
-    @FXML
-    private TextField searchField;
+    @FXML private ListView<String> itemsListView;
+    @FXML private Label titleLabel;
+    @FXML private TextField searchField;
+    @FXML private Button deleteButton;
 
     @FXML
     public void initialize() {
         loadItems();
         setupSearchListener();
+
+        itemsListView.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
+            deleteButton.setDisable(newVal == null);
+        });
     }
 
     private void loadItems() {
@@ -75,7 +79,8 @@ public class ViewCatalogueController {
                     titleLabel.setText("Catalogo Volumi");
                     List<Volume> volumi = VolumeService.getAllVolumi();
                     for (Volume volume : volumi) {
-                        items.add(String.format("%s - Ed.%d | Stato: %s | Pos: %s | ISBN: %s",
+                        items.add(String.format("%d - %s - Ed.%d | Stato: %s | Pos: %s | ISBN: %s",
+                                volume.getId_volume(),
                                 volume.getEdizione().getOpera().getTitolo(),
                                 volume.getEdizione().getNumero(),
                                 volume.getStato(),
@@ -125,7 +130,7 @@ public class ViewCatalogueController {
                 } else if (SHOW_VOLUMI.equals(whatToView)) {
                     List<Volume> volumi = VolumeService.searchVolumi(searchText);
                     for (Volume volume : volumi) {
-                        filteredItems.add(String.format("%s - Ed.%d | Stato: %s | Pos: %s", volume.getEdizione().getOpera().getTitolo(), volume.getEdizione().getNumero(), volume.getStato(), volume.getPosizione()));
+                        filteredItems.add(String.format("%d - %s - Ed.%d | Stato: %s | Pos: %s", volume.getId_volume(), volume.getEdizione().getOpera().getTitolo(), volume.getEdizione().getNumero(), volume.getStato(), volume.getPosizione()));
                     }
                 }
 
@@ -140,4 +145,62 @@ public class ViewCatalogueController {
     private void handleBack() throws IOException {
         App.setRoot("op_user");
     }
+
+    @FXML
+    private void handleClear() {
+        searchField.clear();
+        loadItems();
+    }
+
+    //TODO: Implementa la funzionalità di eliminazione
+    @FXML
+    private void handleDelete() throws SQLException {
+        if(whatToView == null) return;
+
+        String cosaCancellare = "";
+        switch (whatToView){
+            case SHOW_OPERE:
+                cosaCancellare = "opera";
+                break;
+            case SHOW_EDIZIONI:
+                cosaCancellare = "edizione";
+                break;
+            case SHOW_VOLUMI:
+                cosaCancellare = "volume";
+                break;
+        }
+        String s = itemsListView.getSelectionModel().getSelectedItem();
+        if (s == null) return;
+
+        String r = AlertUtil.showCustomButtonAlert("Cancella " + cosaCancellare ,
+                "Sei sicuro di voler cancellare questo elemento?",
+                null, "Conferma");
+
+        if(r.equals("Conferma")){
+            int codice = Integer.parseInt(s.split(" - ")[0]);
+            boolean risultato = false;
+
+            switch (whatToView) {
+                case SHOW_OPERE:
+                    risultato = OperaService.deleteOpera(codice);
+                    break;
+
+                case SHOW_EDIZIONI:
+                    risultato = EdizioneService.rimuoviEdizione(codice);
+                    break;
+
+                case SHOW_VOLUMI:
+                    risultato = VolumeService.rimuoviVolume(codice);
+                    break;
+            }
+            if(risultato){
+                AlertUtil.showInfoAlert("Successo", "Cancellazione avvenuta con successo", null);
+                loadItems();
+            } else {
+                AlertUtil.showErrorAlert("Errore", "Cancellazione non riuscita", null);
+            }
+        }
+
+    }
+
 }

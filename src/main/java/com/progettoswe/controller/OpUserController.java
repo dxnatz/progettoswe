@@ -24,7 +24,6 @@ public class OpUserController {
     // Elementi del catalogo libri
     @FXML private ListView<String> listaCatalogo;
     @FXML private Button updateButton;
-    @FXML private Button deleteButton;
     Catalogo catalogo = new Catalogo();
 
     // Elementi dei prestiti attivi
@@ -49,7 +48,6 @@ public class OpUserController {
         }
     }
 
-    //TODO: Fixare che qua non funziona niente
     @FXML
     private void searchLoans() {
         String searchText = ricercaPrestito.getText().trim();
@@ -70,6 +68,12 @@ public class OpUserController {
     private void openUpdateBookWindow() {
         // Implementa l'apertura della finestra per modificare un libro
         // TODO: Verificare che un libro sia selezionato e aprire la finestra di modifica
+    }
+
+    @FXML
+    private void openUpdateBookAlert() {
+        // Implementa l'apertura dell'alert per confermare la cancellazione
+        // TODO: Verificare che un libro sia selezionato e mostrare un alert di conferma
     }
 
     @FXML
@@ -110,18 +114,6 @@ public class OpUserController {
             AddBookController.codiceOpera = lastSelectedBook;
             AddBookController.idEdizione = lastSelectedEdition;
         }
-    }
-
-    @FXML
-    private void openUpdateBookAlert() {
-        // Implementa l'apertura dell'alert per confermare la cancellazione
-        // TODO: Verificare che un libro sia selezionato e mostrare un alert di conferma
-    }
-
-    @FXML
-    private void openDeleteAlert() {
-        // Implementa l'apertura dell'alert per confermare la cancellazione
-        // TODO: Verificare che un libro sia selezionato e mostrare un alert di conferma
     }
 
     @FXML
@@ -180,7 +172,6 @@ public class OpUserController {
         listaCatalogo.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
             itemSelected = newVal != null;
             updateButton.setDisable(!itemSelected);
-            deleteButton.setDisable(!itemSelected);
 
             if(newVal != null){
                 var s = newVal.split(" - ");
@@ -220,7 +211,6 @@ public class OpUserController {
 
         // Disabilita i bottoni inizialmente
         updateButton.setDisable(true);
-        deleteButton.setDisable(true);
         returnBookButton.setDisable(true);
     }
 }
