@@ -59,7 +59,7 @@
                     </effect>
                 </Button>
 
-                <Button fx:id="updateButton" text="Modifica Libro" onAction="#openUpdateBookAlert" disable="true"
+                <Button fx:id="viewReviewsButton" text="Modifica Libro" onAction="#openReviewsWindow" disable="true"
                         style="-fx-background-color: #4895ef; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8; -fx-pref-height: 40; -fx-font-size: 14; -fx-cursor: hand;">
                     <effect>
                         <DropShadow color="#4895ef80" radius="8" spread="0.2"/>

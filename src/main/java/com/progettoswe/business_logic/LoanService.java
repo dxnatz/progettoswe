@@ -110,7 +110,6 @@ public class LoanService {
             listaPrestiti.getItems().add(id_prestito + " - " + titolo + " - " + numero_edizione + " edizione - " + editore + " - " + autore + " - Data fine prestito: " + dataFine + " - Stato: " + r);
         }
         Session.setUtente(utente);
-        System.out.println(prestiti.size()); // Debug statement
     }
 
     //aggiornato
