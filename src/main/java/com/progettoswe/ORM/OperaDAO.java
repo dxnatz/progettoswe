@@ -23,8 +23,11 @@ public class OperaDAO {
     private static final String DELETE_OPERA =
             "DELETE FROM Opera WHERE id_opera=?";
 
-    private static final String SEARCH_OPERE =
-            "SELECT * FROM Opera WHERE LOWER(titolo) LIKE ? OR LOWER(autore) LIKE ? OR LOWER(genere) LIKE ?";
+private static final String SEARCH_OPERE =
+    "SELECT * FROM Opera WHERE LOWER(titolo) LIKE ? " +
+    "OR LOWER(autore) LIKE ? " +
+    "OR LOWER(genere) LIKE ? " +
+    "OR CAST(id_opera AS TEXT) LIKE ?";
 
     // Inserisce una nuova opera e restituisce l'ID generato
     public static int insertOpera(Opera opera) throws SQLException {
@@ -112,6 +115,7 @@ public class OperaDAO {
             stmt.setString(1, term);
             stmt.setString(2, term);
             stmt.setString(3, term);
+            stmt.setString(4, term);
 
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {

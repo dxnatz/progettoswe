@@ -80,29 +80,37 @@ public class LoanService {
     }
 
     public static void stampaTuttiPrestiti(ArrayList<Prestito> prestiti, ListView<String> listaPrestiti) {
-        prestiti = LoanDAO.caricaTuttiPrestiti();
+        ArrayList<Prestito> loadedPrestiti = LoanDAO.caricaTuttiPrestiti();
+        prestiti.clear();
+        prestiti.addAll(loadedPrestiti);
         Utente utente = Session.getUtente();
         listaPrestiti.getItems().clear();
-        for (int i = 0; i < prestiti.size(); i++) {
-            String titolo = prestiti.get(i).getVolume().getEdizione().getOpera().getTitolo();
-            String autore = prestiti.get(i).getVolume().getEdizione().getOpera().getAutore();
-            String editore = prestiti.get(i).getVolume().getEdizione().getEditore();
-            int id_prestito = prestiti.get(i).getId_prestito();
-            int numero_edizione = prestiti.get(i).getVolume().getEdizione().getNumero();
+        for (Prestito prestito : prestiti) {
+            String titolo = prestito.getVolume().getEdizione().getOpera().getTitolo();
+            String autore = prestito.getVolume().getEdizione().getOpera().getAutore();
+            String editore = prestito.getVolume().getEdizione().getEditore();
+            int id_prestito = prestito.getId_prestito();
+            int numero_edizione = prestito.getVolume().getEdizione().getNumero();
             LocalDate dataFine;
-            String isbn = prestiti.get(i).getVolume().getEdizione().getIsbn();
-
-            Session.setUtente(prestiti.get(i).getUtente());
-            if(LoanDAO.rinnovi(isbn) == 2){
-                dataFine = prestiti.get(i).getDataInizio().plusDays(60);
-            }else if(LoanDAO.rinnovi(isbn) == 1){
-                dataFine = prestiti.get(i).getDataInizio().plusDays(45);
-            }else{
-                dataFine = prestiti.get(i).getDataInizio().plusDays(30);
+            String isbn = prestito.getVolume().getEdizione().getIsbn();
+            boolean restituito = prestito.getRestituito();
+            String r = "da restituire";
+            if (restituito) {
+                r = "restituito";
             }
-            listaPrestiti.getItems().add(id_prestito + " - " + titolo + " - " + numero_edizione + " edizione - " + editore + " - " + autore + " - Da restituire entro il: " + dataFine);
+
+            Session.setUtente(prestito.getUtente());
+            if (LoanDAO.rinnovi(isbn) == 2) {
+                dataFine = prestito.getDataInizio().plusDays(60);
+            } else if (LoanDAO.rinnovi(isbn) == 1) {
+                dataFine = prestito.getDataInizio().plusDays(45);
+            } else {
+                dataFine = prestito.getDataInizio().plusDays(30);
+            }
+            listaPrestiti.getItems().add(id_prestito + " - " + titolo + " - " + numero_edizione + " edizione - " + editore + " - " + autore + " - Data fine prestito: " + dataFine + " - Stato: " + r);
         }
         Session.setUtente(utente);
+        System.out.println(prestiti.size()); // Debug statement
     }
 
     //aggiornato

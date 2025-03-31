@@ -1,6 +1,7 @@
 package com.progettoswe.ORM;
 
 import com.progettoswe.model.*;
+import javafx.scene.control.ListView;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -57,6 +58,40 @@ public class LoanDAO {
             e.printStackTrace();
         }
         return prestiti;
+    }
+
+    public static void stampaTuttiPrestiti(ArrayList<Prestito> prestiti, ListView<String> listaPrestiti) {
+        ArrayList<Prestito> loadedPrestiti = LoanDAO.caricaTuttiPrestiti();
+        prestiti.clear();
+        prestiti.addAll(loadedPrestiti);
+        Utente utente = Session.getUtente();
+        listaPrestiti.getItems().clear();
+        for (Prestito prestito : prestiti) {
+            String titolo = prestito.getVolume().getEdizione().getOpera().getTitolo();
+            String autore = prestito.getVolume().getEdizione().getOpera().getAutore();
+            String editore = prestito.getVolume().getEdizione().getEditore();
+            int id_prestito = prestito.getId_prestito();
+            int numero_edizione = prestito.getVolume().getEdizione().getNumero();
+            LocalDate dataFine;
+            String isbn = prestito.getVolume().getEdizione().getIsbn();
+            boolean restituito = prestito.getRestituito();
+            String r = "da restituire";
+            if (restituito) {
+                r = "restituito";
+            }
+
+            Session.setUtente(prestito.getUtente());
+            if (LoanDAO.rinnovi(isbn) == 2) {
+                dataFine = prestito.getDataInizio().plusDays(60);
+            } else if (LoanDAO.rinnovi(isbn) == 1) {
+                dataFine = prestito.getDataInizio().plusDays(45);
+            } else {
+                dataFine = prestito.getDataInizio().plusDays(30);
+            }
+            listaPrestiti.getItems().add(id_prestito + " - " + titolo + " - " + numero_edizione + " edizione - " + editore + " - " + autore + " - Data fine prestito: " + dataFine + " - Stato: " + r);
+        }
+        Session.setUtente(utente);
+        System.out.println(prestiti.size()); // Debug statement
     }
 
     public static ArrayList<Prestito> caricaTuttiPrestiti() {

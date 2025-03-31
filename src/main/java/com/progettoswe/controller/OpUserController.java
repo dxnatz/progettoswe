@@ -56,6 +56,7 @@ public class OpUserController {
         if(searchText.isEmpty()) {
             LoanService.stampaTuttiPrestiti(prestiti, listaPrestiti);
         } else {
+            stampaPrestiti();
             LoanService.searchLoansBibliotecario(prestiti, listaPrestiti, searchText);
         }
     }
@@ -129,7 +130,7 @@ public class OpUserController {
             boolean confirmed = AlertUtil.showConfirmationAlert(
                     "Concludi prestito",
                     "Sei sicuro di voler concludere questo prestito?",
-                    "ID Prestito: " + lastSelectedLoanId
+                    "ID del prestito da concludere: " + lastSelectedLoanId
             );
 
             if (confirmed) {
@@ -152,12 +153,16 @@ public class OpUserController {
         if(result == null){
             return;
         }
-        if(result.equals("Opere")){
-            ViewCatalogueController.whatToView = ViewCatalogueController.SHOW_OPERE;
-        } else if (result.equals("Edizioni")) {
-            ViewCatalogueController.whatToView = ViewCatalogueController.SHOW_EDIZIONI;
-        } else if (result.equals("Volumi")) {
-            ViewCatalogueController.whatToView = ViewCatalogueController.SHOW_VOLUMI;
+        switch (result) {
+            case "Opere":
+                ViewCatalogueController.whatToView = ViewCatalogueController.SHOW_OPERE;
+                break;
+            case "Edizioni":
+                ViewCatalogueController.whatToView = ViewCatalogueController.SHOW_EDIZIONI;
+                break;
+            case "Volumi":
+                ViewCatalogueController.whatToView = ViewCatalogueController.SHOW_VOLUMI;
+                break;
         }
         App.setRoot("view_catalogue");
     }
@@ -193,8 +198,11 @@ public class OpUserController {
 
     private void listenerPrestiti(){
         listaPrestiti.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
-            boolean itemSelected = newVal != null && InputValidator.isNumber(newVal.split(" - ")[0]);
+            boolean itemSelected = newVal != null;
             returnBookButton.setDisable(!itemSelected);
+            if(itemSelected && InputValidator.isNumber(newVal.split(" - ")[0])) {
+                lastSelectedLoanId = Integer.parseInt(newVal.split(" - ")[0]);
+            }
         });
     }
 
@@ -203,27 +211,10 @@ public class OpUserController {
         LoanService.stampaTuttiPrestiti(prestiti, listaPrestiti);
     }
 
-    private void setupListeners() {
-        // Listener per la selezione nella lista dei prestiti
-        listaPrestiti.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
-            if (newVal != null) {
-                // Estrai l'ID prestito dalla stringa selezionata
-                String[] parts = newVal.split(" \\| ");
-                if (parts.length > 0) {
-                    String idPart = parts[0]; // "ID Prestito: 123"
-                    lastSelectedLoanId = Integer.parseInt(idPart.replace("ID Prestito: ", "").trim());
-                }
-                returnBookButton.setDisable(false);
-            } else {
-                returnBookButton.setDisable(true);
-                lastSelectedLoanId = -1;
-            }
-        });
-    }
-
     @FXML
     private void initialize() {
-        setupListeners();
+        listenerCatalogo();
+        listenerPrestiti();
         BookService.stampaCatalogoBibliotecario(catalogo, listaCatalogo);
         LoanService.stampaTuttiPrestiti(prestiti, listaPrestiti);
 

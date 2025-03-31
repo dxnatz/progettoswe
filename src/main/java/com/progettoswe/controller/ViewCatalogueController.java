@@ -111,15 +111,22 @@ public class ViewCatalogueController {
             try {
                 ObservableList<String> filteredItems = FXCollections.observableArrayList();
 
+                //TODO: Non filtra bene i codici
                 if (SHOW_OPERE.equals(whatToView)) {
                     List<Opera> opere = OperaService.searchOpere(searchText);
                     for (Opera opera : opere) {
-                        filteredItems.add(String.format("%s - %s (%s)", opera.getTitolo(), opera.getAutore(), opera.getGenere()));
+                        filteredItems.add(String.format("%d - %s - %s (%s)", opera.getId_opera(), opera.getTitolo(), opera.getAutore(), opera.getGenere()));
                     }
                 } else if (SHOW_EDIZIONI.equals(whatToView)) {
-                    // Implementa la ricerca per edizioni se necessario
+                    List<Edizione> edizioni = EdizioneService.searchEdizioni(searchText);
+                    for (Edizione edizione : edizioni) {
+                        filteredItems.add(String.format("%d - %s - %s | Ed.%d (%s)", edizione.getId_edizione(), edizione.getOpera().getTitolo(), edizione.getOpera().getAutore(), edizione.getNumero(), edizione.getEditore()));
+                    }
                 } else if (SHOW_VOLUMI.equals(whatToView)) {
-                    // Implementa la ricerca per volumi se necessario
+                    List<Volume> volumi = VolumeService.searchVolumi(searchText);
+                    for (Volume volume : volumi) {
+                        filteredItems.add(String.format("%s - Ed.%d | Stato: %s | Pos: %s", volume.getEdizione().getOpera().getTitolo(), volume.getEdizione().getNumero(), volume.getStato(), volume.getPosizione()));
+                    }
                 }
 
                 itemsListView.setItems(filteredItems);
