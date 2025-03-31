@@ -55,7 +55,7 @@ public class LoginController {
     }
 
     private void authenticate(String email, String password) {
-
+        email = email.trim();
         //TODO: serve solo per testing, togliere dopo
         if(email.equals("admin")){
             try {
