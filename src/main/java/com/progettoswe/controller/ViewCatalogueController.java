@@ -31,6 +31,7 @@ public class ViewCatalogueController {
     @FXML private Label titleLabel;
     @FXML private TextField searchField;
     @FXML private Button deleteButton;
+    @FXML private Button editButton;
 
     @FXML
     public void initialize() {
@@ -38,7 +39,9 @@ public class ViewCatalogueController {
         setupSearchListener();
 
         itemsListView.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
-            deleteButton.setDisable(newVal == null);
+            boolean isSelected = newVal != null;
+            deleteButton.setDisable(!isSelected);
+            editButton.setDisable(!isSelected);
         });
     }
 
@@ -203,4 +206,32 @@ public class ViewCatalogueController {
 
     }
 
+    @FXML
+    private void handleEdit() throws IOException, SQLException {
+        if (whatToView == null) return;
+
+        String selectedItem = itemsListView.getSelectionModel().getSelectedItem();
+        if (selectedItem == null) return;
+
+        int id = Integer.parseInt(selectedItem.split(" - ")[0]);
+
+        switch (whatToView) {
+            case SHOW_OPERE:
+                EditBookController.editType = EditBookController.EDIT_OPERA;
+                EditBookController.operaId = id;
+                break;
+
+            case SHOW_EDIZIONI:
+                EditBookController.editType = EditBookController.EDIT_EDIZIONE;
+                EditBookController.edizioneId = id;
+                break;
+
+            case SHOW_VOLUMI:
+                EditBookController.editType = EditBookController.EDIT_VOLUME;
+                EditBookController.volumeId = id;
+                break;
+        }
+
+        App.setRoot("update_book");
+    }
 }

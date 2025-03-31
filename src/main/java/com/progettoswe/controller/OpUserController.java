@@ -68,6 +68,7 @@ public class OpUserController {
     private void openReviewsWindow() {
         String selectedItem = listaCatalogo.getSelectionModel().getSelectedItem();
         if (selectedItem != null) {
+            //TODO
             // Implementa la logica per visualizzare le recensioni
         }
     }
