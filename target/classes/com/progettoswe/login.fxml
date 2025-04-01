@@ -24,13 +24,13 @@
         <Label text="Accedi al tuo account" style="-fx-text-fill: #495057; -fx-font-size: 16;"/>
     </VBox>
 
-    <!-- Form Container -->
-    <VBox alignment="CENTER" spacing="15" style="-fx-background-color: white; -fx-background-radius: 12; -fx-padding: 30; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 15, 0, 0, 5);">
-        <TextField fx:id="emailTextField" promptText="Email" style="-fx-background-radius: 8; -fx-border-radius: 8; -fx-border-color: #e9ecef; -fx-border-width: 1; -fx-pref-height: 40; -fx-pref-width: 280; -fx-font-size: 14; -fx-padding: 0 10;"/>
+    <!-- Form Container - Dimensione media tra originale e versione stretta -->
+    <VBox alignment="CENTER" spacing="15" style="-fx-background-color: white; -fx-background-radius: 12; -fx-padding: 25; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 15, 0, 0, 5);" maxWidth="370">
+        <TextField fx:id="emailTextField" promptText="Email" style="-fx-background-radius: 8; -fx-border-radius: 8; -fx-border-color: #e9ecef; -fx-border-width: 1; -fx-pref-height: 40; -fx-pref-width: 370; -fx-font-size: 14; -fx-padding: 0 10;"/>
 
-        <PasswordField fx:id="passwordTextField" promptText="Password" style="-fx-background-radius: 8; -fx-border-radius: 8; -fx-border-color: #e9ecef; -fx-border-width: 1; -fx-pref-height: 40; -fx-pref-width: 280; -fx-font-size: 14; -fx-padding: 0 10;"/>
+        <PasswordField fx:id="passwordTextField" promptText="Password" style="-fx-background-radius: 8; -fx-border-radius: 8; -fx-border-color: #e9ecef; -fx-border-width: 1; -fx-pref-height: 40; -fx-pref-width: 370; -fx-font-size: 14; -fx-padding: 0 10;"/>
 
-        <Button fx:id="loginButton" text="Accedi" onAction="#handleLogin" style="-fx-background-color: #4361ee; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8; -fx-pref-width: 280; -fx-pref-height: 40; -fx-font-size: 14; -fx-cursor: hand;">
+        <Button fx:id="loginButton" text="Accedi" onAction="#handleLogin" style="-fx-background-color: #4361ee; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8; -fx-pref-width: 370; -fx-pref-height: 40; -fx-font-size: 14; -fx-cursor: hand;">
             <effect>
                 <DropShadow color="#4361ee80" radius="8" spread="0.2"/>
             </effect>
