@@ -79,9 +79,8 @@ public class OpUserController {
         boolean itemSelected = selectedItem != null;
 
         String result = AlertUtil.showCustomButtonAlert("Aggiungi libro",
-                itemSelected ? "Scegli se vuoi aggiungere una nuova opera, edizione o un nuovo volume"
-                        : "Scegli se vuoi aggiungere una nuova opera o edizione",
-                "",
+                "Scegli se vuoi aggiungere una nuova opera, edizione o un nuovo volume",
+                null,
                 "Nuova opera",
                 "Nuova edizione",
                 "Nuovo volume",
