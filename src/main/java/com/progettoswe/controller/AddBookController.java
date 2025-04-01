@@ -9,6 +9,7 @@ import com.progettoswe.utilities.AlertUtil;
 import com.progettoswe.utilities.InputValidator;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+
 import java.io.IOException;
 import java.sql.SQLException;
 
@@ -18,42 +19,40 @@ public class AddBookController {
     public static final String ADD_VOLUME = "add_volume_only";
     public static String typeToAdd = null;
 
-    public static int codiceOpera = -1;
-    public static int idEdizione = -1;
+    // Variabili per il preinserimento
+    public static int selectedOperaId = -1;
+    public static int selectedEdizioneId = -1;
 
-    // Campi Opera
+    // Campi UI
     @FXML private TextField codiceOperaField;
     @FXML private TextField titoloField;
     @FXML private TextField autoreField;
     @FXML private TextField genereField;
     @FXML private TextField annoField;
     @FXML private TextArea descrizioneArea;
-
-    // Campi Edizione
+    @FXML private TextField codiceEdizioneField;
     @FXML private TextField numeroEdizioneField;
     @FXML private TextField editoreField;
     @FXML private TextField annoEdizioneField;
     @FXML private TextField isbnField;
-
-    // Campi Volume
     @FXML private ComboBox<String> statoCombo;
     @FXML private TextField posizioneField;
-
-    // Pulsanti
     @FXML private Button cancelButton;
     @FXML private Button saveButton;
-
     @FXML private Tab tabOpera;
     @FXML private Tab tabEdizione;
     @FXML private Tab tabVolume;
 
     @FXML
     private void initialize() {
-        // Inizializza la ComboBox per lo stato
+        setupUI();
+        configureForOperationType();
+    }
+
+    private void setupUI() {
         statoCombo.getItems().addAll("disponibile", "in prestito", "danneggiato");
         statoCombo.getSelectionModel().selectFirst();
 
-        // Imposta azioni pulsanti e disabilita campi e tab
         cancelButton.setOnAction(event -> {
             try {
                 closeWindow();
@@ -61,55 +60,117 @@ public class AddBookController {
                 AlertUtil.showErrorAlert("Errore", "Impossibile chiudere la finestra", e.getMessage());
             }
         });
+    }
+
+    private void configureForOperationType() {
         try {
-            setCorrectWindowFields();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private void setCorrectWindowFields() throws SQLException {
-        Opera opera = null;
-        Edizione edizione = null;
-
-        if(ADD_OPERA.equals(typeToAdd)){
-            tabEdizione.setDisable(true);
-            tabVolume.setDisable(true);
-
-            saveButton.setOnAction(event -> saveOpera());
-            saveButton.setText("Salva opera");
-
-        }else if(ADD_EDIZIONE.equals(typeToAdd)){
-            tabVolume.setDisable(true);
-            saveButton.setOnAction(event -> saveEdizione());
-            saveButton.setText("Salva edizione");
-            if(codiceOpera == -1){
-                setAndDisableOperaFields();
-            }else{
-                opera = OperaService.getOperaById(codiceOpera);
-                setAndDisableOperaFields(opera);
+            switch (typeToAdd) {
+                case ADD_OPERA:
+                    configureForOpera();
+                    break;
+                case ADD_EDIZIONE:
+                    configureForEdizione();
+                    break;
+                case ADD_VOLUME:
+                    configureForVolume();
+                    break;
             }
-
-        }else if(ADD_VOLUME.equals(typeToAdd)){
-            saveButton.setOnAction(event -> saveVolume());
-            opera = OperaService.getOperaById(codiceOpera);
-            edizione = EdizioneService.getEdizione(idEdizione);
-            setAndDisableOperaFields(opera);
-            setAndDisableEdizioneFields(edizione);
-
+        } catch (SQLException e) {
+            AlertUtil.showErrorAlert("Errore", "Errore di configurazione", e.getMessage());
         }
     }
 
-    private void setAndDisableOperaFields(Opera opera){
-        if(opera == null) return;
+    private void configureForOpera() {
+        tabEdizione.setDisable(true);
+        tabVolume.setDisable(true);
+        saveButton.setOnAction(event -> saveOpera());
+        saveButton.setText("Salva opera");
 
-        codiceOperaField.setText(String.valueOf(opera.getId_opera()));
-        titoloField.setText(opera.getTitolo());
-        autoreField.setText(opera.getAutore());
-        genereField.setText(opera.getGenere());
-        annoField.setText(String.valueOf(opera.getAnnoPubblicazioneOriginale()));
-        descrizioneArea.setText(opera.getDescrizione());
+        // Disabilita il campo codice opera (verrà generato dal DB)
+        codiceOperaField.setDisable(true);
+        codiceOperaField.setText("Nuovo codice");
+        resetAllFields();
+    }
 
+    private void configureForEdizione() throws SQLException {
+        tabVolume.setDisable(true);
+        saveButton.setOnAction(event -> saveEdizione());
+        saveButton.setText("Salva edizione");
+
+        // Disabilita il campo codice edizione (verrà generato dal DB)
+        codiceEdizioneField.setDisable(true);
+        codiceEdizioneField.setText("Nuovo codice");
+
+        if (selectedOperaId != -1) {
+            Opera opera = OperaService.getOperaById(selectedOperaId);
+            if (opera != null) {
+                codiceOperaField.setText(String.valueOf(opera.getId_opera()));
+                titoloField.setText(opera.getTitolo());
+                autoreField.setText(opera.getAutore());
+                genereField.setText(opera.getGenere());
+                annoField.setText(String.valueOf(opera.getAnnoPubblicazioneOriginale()));
+                descrizioneArea.setText(opera.getDescrizione());
+
+                // Disabilita tutti i campi opera (non modificabili)
+                disableOperaFields();
+            }
+        }
+        resetEdizioneFields();
+    }
+
+    private void configureForVolume() throws SQLException {
+        saveButton.setOnAction(event -> saveVolume());
+        saveButton.setText("Salva volume");
+
+        if (selectedOperaId != -1 && selectedEdizioneId != -1) {
+            // Caso: nuovo volume per edizione esistente
+            Opera opera = OperaService.getOperaById(selectedOperaId);
+            Edizione edizione = EdizioneService.getEdizione(selectedEdizioneId);
+
+            if (opera != null && edizione != null) {
+                // Precompila i campi opera (sola lettura)
+                codiceOperaField.setText(String.valueOf(opera.getId_opera()));
+                titoloField.setText(opera.getTitolo());
+                autoreField.setText(opera.getAutore());
+
+                // Precompila i campi edizione (sola lettura)
+                codiceEdizioneField.setText(String.valueOf(edizione.getId_edizione()));
+                numeroEdizioneField.setText(String.valueOf(edizione.getNumero()));
+                editoreField.setText(edizione.getEditore());
+
+                // Disabilita tutti i campi tranne volume
+                disableOperaFields();
+                disableEdizioneFields();
+            }
+        } else if (selectedOperaId != -1) {
+            // Caso: primo volume (nuova edizione)
+            Opera opera = OperaService.getOperaById(selectedOperaId);
+            if (opera != null) {
+                // Precompila solo i campi opera (sola lettura)
+                codiceOperaField.setText(String.valueOf(opera.getId_opera()));
+                titoloField.setText(opera.getTitolo());
+                autoreField.setText(opera.getAutore());
+
+                // Disabilita solo i campi opera (tranne codice edizione)
+                codiceOperaField.setDisable(true);
+                titoloField.setDisable(true);
+                autoreField.setDisable(true);
+                genereField.setDisable(true);
+                annoField.setDisable(true);
+                descrizioneArea.setDisable(true);
+
+                // Per edizione: solo codice edizione modificabile
+                codiceEdizioneField.setDisable(false);
+                numeroEdizioneField.setDisable(false);
+                editoreField.setDisable(false);
+                annoEdizioneField.setDisable(false);
+                isbnField.setDisable(false);
+            }
+        }
+        resetVolumeFields();
+    }
+
+    private void disableOperaFields() {
         codiceOperaField.setDisable(true);
         titoloField.setDisable(true);
         autoreField.setDisable(true);
@@ -118,157 +179,205 @@ public class AddBookController {
         descrizioneArea.setDisable(true);
     }
 
-    private void setAndDisableOperaFields(){
-        codiceOperaField.setDisable(false);
-        titoloField.setDisable(true);
-        autoreField.setDisable(true);
-        genereField.setDisable(true);
-        annoField.setDisable(true);
-        descrizioneArea.setDisable(true);
-    }
-
-    private void setAndDisableEdizioneFields(Edizione edizione){
-        if(edizione == null) return;
-
-        numeroEdizioneField.setText(String.valueOf(edizione.getId_edizione()));
-        editoreField.setText(edizione.getEditore());
-        annoEdizioneField.setText(String.valueOf(edizione.getAnnoPubblicazione()));
-        isbnField.setText(edizione.getIsbn());
-
+    private void disableEdizioneFields() {
+        codiceEdizioneField.setDisable(true);
         numeroEdizioneField.setDisable(true);
         editoreField.setDisable(true);
         annoEdizioneField.setDisable(true);
         isbnField.setDisable(true);
     }
 
-    private Opera createOpera(){
-        Opera opera = new Opera(
-                Integer.parseInt(codiceOperaField.getText()),
-                titoloField.getText(),
-                autoreField.getText(),
-                genereField.getText(),
-                InputValidator.isNumber(annoField.getText()) ? Integer.parseInt(annoField.getText()) : 0,
-                descrizioneArea.getText()
-        );
-        return opera;
+    private void resetAllFields() {
+        titoloField.clear();
+        autoreField.clear();
+        genereField.clear();
+        annoField.clear();
+        descrizioneArea.clear();
+        numeroEdizioneField.clear();
+        editoreField.clear();
+        annoEdizioneField.clear();
+        isbnField.clear();
+        posizioneField.clear();
+        statoCombo.getSelectionModel().selectFirst();
     }
 
-    private Edizione createEdizione(Opera opera){
-        Edizione edizione = new Edizione(
-                isbnField.getText(),
-                InputValidator.isNumber(annoEdizioneField.getText()) ? Integer.parseInt(annoEdizioneField.getText()) : 0,
-                editoreField.getText(),
-                Integer.parseInt(numeroEdizioneField.getText()),
-                opera,
-                -1
-        );
-        return edizione;
+    private void resetEdizioneFields() {
+        numeroEdizioneField.clear();
+        editoreField.clear();
+        annoEdizioneField.clear();
+        isbnField.clear();
     }
 
-    private Volume createVolume(Edizione edizione){
-        Volume volume = new Volume(
-                -1,
-                edizione,
-                statoCombo.getValue(),
-                posizioneField.getText()
-        );
-        return volume;
+    private void resetVolumeFields() {
+        posizioneField.clear();
+        statoCombo.getSelectionModel().selectFirst();
     }
 
-    private void saveOpera(){
-        if(!validateOperaFields()) {
-            return;
-        }
-        try{
-            Opera opera = createOpera();
+    private void saveOpera() {
+        if (!validateOperaFields()) return;
+
+        try {
+            Opera opera = new Opera(
+                    0, // ID verrà generato dal DB
+                    titoloField.getText(),
+                    autoreField.getText(),
+                    genereField.getText(),
+                    Integer.parseInt(annoField.getText()),
+                    descrizioneArea.getText()
+            );
+
             int result = OperaService.addOpera(opera);
-
-            AlertUtil.showInfoAlert("Successo", "Opera aggiunta correttamente con id:" + result, "");
-
-        } catch (NumberFormatException e) {
-            AlertUtil.showErrorAlert("Errore", "Formato numerico non valido", "Inserisci un numero valido nei campi anno e numero edizione");
+            AlertUtil.showInfoAlert("Successo", "Opera aggiunta con ID: " + result, "");
+            closeWindow();
         } catch (Exception e) {
-            AlertUtil.showErrorAlert("Errore", "Impossibile salvare il libro", e.getMessage());
+            handleSaveError(e);
         }
     }
 
-    private void saveEdizione(){
-        if(!validateEdizioneFields()) {
-            return;
-        }
-        try{
-            Edizione edizione = createEdizione(createOpera());
+    private void saveEdizione() {
+        if (!validateEdizioneFields()) return;
+
+        try {
+            Opera opera = OperaService.getOperaById(selectedOperaId);
+            if (opera == null) {
+                AlertUtil.showErrorAlert("Errore", "Opera non trovata", "");
+                return;
+            }
+
+            Edizione edizione = new Edizione(
+                    isbnField.getText(),
+                    Integer.parseInt(annoEdizioneField.getText()),
+                    editoreField.getText(),
+                    Integer.parseInt(numeroEdizioneField.getText()),
+                    opera,
+                    0 // ID verrà generato dal DB
+            );
+
             boolean result = EdizioneService.aggiungiEdizione(edizione);
-
-            AlertUtil.showInfoAlert("Successo", "Edizione aggiunta correttamente", "");
-
-        } catch (NumberFormatException e) {
-            AlertUtil.showErrorAlert("Errore", "Formato numerico non valido", "Inserisci un numero valido nei campi anno e numero edizione");
+            if (result) {
+                AlertUtil.showInfoAlert("Successo", "Edizione aggiunta correttamente", "");
+                closeWindow();
+            } else {
+                AlertUtil.showErrorAlert("Errore", "Impossibile salvare l'edizione", "");
+            }
         } catch (Exception e) {
-            AlertUtil.showErrorAlert("Errore", "Impossibile salvare il libro", e.getMessage());
+            handleSaveError(e);
         }
     }
 
     private void saveVolume() {
-        if (!validateAllFields()) {
-            return;
-        }
+        if (!validateVolumeFields()) return;
+
         try {
-            Volume volume = createVolume(createEdizione(createOpera()));
+            if (selectedOperaId == -1) {
+                AlertUtil.showErrorAlert("Errore", "Nessuna opera selezionata", "");
+                return;
+            }
+
+            Edizione edizione;
+            if (selectedEdizioneId != -1) {
+                // Caso: volume per edizione esistente
+                edizione = EdizioneService.getEdizione(selectedEdizioneId);
+            } else {
+                // Caso: primo volume (crea nuova edizione)
+                Opera opera = OperaService.getOperaById(selectedOperaId);
+                if (opera == null) {
+                    AlertUtil.showErrorAlert("Errore", "Opera non trovata", "");
+                    return;
+                }
+
+                edizione = new Edizione(
+                        isbnField.getText(),
+                        Integer.parseInt(annoEdizioneField.getText()),
+                        editoreField.getText(),
+                        Integer.parseInt(numeroEdizioneField.getText()),
+                        opera,
+                        0 // ID verrà generato dal DB
+                );
+
+                // Prima salva la nuova edizione
+                if (!EdizioneService.aggiungiEdizione(edizione)) {
+                    AlertUtil.showErrorAlert("Errore", "Impossibile creare l'edizione", "");
+                    return;
+                }
+            }
+
+            if (edizione == null) {
+                AlertUtil.showErrorAlert("Errore", "Edizione non valida", "");
+                return;
+            }
+
+            Volume volume = new Volume(
+                    0, // ID verrà generato dal DB
+                    edizione,
+                    statoCombo.getValue(),
+                    posizioneField.getText()
+            );
+
             boolean result = VolumeService.aggiungiVolume(volume);
-
-            AlertUtil.showInfoAlert("Successo", "Libro aggiunto correttamente", "");
-
-        } catch (NumberFormatException e) {
-            AlertUtil.showErrorAlert("Errore", "Formato numerico non valido", "Inserisci un numero valido nei campi anno e numero edizione");
+            if (result) {
+                AlertUtil.showInfoAlert("Successo", "Volume aggiunto correttamente", "");
+                closeWindow();
+            } else {
+                AlertUtil.showErrorAlert("Errore", "Impossibile salvare il volume", "");
+            }
         } catch (Exception e) {
-            AlertUtil.showErrorAlert("Errore", "Impossibile salvare il libro", e.getMessage());
+            handleSaveError(e);
         }
     }
 
     private boolean validateOperaFields() {
-        boolean isValid = true;
-
-        if (!InputValidator.validateNotEmpty(codiceOperaField, "Codice opera")) isValid = false;
-        if (!InputValidator.validateNotEmpty(titoloField, "Titolo")) isValid = false;
-        if (!InputValidator.validateNotEmpty(autoreField, "Autore")) isValid = false;
-        if (!InputValidator.validateNotEmpty(genereField, "Genere")) isValid = false;
-        if (!InputValidator.validateNotEmpty(annoField, "anno di pubblicazione opera")) isValid = false;
-        if (isValid && !InputValidator.validateInteger(annoField, "anno di pubblicazione dell'opera")) isValid = false;
-        if (!InputValidator.validateNotEmpty(descrizioneArea, "Descrizione")) isValid = false;
-
+        boolean isValid = InputValidator.validateNotEmpty(titoloField, "Titolo");
+        isValid &= InputValidator.validateNotEmpty(autoreField, "Autore");
+        isValid &= InputValidator.validateNotEmpty(genereField, "Genere");
+        isValid &= InputValidator.validateNotEmpty(annoField, "Anno pubblicazione");
+        isValid &= InputValidator.validateInteger(annoField, "Anno pubblicazione");
+        isValid &= InputValidator.validateNotEmpty(descrizioneArea, "Descrizione");
         return isValid;
     }
 
     private boolean validateEdizioneFields() {
-        boolean isValid = true;
-
-        if (!InputValidator.validateNotEmpty(numeroEdizioneField, "numero edizione")) isValid = false;
-        if (!InputValidator.validateInteger(numeroEdizioneField, "numero edizione")) isValid = false;
-        if (!InputValidator.validateNotEmpty(editoreField, "editore")) isValid = false;
-        if (!InputValidator.validateNotEmpty(annoEdizioneField, "anno di pubblicazione dell'edizione")) isValid = false;
-        if(isValid && !InputValidator.validateInteger(annoEdizioneField, "anno di pubblicazione dell'edizione")) isValid = false;
-        if (!InputValidator.validateNotEmpty(isbnField, "ISBN")) isValid = false;
-
+        boolean isValid = InputValidator.validateNotEmpty(numeroEdizioneField, "Numero edizione");
+        isValid &= InputValidator.validateInteger(numeroEdizioneField, "Numero edizione");
+        isValid &= InputValidator.validateNotEmpty(editoreField, "Editore");
+        isValid &= InputValidator.validateNotEmpty(annoEdizioneField, "Anno pubblicazione");
+        isValid &= InputValidator.validateInteger(annoEdizioneField, "Anno pubblicazione");
+        isValid &= InputValidator.validateNotEmpty(isbnField, "ISBN");
         return isValid;
     }
 
-    private boolean validateAllFields() {
+    private boolean validateVolumeFields() {
         boolean isValid = true;
 
-        isValid &= validateOperaFields();
-        isValid &= validateEdizioneFields();
+        if (selectedEdizioneId == -1) {
+            // Validazione per nuova edizione (primo volume)
+            isValid &= validateEdizioneFields();
+        }
 
-        // Validazione Volume
+        isValid &= InputValidator.validateNotEmpty(posizioneField, "Posizione");
+
         if (statoCombo.getValue() == null) {
-            AlertUtil.showErrorAlert("Errore", "Campo mancante", "Seleziona uno stato per il volume");
+            AlertUtil.showErrorAlert("Errore", "Campo mancante", "Selezionare uno stato per il volume");
             isValid = false;
         }
 
         return isValid;
     }
 
+    private void handleSaveError(Exception e) {
+        if (e instanceof NumberFormatException) {
+            AlertUtil.showErrorAlert("Errore", "Formato non valido", "Inserire valori numerici nei campi richiesti");
+        } else if (e instanceof SQLException) {
+            AlertUtil.showErrorAlert("Errore DB", "Errore database", e.getMessage());
+        } else {
+            AlertUtil.showErrorAlert("Errore", "Errore generico", e.getMessage());
+        }
+    }
+
     private void closeWindow() throws IOException {
+        typeToAdd = null;
+        selectedOperaId = -1;
+        selectedEdizioneId = -1;
         App.setRoot("op_user");
     }
 }
