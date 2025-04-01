@@ -232,6 +232,6 @@ public class ViewCatalogueController {
                 break;
         }
 
-        App.setRoot("update_book");
+        App.setRoot("edit_book");
     }
 }
