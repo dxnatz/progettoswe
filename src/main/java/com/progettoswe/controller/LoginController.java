@@ -10,6 +10,7 @@ import java.io.IOException;
 import com.progettoswe.App;
 import com.progettoswe.model.Session;
 import com.progettoswe.business_logic.UserService;
+import javafx.scene.input.KeyCode;
 
 
 public class LoginController {
@@ -22,6 +23,23 @@ public class LoginController {
 
     @FXML
     private Button loginButton;
+
+    @FXML
+    private void initialize() {
+        // Listener per il tasto INVIO sul campo password
+        passwordTextField.setOnKeyPressed(event -> {
+            if (event.getCode() == KeyCode.ENTER) {
+                handleLogin();
+            }
+        });
+
+        // Opzionale: puoi aggiungerlo anche per il campo email
+        emailTextField.setOnKeyPressed(event -> {
+            if (event.getCode() == KeyCode.ENTER) {
+                handleLogin();
+            }
+        });
+    }
 
     @FXML
     private void switchToRegistrate() throws IOException {
