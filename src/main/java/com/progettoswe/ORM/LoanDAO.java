@@ -12,7 +12,6 @@ import java.util.ArrayList;
 
 public class LoanDAO {
 
-    //Corretto
     public static ArrayList<Prestito> caricaPrestiti(){
         ArrayList<Prestito> prestiti = new ArrayList<>();
         String query = "SELECT opera.id_opera, titolo, autore, genere, anno_pubblicazione_originale, descrizione, edizione.id_edizione, numero_edizione, editore, anno_pubblicazione, isbn, volume.id_volume, stato, posizione, prestito.id_prestito, data_inizio, restituito, num_rinnovi FROM prestito JOIN Utente ON prestito.id_utente = utente.id_utente JOIN volume ON prestito.id_volume = volume.id_volume JOIN edizione ON edizione.id_edizione = volume.id_edizione JOIN opera ON opera.id_opera = edizione.id_opera WHERE email = ?";
@@ -170,7 +169,6 @@ public class LoanDAO {
         return prestiti;
     }
 
-    //aggiornato
     public static boolean libroGiaPrenotato(String isbn){
         String query = "SELECT * FROM prestito p " +
                 "JOIN volume v ON p.id_volume = v.id_volume " +
@@ -191,7 +189,6 @@ public class LoanDAO {
         return false;
     }
 
-    //aggiorato
     public static boolean prestitoDaMenoDiTreGiorni(String isbn, int num_edizione){
         String query = "SELECT * FROM prestito JOIN volume ON prestito.id_volume = volume.id_volume JOIN edizione ON volume.id_edizione = edizione.id_edizione WHERE isbn = ? AND id_utente = ? AND numero_edizione = ? AND data_inizio >= CURRENT_DATE - INTERVAL '3 days'";
 
@@ -209,7 +206,6 @@ public class LoanDAO {
         return false;
     }
 
-    //corretto
     public static boolean annullaPrestito(String isbn){
         String deleteQuery = "DELETE FROM prestito " +
                 "USING volume, edizione " +
@@ -248,7 +244,6 @@ public class LoanDAO {
         return false;
     }
 
-    //corretto
     public static void prolungaPrestito(String isbn){
         String query = "UPDATE prestito " +
                 "SET num_rinnovi = num_rinnovi + 1 " +
@@ -270,19 +265,17 @@ public class LoanDAO {
     }
 
     public static boolean prenotaLibro(String isbn) {
-        // Prima, otteniamo l'id_volume disponibile
+        //otteniamo l'id_volume disponibile
         String getIdVolumeQuery =   "SELECT id_volume " +
                 "FROM volume " +
                 "WHERE id_edizione = (SELECT id_edizione FROM edizione WHERE isbn = ?) " +
                 "AND stato = 'disponibile' " +
                 "ORDER BY id_volume ASC LIMIT 1";  // Ottieni il primo volume disponibile
 
-        // Secondo, aggiorniamo il volume per marcarlo come "in prestito"
         String updateQuery = "UPDATE volume " +
                 "SET stato = 'in prestito' " +
                 "WHERE id_volume = ?";  // Aggiorna lo stato del volume
 
-        // Terzo, inseriamo il prestito nel database
         String insertPrestitoQuery = "INSERT INTO prestito (id_volume, id_utente) " +
                 "VALUES (?, ?)";  // Inserisce il prestito
 

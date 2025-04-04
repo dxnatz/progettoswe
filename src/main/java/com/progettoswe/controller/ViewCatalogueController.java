@@ -126,7 +126,6 @@ public class ViewCatalogueController {
             try {
                 ObservableList<String> filteredItems = FXCollections.observableArrayList();
 
-                //TODO: Non filtra bene i codici
                 if (SHOW_OPERE.equals(whatToView)) {
                     List<Opera> opere = OperaService.searchOpere(searchText);
                     for (Opera opera : opere) {
