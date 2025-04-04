@@ -63,16 +63,16 @@
                 -fx-padding: 5px;"
                       VBox.vgrow="ALWAYS"/>
 
-            <HBox spacing="10" alignment="CENTER">
+            <HBox spacing="10" alignment="CENTER_LEFT">
                 <Button text="Aggiungi Libro" onAction="#openAddBookAlert"
-                        style="-fx-background-color: #4cc9f0; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8; -fx-pref-height: 40; -fx-font-size: 14; -fx-cursor: hand;">
+                        style="-fx-background-color: #4361ee; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8; -fx-pref-height: 40; -fx-font-size: 14; -fx-cursor: hand;">
                     <effect>
                         <DropShadow color="#4cc9f080" radius="8" spread="0.2"/>
                     </effect>
                 </Button>
 
                 <Button fx:id="viewButton" text="Visualizza Catalogo" onAction="#openViewAlert"
-                        style="-fx-background-color: #9925f7; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8; -fx-pref-height: 40; -fx-font-size: 14; -fx-cursor: hand;">
+                        style="-fx-background-color: #4cc9f0; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8; -fx-pref-height: 40; -fx-font-size: 14; -fx-cursor: hand;">
                 </Button>
             </HBox>
         </VBox>

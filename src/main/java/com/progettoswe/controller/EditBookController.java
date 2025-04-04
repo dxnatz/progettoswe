@@ -43,7 +43,7 @@ public class EditBookController {
     }
 
     private void setupUIComponents() {
-        statoCombo.getItems().addAll("disponibile", "in prestito", "danneggiato");
+        statoCombo.getItems().addAll("disponibile", "in prestito");
         statoCombo.getSelectionModel().selectFirst();
     }
 

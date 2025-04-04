@@ -210,6 +210,7 @@ public class ViewCatalogueController {
                 "Sei sicuro di voler cancellare questo elemento?",
                 null, "Conferma");
 
+        //TODO dà errore quando si annulla la cancellazione
         if(r.equals("Conferma")){
             int codice = Integer.parseInt(s.split(" - ")[0]);
             boolean risultato = false;

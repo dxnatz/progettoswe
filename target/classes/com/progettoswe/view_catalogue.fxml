@@ -36,7 +36,7 @@
             </padding>
         </ListView>
 
-        <HBox spacing="10" alignment="CENTER">
+        <HBox spacing="10" alignment="CENTER_LEFT">
             <Button text="Indietro" onAction="#handleBack" style="-fx-background-color: #6c757d; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8; -fx-pref-width: 135; -fx-pref-height: 40; -fx-font-size: 14; -fx-cursor: hand;">
                 <effect>
                     <DropShadow color="#6c757d80" radius="8" spread="0.2"/>
