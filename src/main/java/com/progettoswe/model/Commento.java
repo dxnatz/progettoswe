@@ -52,4 +52,12 @@ public class Commento {
     public Edizione getEdizione() {
         return edizione;
     }
+
+    public boolean isCommentoVolume() {
+        return this.prestito != null;
+    }
+
+    public String getTipoCommento() {
+        return isCommentoVolume() ? "Commento sul Volume" : "Commento sull'Opera";
+    }
 }

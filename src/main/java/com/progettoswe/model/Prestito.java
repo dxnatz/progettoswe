@@ -57,14 +57,14 @@ public class Prestito {
         String s;
         LocalDate dataFine;
 
-        if(LoanDAO.rinnovi(this.getVolume().edizione().getIsbn()) == 2){
+        if(LoanDAO.rinnovi(this.getVolume().getEdizione().getIsbn()) == 2){
             dataFine = this.getDataInizio().plusDays(60);
-        }else if(LoanDAO.rinnovi(this.getVolume().edizione().getIsbn()) == 1){
+        }else if(LoanDAO.rinnovi(this.getVolume().getEdizione().getIsbn()) == 1){
             dataFine = this.getDataInizio().plusDays(45);
         }else{
             dataFine = this.getDataInizio().plusDays(30);
         }
-        s = this.getVolume().edizione().getOpera().getTitolo() + " - " + this.getVolume().edizione().getNumero() + " edizione - " + this.getVolume().edizione().getEditore() + " - " + this.getVolume().edizione().getOpera().getAutore() + " - Da restituire entro il: " + dataFine + " - " + this.getId_prestito();
+        s = this.getVolume().getEdizione().getOpera().getTitolo() + " - " + this.getVolume().getEdizione().getNumero() + " edizione - " + this.getVolume().getEdizione().getEditore() + " - " + this.getVolume().getEdizione().getOpera().getAutore() + " - Da restituire entro il: " + dataFine + " - " + this.getId_prestito();
         return s;
     }
 }

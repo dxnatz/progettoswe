@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.shape.*?>
+
+<VBox alignment="CENTER" spacing="25" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.progettoswe.controller.ViewVolumeCommentsController" style="-fx-background-color: #f8f9fa;">
+
+    <!-- Header -->
+    <VBox alignment="CENTER" spacing="10">
+        <StackPane>
+            <Rectangle width="60" height="60" arcWidth="15" arcHeight="15" fill="#4361ee">
+                <effect>
+                    <InnerShadow color="#3a0ca3" radius="5"/>
+                </effect>
+            </Rectangle>
+            <Label text="LMS" style="-fx-font-weight: bold; -fx-text-fill: white; -fx-font-size: 18;"/>
+        </StackPane>
+
+        <Label fx:id="titleLabel" style="-fx-text-fill: #495057; -fx-font-size: 16; -fx-font-weight: bold;"/>
+    </VBox>
+
+    <!-- Commenti Container -->
+    <VBox alignment="CENTER" spacing="15" style="-fx-background-color: white; -fx-background-radius: 12; -fx-padding: 30; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 15, 0, 0, 5); -fx-max-width: 600;">
+
+        <!-- Lista Commenti -->
+        <ScrollPane fitToWidth="true" style="-fx-background-color: transparent; -fx-border-color: transparent; -fx-pref-height: 400;">
+            <VBox fx:id="commentsContainer" spacing="15" style="-fx-padding: 5;">
+                <!-- I commenti verranno aggiunti dinamicamente qui -->
+            </VBox>
+        </ScrollPane>
+
+        <!-- Pulsanti -->
+        <HBox spacing="10" alignment="CENTER">
+            <Button text="Indietro" onAction="#handleBack" style="-fx-background-color: #6c757d; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8; -fx-pref-width: 135; -fx-pref-height: 40; -fx-font-size: 14; -fx-cursor: hand;">
+                <effect>
+                    <DropShadow color="#6c757d80" radius="8" spread="0.2"/>
+                </effect>
+            </Button>
+        </HBox>
+    </VBox>
+
+    <padding>
+        <Insets bottom="40" left="40" right="40" top="40"/>
+    </padding>
+</VBox>

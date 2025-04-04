@@ -1,7 +1,10 @@
 package com.progettoswe.model;
 import com.progettoswe.ORM.UserDAO;
 
+import java.awt.color.ICC_ColorSpace;
+
 public class Session {
+    public static final String ADMIN_EMAIL = "@biblioteca.it";
     private static String userEmail;
     private static Utente utente;
     private static String nomeOpera;

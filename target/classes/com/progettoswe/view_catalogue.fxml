@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.shape.*?>
+
+<VBox alignment="CENTER" spacing="25" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.progettoswe.controller.ViewCatalogueController" style="-fx-background-color: #f8f9fa;">
+
+    <!-- Header -->
+    <VBox alignment="CENTER" spacing="10">
+        <StackPane>
+            <Rectangle width="60" height="60" arcWidth="15" arcHeight="15" fill="#4361ee">
+                <effect>
+                    <InnerShadow color="#3a0ca3" radius="5"/>
+                </effect>
+            </Rectangle>
+            <Label text="LMS" style="-fx-font-weight: bold; -fx-text-fill: white; -fx-font-size: 18;"/>
+        </StackPane>
+
+        <Label fx:id="titleLabel" style="-fx-text-fill: #495057; -fx-font-size: 16; -fx-font-weight: bold;"/>
+    </VBox>
+
+    <!-- Search and List Container -->
+    <VBox alignment="CENTER" spacing="15" style="-fx-background-color: white; -fx-background-radius: 12; -fx-padding: 30; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 15, 0, 0, 5);">
+        <HBox alignment="CENTER" spacing="10">
+            <TextField fx:id="searchField" promptText="Cerca..." style="-fx-background-radius: 8; -fx-border-radius: 8; -fx-border-color: #e9ecef; -fx-border-width: 1; -fx-pref-height: 40; -fx-pref-width: 200; -fx-font-size: 14; -fx-padding: 0 10;"/>
+        </HBox>
+
+        <ListView fx:id="itemsListView" style="-fx-background-radius: 8; -fx-border-radius: 8; -fx-border-color: #e9ecef; -fx-border-width: 1; -fx-pref-height: 300; -fx-pref-width: 280;">
+            <padding>
+                <Insets top="5" right="5" bottom="5" left="5"/>
+            </padding>
+        </ListView>
+
+        <HBox spacing="10" alignment="CENTER">
+            <Button text="Indietro" onAction="#handleBack" style="-fx-background-color: #6c757d; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8; -fx-pref-width: 135; -fx-pref-height: 40; -fx-font-size: 14; -fx-cursor: hand;">
+                <effect>
+                    <DropShadow color="#6c757d80" radius="8" spread="0.2"/>
+                </effect>
+            </Button>
+
+            <Button fx:id="reviewsButton" text="Vedi Recensioni" onAction="#handleReviews" disable="true" visible="false"
+                    style="-fx-background-color: #4cc9f0; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8; -fx-pref-width: 135; -fx-pref-height: 40; -fx-font-size: 14; -fx-cursor: hand;">
+                <effect>
+                    <DropShadow color="#4cc9f080" radius="8" spread="0.2"/>
+                </effect>
+            </Button>
+
+            <Button fx:id="editButton" text="Modifica" onAction="#handleEdit" disable="true"
+                    style="-fx-background-color: #4cc9f0; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8; -fx-pref-width: 135; -fx-pref-height: 40; -fx-font-size: 14; -fx-cursor: hand;">
+                <effect>
+                    <DropShadow color="#4cc9f080" radius="8" spread="0.2"/>
+                </effect>
+            </Button>
+
+            <Button fx:id="deleteButton" text="Elimina" onAction="#handleDelete" disable="true"
+                    style="-fx-background-color: #f72585; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8; -fx-pref-width: 135; -fx-pref-height: 40; -fx-font-size: 14; -fx-cursor: hand;">
+                <effect>
+                    <DropShadow color="#f7258580" radius="8" spread="0.2"/>
+                </effect>
+            </Button>
+        </HBox>
+    </VBox>
+
+    <padding>
+        <Insets bottom="40" left="40" right="40" top="40"/>
+    </padding>
+</VBox>

@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.shape.*?>
+
+<VBox alignment="CENTER" spacing="20" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.progettoswe.controller.AddBookController" style="-fx-background-color: #f8f9fa;">
+
+    <!-- Header -->
+    <VBox alignment="CENTER" spacing="8">
+        <StackPane>
+            <Rectangle width="52" height="52" arcWidth="12" arcHeight="12" fill="#4361ee">
+                <effect>
+                    <InnerShadow color="#3a0ca3" radius="4"/>
+                </effect>
+            </Rectangle>
+            <Label text="LMS" style="-fx-font-weight: bold; -fx-text-fill: white; -fx-font-size: 16;"/>
+        </StackPane>
+
+        <Label text="Aggiungi nuovo libro" style="-fx-text-fill: #495057; -fx-font-size: 14;"/>
+    </VBox>
+
+    <!-- Form Container -->
+    <VBox alignment="CENTER" spacing="12" style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 24; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 8, 0, 0, 3);">
+        <TabPane fx:id="tabPane" tabClosingPolicy="UNAVAILABLE" style="-fx-pref-width: 600;">
+            <!-- Tab Opera -->
+            <Tab fx:id="tabOpera" text="Informazioni Opera">
+                <GridPane hgap="10" vgap="10" alignment="CENTER">
+                    <columnConstraints>
+                        <ColumnConstraints hgrow="NEVER" minWidth="150"/>
+                        <ColumnConstraints hgrow="ALWAYS" minWidth="300"/>
+                    </columnConstraints>
+
+                    <!-- Riga 0: Codice -->
+                    <Label text="Codice" style="-fx-text-fill: #495057; -fx-font-size: 13;" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                    <TextField fx:id="codiceOperaField" style="-fx-control-inner-background: #f8f9fa; -fx-background-radius: 6; -fx-border-radius: 6; -fx-border-color: #e9ecef; -fx-border-width: 1; -fx-pref-height: 38; -fx-font-size: 13; -fx-padding: 0 12;" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+                    <!-- Riga 1: Titolo -->
+                    <Label text="Titolo" style="-fx-text-fill: #495057; -fx-font-size: 13;" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+                    <TextField fx:id="titoloField" style="-fx-control-inner-background: #f8f9fa; -fx-background-radius: 6; -fx-border-radius: 6; -fx-border-color: #e9ecef; -fx-border-width: 1; -fx-pref-height: 38; -fx-font-size: 13; -fx-padding: 0 12;" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+                    <!-- Riga 2: Autore -->
+                    <Label text="Autore" style="-fx-text-fill: #495057; -fx-font-size: 13;" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+                    <TextField fx:id="autoreField" style="-fx-control-inner-background: #f8f9fa; -fx-background-radius: 6; -fx-border-radius: 6; -fx-border-color: #e9ecef; -fx-border-width: 1; -fx-pref-height: 38; -fx-font-size: 13; -fx-padding: 0 12;" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+                    <!-- Riga 3: Genere -->
+                    <Label text="Genere" style="-fx-text-fill: #495057; -fx-font-size: 13;" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+                    <TextField fx:id="genereField" style="-fx-control-inner-background: #f8f9fa; -fx-background-radius: 6; -fx-border-radius: 6; -fx-border-color: #e9ecef; -fx-border-width: 1; -fx-pref-height: 38; -fx-font-size: 13; -fx-padding: 0 12;" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+
+                    <!-- Riga 4: Anno Pubblicazione -->
+                    <Label text="Anno Pubblicazione" style="-fx-text-fill: #495057; -fx-font-size: 13;" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+                    <TextField fx:id="annoField" style="-fx-control-inner-background: #f8f9fa; -fx-background-radius: 6; -fx-border-radius: 6; -fx-border-color: #e9ecef; -fx-border-width: 1; -fx-pref-height: 38; -fx-font-size: 13; -fx-padding: 0 12;" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+
+                    <!-- Riga 5: Descrizione -->
+                    <Label text="Descrizione" style="-fx-text-fill: #495057; -fx-font-size: 13;" GridPane.rowIndex="5" GridPane.columnIndex="0"/>
+                    <TextArea fx:id="descrizioneArea" style="-fx-control-inner-background: #f8f9fa; -fx-background-radius: 6; -fx-border-radius: 6; -fx-border-color: #e9ecef; -fx-border-width: 1; -fx-pref-height: 100; -fx-font-size: 13; -fx-padding: 8 12;" GridPane.rowIndex="5" GridPane.columnIndex="1"/>
+                </GridPane>
+            </Tab>
+
+            <!-- Tab Edizione -->
+            <Tab fx:id="tabEdizione" text="Informazioni Edizione">
+                <GridPane hgap="10" vgap="10" alignment="CENTER">
+                    <columnConstraints>
+                        <ColumnConstraints hgrow="NEVER" minWidth="150"/>
+                        <ColumnConstraints hgrow="ALWAYS" minWidth="300"/>
+                    </columnConstraints>
+
+                    <!-- Riga 0: Codice Edizione -->
+                    <Label text="Codice Edizione" style="-fx-text-fill: #495057; -fx-font-size: 13;" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                    <TextField fx:id="codiceEdizioneField" style="-fx-control-inner-background: #f8f9fa; -fx-background-radius: 6; -fx-border-radius: 6; -fx-border-color: #e9ecef; -fx-border-width: 1; -fx-pref-height: 38; -fx-font-size: 13; -fx-padding: 0 12;" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+                    <!-- Riga 1: Codice Opera -->
+                    <Label text="Codice Opera" style="-fx-text-fill: #495057; -fx-font-size: 13;" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+                    <TextField fx:id="codiceOperaTabEdizioneField" style="-fx-control-inner-background: #f8f9fa; -fx-background-radius: 6; -fx-border-radius: 6; -fx-border-color: #e9ecef; -fx-border-width: 1; -fx-pref-height: 38; -fx-font-size: 13; -fx-padding: 0 12;" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+                    <!-- Riga 2: Numero Edizione -->
+                    <Label text="Numero Edizione" style="-fx-text-fill: #495057; -fx-font-size: 13;" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+                    <TextField fx:id="numeroEdizioneField" style="-fx-control-inner-background: #f8f9fa; -fx-background-radius: 6; -fx-border-radius: 6; -fx-border-color: #e9ecef; -fx-border-width: 1; -fx-pref-height: 38; -fx-font-size: 13; -fx-padding: 0 12;" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+                    <!-- Riga 3: Editore -->
+                    <Label text="Editore" style="-fx-text-fill: #495057; -fx-font-size: 13;" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+                    <TextField fx:id="editoreField" style="-fx-control-inner-background: #f8f9fa; -fx-background-radius: 6; -fx-border-radius: 6; -fx-border-color: #e9ecef; -fx-border-width: 1; -fx-pref-height: 38; -fx-font-size: 13; -fx-padding: 0 12;" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+
+                    <!-- Riga 4: Anno Pubblicazione -->
+                    <Label text="Anno Pubblicazione" style="-fx-text-fill: #495057; -fx-font-size: 13;" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+                    <TextField fx:id="annoEdizioneField" style="-fx-control-inner-background: #f8f9fa; -fx-background-radius: 6; -fx-border-radius: 6; -fx-border-color: #e9ecef; -fx-border-width: 1; -fx-pref-height: 38; -fx-font-size: 13; -fx-padding: 0 12;" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+
+                    <!-- Riga 5: ISBN -->
+                    <Label text="ISBN" style="-fx-text-fill: #495057; -fx-font-size: 13;" GridPane.rowIndex="5" GridPane.columnIndex="0"/>
+                    <TextField fx:id="isbnField" style="-fx-control-inner-background: #f8f9fa; -fx-background-radius: 6; -fx-border-radius: 6; -fx-border-color: #e9ecef; -fx-border-width: 1; -fx-pref-height: 38; -fx-font-size: 13; -fx-padding: 0 12;" GridPane.rowIndex="5" GridPane.columnIndex="1"/>
+                </GridPane>
+            </Tab>
+
+            <!-- Tab Volume -->
+            <Tab fx:id="tabVolume" text="Informazioni Volume">
+                <GridPane hgap="10" vgap="10" alignment="CENTER">
+                    <columnConstraints>
+                        <ColumnConstraints hgrow="NEVER" minWidth="150"/>
+                        <ColumnConstraints hgrow="ALWAYS" minWidth="300"/>
+                    </columnConstraints>
+
+                    <!-- Riga 0: Stato -->
+                    <Label text="Stato*" style="-fx-text-fill: #495057; -fx-font-size: 13;" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                    <ComboBox fx:id="statoCombo" style="-fx-background-radius: 6; -fx-border-radius: 6; -fx-border-color: #e9ecef; -fx-border-width: 1; -fx-pref-height: 38; -fx-font-size: 13; -fx-padding: 0 12;" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+                    <!-- Riga 1: Posizione -->
+                    <Label text="Posizione" style="-fx-text-fill: #495057; -fx-font-size: 13;" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+                    <TextField fx:id="posizioneField" style="-fx-control-inner-background: #f8f9fa; -fx-background-radius: 6; -fx-border-radius: 6; -fx-border-color: #e9ecef; -fx-border-width: 1; -fx-pref-height: 38; -fx-font-size: 13; -fx-padding: 0 12;" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+                </GridPane>
+            </Tab>
+        </TabPane>
+
+        <!-- Pulsanti -->
+        <HBox alignment="CENTER" spacing="10" style="-fx-padding: 20 0 0 0;">
+            <Button fx:id="cancelButton" text="Annulla" style="
+                -fx-background-color: transparent;
+                -fx-text-fill: #6c757d;
+                -fx-font-weight: bold;
+                -fx-border-color: #e9ecef;
+                -fx-border-width: 1;
+                -fx-border-radius: 6;
+                -fx-background-radius: 6;
+                -fx-pref-width: 100;
+                -fx-pref-height: 38;
+                -fx-font-size: 13;
+                -fx-cursor: hand;"/>
+
+            <Button fx:id="saveButton" text="Salva Libro" style="
+                -fx-background-color: #4361ee;
+                -fx-text-fill: white;
+                -fx-font-weight: bold;
+                -fx-background-radius: 6;
+                -fx-pref-width: 120;
+                -fx-pref-height: 38;
+                -fx-font-size: 13;
+                -fx-cursor: hand;">
+                <effect>
+                    <DropShadow color="#4361ee60" radius="6" spread="0.15"/>
+                </effect>
+            </Button>
+        </HBox>
+    </VBox>
+
+    <padding>
+        <Insets bottom="30" left="30" right="30" top="30"/>
+    </padding>
+</VBox>

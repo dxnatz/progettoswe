@@ -1,5 +1,6 @@
 package com.progettoswe.controller;
 
+import com.progettoswe.utilities.InputValidator;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -9,6 +10,7 @@ import java.io.IOException;
 import com.progettoswe.App;
 import com.progettoswe.model.Session;
 import com.progettoswe.business_logic.UserService;
+import javafx.scene.input.KeyCode;
 
 
 public class LoginController {
@@ -23,6 +25,23 @@ public class LoginController {
     private Button loginButton;
 
     @FXML
+    private void initialize() {
+        // Listener per il tasto INVIO sul campo password
+        passwordTextField.setOnKeyPressed(event -> {
+            if (event.getCode() == KeyCode.ENTER) {
+                handleLogin();
+            }
+        });
+
+        // Opzionale: puoi aggiungerlo anche per il campo email
+        emailTextField.setOnKeyPressed(event -> {
+            if (event.getCode() == KeyCode.ENTER) {
+                handleLogin();
+            }
+        });
+    }
+
+    @FXML
     private void switchToRegistrate() throws IOException {
         App.setRoot("registrate");
     }
@@ -33,6 +52,11 @@ public class LoginController {
     }
 
     @FXML
+    private void switchToOpUser() throws IOException {
+        App.setRoot("op_user");
+    }
+
+    @FXML
     private void handleLogin() {
         String mail = emailTextField.getText();
         String password = passwordTextField.getText();
@@ -40,19 +64,27 @@ public class LoginController {
         authenticate(mail, password);
     }
 
-    private void authenticate(String email, String password) {
+    private void loginByEmailType(String email) throws IOException {
+        //TODO: decidere se tenere admin
+        if(email.endsWith(Session.ADMIN_EMAIL) || email.toLowerCase().equals("admin")){
+            switchToOpUser();
+        }else{
+            switchToHomePage();
+        }
+    }
 
-        if (email.isEmpty() || password.isEmpty()) {
-            Alert a = new Alert(AlertType.ERROR, "Inserisci email e password");
-            a.setHeaderText("Errore di accesso");
-            a.setTitle("Errore durante l'accesso");
-            a.showAndWait();
+    private void authenticate(String email, String password) {
+        email = email.trim();
+
+        if (!InputValidator.validateNotEmpty(emailTextField, "Email")
+        || !InputValidator.validateNotEmpty(passwordTextField, "Password")) {
             return;
         }
 
         if(UserService.login(email, password)) {
             try {
-                switchToHomePage();
+                loginByEmailType(email);
+                return;
             } catch (IOException e) {
                 e.printStackTrace();
             }

@@ -9,7 +9,6 @@ import java.sql.SQLException;
 
 public class BookDAO {
 
-    //aggiornato
     public static Catalogo caricaCatalogo() {
         Catalogo catalogo = new Catalogo(); //creo un nuovo catalogo per inserire i volumi
         String query = "SELECT DISTINCT ON (edizione.id_edizione) " +
@@ -36,7 +35,6 @@ public class BookDAO {
             ResultSet resultSet = statement.executeQuery();
 
             while (resultSet.next()) {
-                // Recupero i dati dal ResultSet
                 int id_opera = resultSet.getInt("id_opera");
                 String titolo = resultSet.getString("titolo");
                 String autore = resultSet.getString("autore");
@@ -66,7 +64,6 @@ public class BookDAO {
         return catalogo;
     }
 
-    //aggiornato
     public static Catalogo ricercaLibro(String ricerca) {
         Catalogo catalogo = new Catalogo(); //creo un nuovo catalogo per inserire i libri che corrispondono alla ricerca
         String query = "SELECT DISTINCT ON (edizione.id_edizione) " +
@@ -132,7 +129,6 @@ public class BookDAO {
         return catalogo;
     }
 
-    //aggiornato
     public static String ottieniIsbn (String nome, String autore, int num_edizione) {
         String query = "SELECT isbn FROM opera JOIN edizione ON opera.id_opera = edizione.id_opera WHERE opera.titolo = ? AND opera.autore = ? AND numero_edizione = ?;";
         try(Connection connection = DatabaseConnection.getConnection()){
@@ -150,7 +146,6 @@ public class BookDAO {
         return null;
     }
 
-    //aggiornato
     public static boolean libroDisponibile(String isbn) {
         String query = "SELECT stato FROM volume WHERE id_edizione = (SELECT id_edizione FROM edizione WHERE isbn = ?);";
         try(Connection connection = DatabaseConnection.getConnection()){

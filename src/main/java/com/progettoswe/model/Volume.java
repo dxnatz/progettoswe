@@ -26,7 +26,7 @@ public class Volume {
         return id_volume;
     }
 
-    public Edizione edizione() {
+    public Edizione getEdizione() {
         return edizione;
     }
 
