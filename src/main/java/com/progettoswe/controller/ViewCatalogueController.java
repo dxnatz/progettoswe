@@ -1,10 +1,11 @@
 package com.progettoswe.controller;
 
 import com.progettoswe.App;
+import com.progettoswe.business_logic.InfoCommService;
 import com.progettoswe.business_logic.OperaService;
+import com.progettoswe.model.Commento;
 import com.progettoswe.model.Edizione;
 import com.progettoswe.model.Opera;
-import com.progettoswe.model.Session;
 import com.progettoswe.model.Volume;
 import com.progettoswe.business_logic.EdizioneService;
 import com.progettoswe.business_logic.VolumeService;
@@ -40,7 +41,8 @@ public class ViewCatalogueController {
         loadItems();
         setupSearchListener();
 
-        boolean showReviews = whatToView.equals(SHOW_OPERE);
+        // Mostra il pulsante recensioni solo per opere e volumi
+        boolean showReviews = whatToView.equals(SHOW_OPERE) || whatToView.equals(SHOW_VOLUMI);
         reviewsButton.setVisible(showReviews);
         reviewsButton.setManaged(showReviews);
 
@@ -50,6 +52,30 @@ public class ViewCatalogueController {
             editButton.setDisable(!isSelected);
             reviewsButton.setDisable(!isSelected);
         });
+    }
+
+    @FXML
+    private void handleReviews() throws IOException, SQLException {
+        String selectedItem = itemsListView.getSelectionModel().getSelectedItem();
+        if (selectedItem == null) return;
+
+        if (whatToView.equals(SHOW_OPERE)) {
+            // Gestione commenti opera
+            int id = Integer.parseInt(selectedItem.split(" - ")[0].trim());
+            String title = selectedItem.split(" - ")[1].trim();
+            ViewOperaCommentsController.setOperaTitle(title);
+            ViewOperaCommentsController.setOperaId(id);
+            App.setRoot("view_opera_comments");
+        }
+        else if (whatToView.equals(SHOW_VOLUMI)) {
+            int volumeId = Integer.parseInt(selectedItem.split(" - ")[0].trim());
+            String title = selectedItem.split(" - ")[1].trim();
+
+            List<Commento> commenti = InfoCommService.getCommentiVolumeCompleti(volumeId);
+            ViewVolumeCommentsController.setVolumeTitle(title);
+            ViewVolumeCommentsController.setVolumeId(volumeId);
+            App.setRoot("view_volume_comments");
+        }
     }
 
     private void loadItems() {
@@ -159,20 +185,6 @@ public class ViewCatalogueController {
     private void handleClear() {
         searchField.clear();
         loadItems();
-    }
-
-    @FXML
-    private void handleReviews() throws IOException {
-        if(!whatToView.equals(SHOW_OPERE)) return;
-
-        String selectedItem = itemsListView.getSelectionModel().getSelectedItem();
-        if (selectedItem == null) return;
-
-        int id = Integer.parseInt(selectedItem.split(" - ")[0].trim());
-        String title = selectedItem.split(" - ")[1].trim();
-        ViewCommentsController.setOperaTitle(title);
-        ViewCommentsController.setOperaId(id);
-        App.setRoot("view_comments");
     }
 
     @FXML

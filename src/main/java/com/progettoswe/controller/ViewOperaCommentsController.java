@@ -15,7 +15,7 @@ import javafx.scene.text.FontWeight;
 import java.io.IOException;
 import java.sql.SQLException;
 
-public class ViewCommentsController {
+public class ViewOperaCommentsController {
     private static int operaId;
     private static String operaTitle;
 
@@ -55,7 +55,7 @@ public class ViewCommentsController {
         HBox header = new HBox(10);
         header.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
 
-        Label userLabel = new Label(commento.getUtente().getNome() + " " + commento.getUtente().getCognome());
+        Label userLabel = new Label(commento.getUtente().getNome());
         userLabel.setFont(Font.font("System", FontWeight.BOLD, 14));
         userLabel.setTextFill(Color.web("#495057"));
 
@@ -63,11 +63,11 @@ public class ViewCommentsController {
         editionLabel.setFont(Font.font("System", FontWeight.NORMAL, 12));
         editionLabel.setTextFill(Color.web("#6c757d"));
 
-        Label readLabel = new Label(commento.getPrestito() != null ? "✓ Letto" : "✗ Letto da altre fonti");
-        readLabel.setFont(Font.font("System", FontWeight.NORMAL, 12));
-        readLabel.setTextFill(commento.getPrestito() != null ? Color.web("#2ecc71") : Color.web("#e74c3c"));
+        Label typeLabel = new Label(commento.getPrestito() != null ? "✓ Recensione da prestito" : "✗ Recensione generale");
+        typeLabel.setFont(Font.font("System", FontWeight.NORMAL, 12));
+        typeLabel.setTextFill(commento.getPrestito() != null ? Color.web("#2ecc71") : Color.web("#e74c3c"));
 
-        header.getChildren().addAll(userLabel, editionLabel, readLabel);
+        header.getChildren().addAll(userLabel, editionLabel, typeLabel);
 
         // Testo commento
         Label commentText = new Label(commento.getTesto());

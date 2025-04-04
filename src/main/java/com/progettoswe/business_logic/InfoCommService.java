@@ -40,4 +40,8 @@ public class InfoCommService {
     public static String getTitoloOpera(int idOpera) throws SQLException {
         return InfoCommDAO.getTitoloOpera(idOpera);
     }
+
+    public static List<Commento> getCommentiVolumeCompleti(int idVolume) throws SQLException {
+        return InfoCommDAO.getCommentiCompletiPerVolume(idVolume);
+    }
 }

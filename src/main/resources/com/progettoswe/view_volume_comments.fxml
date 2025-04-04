@@ -8,7 +8,7 @@
 <?import javafx.scene.shape.*?>
 
 <VBox alignment="CENTER" spacing="25" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="com.progettoswe.controller.ViewCommentsController" style="-fx-background-color: #f8f9fa;">
+      fx:controller="com.progettoswe.controller.ViewVolumeCommentsController" style="-fx-background-color: #f8f9fa;">
 
     <!-- Header -->
     <VBox alignment="CENTER" spacing="10">
