@@ -3,7 +3,6 @@ package com.progettoswe.business_logic;
 import com.progettoswe.ORM.BookDAO;
 import com.progettoswe.ORM.LoanDAO;
 import com.progettoswe.model.Prestito;
-import javafx.scene.control.ListView;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -11,8 +10,8 @@ import java.util.ArrayList;
 public class LoanService {
 
     //aggiornato
-    public static void stampaPrestiti(ArrayList<Prestito> prestiti, ListView<String> listaPrestiti) {
-        prestiti = LoanDAO.caricaPrestiti();
+    /*public static void stampaPrestiti(ArrayList<Prestito> prestiti, ListView<String> listaPrestiti) {
+        //prestiti = LoanDAO.caricaPrestiti();
         for (int i = 0; i < prestiti.size(); i++) {
             String titolo = prestiti.get(i).getVolume().edizione().getOpera().getTitolo();
             String autore = prestiti.get(i).getVolume().edizione().getOpera().getAutore();
@@ -29,6 +28,36 @@ public class LoanService {
             }
             listaPrestiti.getItems().add(titolo + " - " + numero_edizione + " edizione - " + editore + " - " + autore + " - Da restituire entro il: " + dataFine);
         }
+    }*/
+
+    public static ArrayList<Prestito> filtraPrestiti(String filtro) {
+        ArrayList<Prestito> prestitiFiltrati = new ArrayList<>();
+
+        // Supponiamo che tu abbia una lista di tutti i prestiti
+        ArrayList<Prestito> tuttiIPrestiti = LoanDAO.caricaPrestiti(); // Recupera tutti i prestiti
+
+        // Filtro in base alla scelta
+        for (Prestito prestito : tuttiIPrestiti) {
+            switch (filtro) {
+                case "Tutti i prestiti":
+                    prestitiFiltrati.add(prestito);
+                    break;
+                case "Prestiti attivi":
+                    if (!prestito.getRestituito()) { // Se restituito è false, significa che il prestito è ancora attivo
+                        prestitiFiltrati.add(prestito);
+                    }
+                    break;
+                case "Prestiti conclusi":
+                    if (prestito.getRestituito()) { // Se restituito è true, significa che il prestito è concluso
+                        prestitiFiltrati.add(prestito);
+                    }
+                    break;
+                default:
+                    // Aggiungi un comportamento di default se necessario
+                    break;
+            }
+        }
+        return prestitiFiltrati;
     }
 
     //aggiornato
@@ -138,5 +167,7 @@ public class LoanService {
     private static int rinnoviEsauriti(String isbn) {
         return LoanDAO.rinnovi(isbn);
     }
+
+
     
 }

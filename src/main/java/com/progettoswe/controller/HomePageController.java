@@ -2,12 +2,15 @@ package com.progettoswe.controller;
 
 import com.progettoswe.App;
 import com.progettoswe.business_logic.BookService;
+import com.progettoswe.business_logic.InfoCommService;
 import com.progettoswe.business_logic.LoanService;
 import com.progettoswe.model.Catalogo;
 import com.progettoswe.model.Prestito;
 import com.progettoswe.model.Session;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
@@ -27,13 +30,25 @@ public class HomePageController {
     @FXML private Button btnCancellaPrestito;
     @FXML private Button btnProlungaPrestito;
     @FXML private Button btnInfoComm;
+    @FXML private ComboBox<String> filtroPrestiti;
+    @FXML private Button btnCommentaVolume;
     Catalogo catalogo = new Catalogo();
-    ArrayList<Prestito> prestiti = new ArrayList<>();
-    
+    //ArrayList<Prestito> prestiti = new ArrayList<>();
+
     public void initialize() {
         // Inizializza interfaccia utente
         stampaCatalogo();
-        stampaPrestiti();
+        //stampaPrestiti();
+        filtroPrestiti.getItems().addAll("Prestiti attivi", "Prestiti conclusi", "Tutti i prestiti");
+
+        // Imposta il valore predefinito (Prestiti attivi)
+        filtroPrestiti.setValue("Prestiti attivi");
+
+        // Ascolta le modifiche nel ComboBox e aggiorna la lista dei prestiti
+        filtroPrestiti.setOnAction(event -> filtraPrestiti());
+
+        // All'inizio, visualizza i prestiti attivi
+        filtraPrestiti();
 
         btnInfoComm.setDisable(true);
 
@@ -53,6 +68,7 @@ public class HomePageController {
             if (newValue != null) {
                 String[] loanDetails = newValue.split(" - ");
                 String dataFine = loanDetails[4].split("Da restituire entro il: ")[1];
+                dataFine = dataFine.split(" | ")[0];
                 btnCancellaPrestito.setDisable(LoanService.prenotazioneScaduta(dataFine));
                 btnProlungaPrestito.setDisable(LocalDate.parse(dataFine).minusDays(2).isBefore(LocalDate.now()));
             }
@@ -63,7 +79,7 @@ public class HomePageController {
             listaCatalogo.getItems().clear();
             listaPrestiti.getItems().clear();
             stampaCatalogo();
-            stampaPrestiti();
+            filtraPrestiti();
         }));
         timeline.setCycleCount(Timeline.INDEFINITE);
         timeline.play();
@@ -80,20 +96,16 @@ public class HomePageController {
     private void stampaCatalogo() {
         BookService.stampaCatalogo(catalogo, listaCatalogo);
     }
-    
-    private void stampaPrestiti() {
-        LoanService.stampaPrestiti(prestiti, listaPrestiti);
-    }
-    
+
     @FXML
     private void searchBooks() {
         BookService.searchBooks(catalogo, listaCatalogo, ricerca);
     }
-    
+
     @FXML
     private void extendLoan() {
         // logica per prolungare il prestito nel database se il prestito non scade entro 2 giorni dalla data attuale, se c'è un'altra copia disponibile e se non è già stato prolungato una volta
-        
+
         String selectedLoan = listaPrestiti.getSelectionModel().getSelectedItem();
         if (selectedLoan != null) {
             Alert confirmAlert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -112,7 +124,9 @@ public class HomePageController {
                         listaCatalogo.getItems().clear();
                         listaPrestiti.getItems().clear();
                         BookService.stampaCatalogo(catalogo, listaCatalogo);
-                        stampaPrestiti();
+                        //stampaPrestiti();
+                        // Aggiorna la lista dei prestiti
+                        filtraPrestiti();
                         Alert successAlert = new Alert(Alert.AlertType.INFORMATION);
                         successAlert.setContentText("Prestito prolungato con successo.\n\nIl libro è da restituire entro 15 giorni dalla data attuale.");
                         successAlert.setHeaderText("Successo");
@@ -135,7 +149,7 @@ public class HomePageController {
             errorAlert.showAndWait();
         }
     }
-    
+
     @FXML
     private void cancellaPrestito() {
         // logica per annullare il prestito nel database se non sono passati più di 3 giorni dalla prenotazione, altrimenti restituire un errore
@@ -157,7 +171,8 @@ public class HomePageController {
                         listaCatalogo.getItems().clear();
                         listaPrestiti.getItems().clear();
                         BookService.stampaCatalogo(catalogo, listaCatalogo);
-                        stampaPrestiti();
+                        //stampaPrestiti();
+                        filtraPrestiti();
                         Alert successAlert = new Alert(Alert.AlertType.INFORMATION);
                         successAlert.setContentText("Prestito annullato con successo.");
                         successAlert.setHeaderText("Successo");
@@ -203,7 +218,8 @@ public class HomePageController {
                         //modificare lo stato del volume in prestito
 
                         BookService.stampaCatalogo(catalogo, listaCatalogo);
-                        stampaPrestiti();
+                        //stampaPrestiti();
+                        filtraPrestiti();
                         Alert successAlert = new Alert(Alert.AlertType.INFORMATION);
                         successAlert.setContentText("Libro prenotato con successo.");
                         successAlert.setHeaderText("Successo");
@@ -228,6 +244,42 @@ public class HomePageController {
     }
 
     @FXML
+    public void filtraPrestiti() {
+        String filtroSelezionato = filtroPrestiti.getValue();
+        ArrayList<Prestito> prestitiFiltrati = LoanService.filtraPrestiti(filtroSelezionato);
+
+        if(filtroSelezionato.equals("Prestiti conclusi")){
+            btnProlungaPrestito.setVisible(false);
+            btnCancellaPrestito.setVisible(false);
+        }else{
+            btnProlungaPrestito.setVisible(true);
+            btnCancellaPrestito.setVisible(true);
+        }
+
+        listaPrestiti.getItems().clear(); // Pulisce la lista
+
+        ObservableList<String> prestitiObservableList = FXCollections.observableArrayList();
+
+        if (prestitiFiltrati.isEmpty()) {
+            prestitiObservableList.add("Nessun prestito disponibile visibile.");
+            listaPrestiti.setDisable(true);
+            btnProlungaPrestito.setDisable(true);
+            btnCancellaPrestito.setDisable(true);
+            btnCommentaVolume.setDisable(true);
+        } else {
+            for (Prestito prestito : prestitiFiltrati) {
+                prestitiObservableList.add(prestito.toString());
+                listaPrestiti.setDisable(false);
+                btnProlungaPrestito.setDisable(false);
+                btnCancellaPrestito.setDisable(false);
+                btnCommentaVolume.setDisable(false);
+            }
+        }
+
+        listaPrestiti.setItems(prestitiObservableList);
+    }
+
+    @FXML
     private void visualizzaProfilo() {
         try {
             App.setRoot("profile");
@@ -238,14 +290,65 @@ public class HomePageController {
 
     @FXML
     private void visualizzaInfoComm() {
+
         String selectedBook = listaCatalogo.getSelectionModel().getSelectedItem();
-        String [] bookDetails = selectedBook.split(" - ");
-        Session.setNomeOpera(bookDetails[0]);
-        Session.setEdizione(bookDetails[1].split(" edizione")[0]);
-        try {
-            App.setRoot("infocomm");
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (selectedBook != null) {
+            String [] bookDetails = selectedBook.split(" - ");
+            Session.setNomeOpera(bookDetails[0]);
+            Session.setEdizione(bookDetails[1].split(" edizione")[0]);
+            try {
+                App.setRoot("infocomm");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }else{
+            Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+            errorAlert.setContentText("Seleziona un libro per visualizzare le informazioni.");
+            errorAlert.setHeaderText("Errore");
+            errorAlert.setTitle("Errore durante la visualizzazione delle informazioni");
+            errorAlert.showAndWait();
+        }
+
+    }
+
+    @FXML
+    private void commentaVolume() {
+        String selectedLoan = listaPrestiti.getSelectionModel().getSelectedItem();
+
+        if (selectedLoan != null) {
+            TextInputDialog dialog = new TextInputDialog();
+            dialog.setTitle("Inserisci Commento");
+            dialog.setHeaderText("Aggiungi un commento per il prestito selezionato");
+            dialog.setContentText("Scrivi il tuo commento:");
+
+            dialog.showAndWait().ifPresent(commento -> {
+                if (!commento.trim().isEmpty()) {
+                    // Recupera i dati del prestito selezionato
+                    String[] loanDetails = selectedLoan.split(" - ");
+                    String prestitoId = loanDetails[5];
+                    System.out.println("ID prestito: " + prestitoId);
+
+                    // Chiama il servizio per inserire il commento
+                    boolean successo = InfoCommService.aggiungiCommentoVolume(Integer.parseInt(prestitoId), commento);
+
+                    Alert alert = new Alert(successo ? Alert.AlertType.INFORMATION : Alert.AlertType.ERROR);
+                    alert.setTitle(successo ? "Successo" : "Errore");
+                    alert.setHeaderText(successo ? "Commento aggiunto con successo!" : "Errore durante l'inserimento del commento.");
+                    alert.setContentText(successo ? "Il tuo commento è stato salvato nel database." : "Si è verificato un problema.");
+                    alert.showAndWait();
+                } else {
+                    Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+                    errorAlert.setTitle("Errore");
+                    errorAlert.setHeaderText("Il commento non può essere vuoto!");
+                    errorAlert.showAndWait();
+                }
+            });
+
+        } else {
+            Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+            errorAlert.setTitle("Errore");
+            errorAlert.setHeaderText("Seleziona un prestito prima di commentare.");
+            errorAlert.showAndWait();
         }
     }
 
@@ -254,11 +357,11 @@ public class HomePageController {
         @Override
         protected void updateItem(String item, boolean empty) {
             super.updateItem(item, empty);
-    
+
             if (item != null && !empty) {
                 String[] bookDetails = item.split(" - ");
                 String disponibilita = bookDetails[4];
-    
+
                 if (disponibilita.equals("Non disponibile")) {
                     Label disponibilitaLabel = new Label(disponibilita);
                     disponibilitaLabel.setTextFill(Color.RED);

@@ -29,4 +29,8 @@ public class InfoCommService {
     public static void eliminaCommento(int idEdizione) {
         InfoCommDAO.eliminaCommento(idEdizione);
     }
+
+    public static boolean aggiungiCommentoVolume(int idPrestito, String testo) {
+        return InfoCommDAO.aggiungiCommentoVolume(idPrestito, testo);
+    }
 }

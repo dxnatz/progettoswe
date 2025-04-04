@@ -114,4 +114,23 @@ public class InfoCommDAO {
         }
     }
 
+    public static boolean aggiungiCommentoVolume(int idPrestito, String testo){
+        String query = "INSERT INTO commento (id_utente, id_prestito, testo) VALUES (?, ?, ?)";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            stmt.setInt(1, Session.getUtente().getId_utente());
+            stmt.setInt(2, idPrestito);
+            stmt.setString(3, testo);
+
+            int rowsInserted = stmt.executeUpdate();
+            return rowsInserted > 0;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
 }
