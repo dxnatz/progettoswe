@@ -24,24 +24,34 @@ public class AddBookController {
     public static int selectedEdizioneId = -1;
 
     // Campi UI
+    //opera
     @FXML private TextField codiceOperaField;
     @FXML private TextField titoloField;
     @FXML private TextField autoreField;
     @FXML private TextField genereField;
     @FXML private TextField annoField;
     @FXML private TextArea descrizioneArea;
+
+    //edizione
     @FXML private TextField codiceEdizioneField;
+    @FXML private TextField codiceOperaTabEdizioneField;
     @FXML private TextField numeroEdizioneField;
     @FXML private TextField editoreField;
     @FXML private TextField annoEdizioneField;
     @FXML private TextField isbnField;
-    @FXML private ComboBox<String> statoCombo;
+
+    //volume
     @FXML private TextField posizioneField;
+
+    // pulsanti
     @FXML private Button cancelButton;
     @FXML private Button saveButton;
+
+    // tabs
     @FXML private Tab tabOpera;
     @FXML private Tab tabEdizione;
     @FXML private Tab tabVolume;
+    @FXML private TabPane tabPane;
 
     @FXML
     private void initialize() {
@@ -50,9 +60,6 @@ public class AddBookController {
     }
 
     private void setupUI() {
-        statoCombo.getItems().addAll("disponibile", "in prestito", "danneggiato");
-        statoCombo.getSelectionModel().selectFirst();
-
         cancelButton.setOnAction(event -> {
             try {
                 closeWindow();
@@ -90,6 +97,27 @@ public class AddBookController {
         codiceOperaField.setDisable(true);
         codiceOperaField.setText("Nuovo codice");
         resetAllFields();
+    }
+
+    private void configureEdizione() throws SQLException {
+        saveButton.setOnAction(event -> saveEdizione());
+        saveButton.setText("Salva edizione");
+
+        codiceEdizioneField.setDisable(true);
+        codiceEdizioneField.setText("Nuovo codice");
+        codiceOperaTabEdizioneField.setText(String.valueOf(selectedOperaId));
+        codiceOperaField.setText(String.valueOf(selectedOperaId));
+        codiceOperaTabEdizioneField.setDisable(true);
+        disableOperaFields();
+    }
+
+    private void configureVolume() throws SQLException {
+        saveButton.setOnAction(event -> saveVolume());
+        saveButton.setText("Salva volume");
+
+        codiceEdizioneField.setText(String.valueOf(selectedEdizioneId));
+        disableEdizioneFields();
+        disableOperaFields();
     }
 
     private void configureForEdizione() throws SQLException {
@@ -181,6 +209,7 @@ public class AddBookController {
 
     private void disableEdizioneFields() {
         codiceEdizioneField.setDisable(true);
+        codiceOperaTabEdizioneField.setDisable(true);
         numeroEdizioneField.setDisable(true);
         editoreField.setDisable(true);
         annoEdizioneField.setDisable(true);
@@ -198,7 +227,6 @@ public class AddBookController {
         annoEdizioneField.clear();
         isbnField.clear();
         posizioneField.clear();
-        statoCombo.getSelectionModel().selectFirst();
     }
 
     private void resetEdizioneFields() {
@@ -210,7 +238,6 @@ public class AddBookController {
 
     private void resetVolumeFields() {
         posizioneField.clear();
-        statoCombo.getSelectionModel().selectFirst();
     }
 
     private void saveOpera() {
@@ -227,8 +254,15 @@ public class AddBookController {
             );
 
             int result = OperaService.addOpera(opera);
-            AlertUtil.showInfoAlert("Successo", "Opera aggiunta con ID: " + result, "");
-            closeWindow();
+            if(result >= 1) {
+                AlertUtil.showInfoAlert("Successo", "Opera aggiunta con ID: " + result, "");
+                tabEdizione.setDisable(false);
+                tabPane.getSelectionModel().select(tabEdizione);
+                selectedOperaId = result;
+                configureEdizione();
+            }else{
+                AlertUtil.showErrorAlert("Errore", "Impossibile salvare l'opera", null);
+            }
         } catch (Exception e) {
             handleSaveError(e);
         }
@@ -253,10 +287,14 @@ public class AddBookController {
                     0 // ID verrà generato dal DB
             );
 
-            boolean result = EdizioneService.aggiungiEdizione(edizione);
-            if (result) {
+            int result = EdizioneService.aggiungiEdizione(edizione);
+            if (result >= 1) {
                 AlertUtil.showInfoAlert("Successo", "Edizione aggiunta correttamente", "");
-                closeWindow();
+                tabVolume.setDisable(false);
+                tabPane.getSelectionModel().select(tabVolume);
+                selectedEdizioneId = result;
+                configureVolume();
+
             } else {
                 AlertUtil.showErrorAlert("Errore", "Impossibile salvare l'edizione", "");
             }
@@ -296,7 +334,7 @@ public class AddBookController {
                 );
 
                 // Prima salva la nuova edizione
-                if (!EdizioneService.aggiungiEdizione(edizione)) {
+                if (EdizioneService.aggiungiEdizione(edizione) == -1) {
                     AlertUtil.showErrorAlert("Errore", "Impossibile creare l'edizione", "");
                     return;
                 }
@@ -310,7 +348,7 @@ public class AddBookController {
             Volume volume = new Volume(
                     0, // ID verrà generato dal DB
                     edizione,
-                    statoCombo.getValue(),
+                    "disponibile",
                     posizioneField.getText()
             );
 
@@ -355,12 +393,6 @@ public class AddBookController {
         }
 
         isValid &= InputValidator.validateNotEmpty(posizioneField, "Posizione");
-
-        if (statoCombo.getValue() == null) {
-            AlertUtil.showErrorAlert("Errore", "Campo mancante", "Selezionare uno stato per il volume");
-            isValid = false;
-        }
-
         return isValid;
     }
 

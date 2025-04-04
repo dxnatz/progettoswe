@@ -137,7 +137,7 @@ public class AlertUtil {
         buttons.add(new ButtonType("Annulla", ButtonBar.ButtonData.CANCEL_CLOSE));
 
         alert.getButtonTypes().setAll(buttons);
-        styleAlert(alert);
+        //styleAlert(alert);
 
         Optional<ButtonType> result = alert.showAndWait();
         return result.isPresent() && !result.get().getButtonData().isCancelButton()
@@ -174,7 +174,7 @@ public class AlertUtil {
         alert.setHeaderText(header);
         alert.setContentText(content);
         removeContentIfEmpty(alert);
-        styleAlert(alert);
+        //styleAlert(alert);
         alert.showAndWait();
     }
 

@@ -125,7 +125,7 @@ public class InfoCommDAO {
                 "JOIN edizione e ON c.id_edizione = e.id_edizione " +
                 "LEFT JOIN prestito p ON p.id_utente = u.id_utente AND p.id_volume IN " +
                 "(SELECT id_volume FROM volume WHERE id_edizione = e.id_edizione) " +
-                "WHERE e.id_opera = ? " +
+                "WHERE e.id_opera = ? AND c.id_prestito IS NULL " +
                 "ORDER BY c.id_commento DESC";
 
         List<Commento> comments = new ArrayList<>();

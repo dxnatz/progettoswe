@@ -16,9 +16,9 @@ public class EdizioneService {
         return EdizioneDAO.getEdizioneByIsbn(isbn);
     }
 
-    public static boolean aggiungiEdizione(Edizione edizione) {
+    public static int aggiungiEdizione(Edizione edizione) {
         if (EdizioneDAO.existsEdizioneByIsbn(edizione.getIsbn())) {
-            return false; // ISBN già esistente
+            return -1; // ISBN già esistente
         }
         return EdizioneDAO.insertEdizione(edizione);
     }

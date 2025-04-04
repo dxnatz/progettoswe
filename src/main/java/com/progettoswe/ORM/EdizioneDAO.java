@@ -77,8 +77,8 @@ public class EdizioneDAO {
         return null;
     }
 
-    public static boolean insertEdizione(Edizione edizione) {
-        String query = "INSERT INTO edizione (isbn, anno_pubblicazione, editore, numero_edizione, id_opera) VALUES (?, ?, ?, ?, ?)";
+    public static int insertEdizione(Edizione edizione) {
+        String query = "INSERT INTO edizione (isbn, anno_pubblicazione, editore, numero_edizione, id_opera) VALUES (?, ?, ?, ?, ?) RETURNING id_edizione";
         try (Connection connection = DatabaseConnection.getConnection()) {
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, edizione.getIsbn());
@@ -87,11 +87,14 @@ public class EdizioneDAO {
             statement.setInt(4, edizione.getNumero());
             statement.setInt(5, edizione.getOpera().getId_opera());
 
-            return statement.executeUpdate() > 0;
+            ResultSet rs = statement.executeQuery();
+            if(rs.next()){
+                return rs.getInt("id_edizione");
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return false;
+        return -1;
     }
 
     public static boolean updateEdizione(Edizione edizione) {
