@@ -29,13 +29,29 @@ public class OpUserController {
     private final Catalogo catalogo = new Catalogo();
     private final ArrayList<Prestito> prestiti = new ArrayList<>();
 
+    private boolean useServerSideSearch = false;
+
+    @FXML
+    private void toggleSearchMode() {
+        useServerSideSearch = !useServerSideSearch;
+        String mode = useServerSideSearch ? "Server-side" : "Client-side";
+        AlertUtil.showInfoAlert("Modalità ricerca",
+                "Modalità ricerca cambiata a: " + mode,
+                "Ora le ricerche verranno effettuate " +
+                        (useServerSideSearch ? "sul server" : "localmente"));
+    }
+
     @FXML
     private void searchBooks() {
         String searchText = ricerca.getText().trim();
         if(searchText.isEmpty()) {
             BookService.stampaCatalogoBibliotecario(catalogo, listaCatalogo);
         } else {
-            BookService.searchBooksBibliotecario(catalogo, listaCatalogo, ricerca);
+            if(useServerSideSearch) {
+                BookService.searchBooksBibliotecario(catalogo, listaCatalogo, ricerca);
+            } else {
+                filterCatalogueList(searchText);
+            }
         }
     }
 
@@ -62,15 +78,6 @@ public class OpUserController {
             return;
         }
         App.setRoot("update_book");
-    }
-
-    @FXML
-    private void openReviewsWindow() {
-        String selectedItem = listaCatalogo.getSelectionModel().getSelectedItem();
-        if (selectedItem != null) {
-            //TODO
-            // Implementa la logica per visualizzare le recensioni
-        }
     }
 
     @FXML
@@ -215,5 +222,15 @@ public class OpUserController {
         // Stato iniziale pulsanti
         viewReviewsButton.setDisable(true);
         returnBookButton.setDisable(true);
+    }
+
+    private void filterCatalogueList(String searchText) {
+        ArrayList<String> filteredItems = new ArrayList<>();
+        for (String item : listaCatalogo.getItems()) {
+            if (item.toLowerCase().contains(searchText.toLowerCase())) {
+                filteredItems.add(item);
+            }
+        }
+        listaCatalogo.getItems().setAll(filteredItems);
     }
 }
