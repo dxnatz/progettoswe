@@ -6,17 +6,12 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.regex.Pattern;
 import com.progettoswe.App;
-import com.progettoswe.util.DatabaseConnection;
-
-import java.sql.Date;
+import com.progettoswe.model.Utente;
+import com.progettoswe.business_logic.UserService;
 
 
 public class RegistrationController {
@@ -30,13 +25,13 @@ public class RegistrationController {
     @FXML private DatePicker dataNascitaPicker;
     @FXML private TextField indirizzoTextField;
     @FXML private Button registerButton;
+    private Utente utente;
 
     //Espressioni di valdizaione dei campi
     private static final String EMAIL_REGEX = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$";
     private static final String CF_REGEX = "^[A-Z]{6}\\d{2}[A-Z]\\d{2}[A-Z]\\d{3}[A-Z]$";
     private static final String PASSWORD_REGEX = "^(?=.*\\d)(?=.*[-_+@$!%*?&]).{5,}$";
     private static final String PHONE_REGEX = "^\\+?[0-9]{8,15}$";
-
 
     @FXML
     private void switchToLogin() {
@@ -58,6 +53,7 @@ public class RegistrationController {
         LocalDate dataNascita = dataNascitaPicker.getValue();
         String indirizzo = indirizzoTextField.getText();
 
+        utente = new Utente(nome, cognome, codiceFiscale, mail, password, cellulare, dataNascita, indirizzo);
         registraUtente(nome, cognome, codiceFiscale, mail, password, cellulare, dataNascita, indirizzo);
     }
 
@@ -87,64 +83,6 @@ public class RegistrationController {
         return !dataNascita.isAfter(limiteMassimo) && !dataNascita.isBefore(limiteMinimo); //verifica se rientra tra 10 e 100 anni
     }
 
-    //metodo per verificare se l'email è già presente nel database
-    private static boolean emailEsistente(String email) {
-        String query = "SELECT count (*) FROM utente WHERE email = ?"; //query per contare il numero di email uguali a quella inserita
-
-        try (Connection conn = DatabaseConnection.getConnection()) {
-            PreparedStatement pstmt = conn.prepareStatement(query);
-            pstmt.setString(1, email); // imposto il parametro della query, sostituisco il ? con l'email
-
-            try(ResultSet rs = pstmt.executeQuery()) {
-                if (rs.next() && rs.getInt(1) > 0) {
-                    return true; //email trovata
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return false; //email non trovata
-    }
-
-    //metodo per verificare se il codice fiscale è già presente nel database
-    private static boolean cfEsistente(String cf) {
-        String query = "SELECT count (*) FROM utente WHERE cf = ?"; //query per contare il numero di codici fiscali uguali a quello inserito
-
-        try (Connection conn = DatabaseConnection.getConnection()) {
-            PreparedStatement pstmt = conn.prepareStatement(query);
-            pstmt.setString(1, cf); // imposto il parametro della query, sostituisco il ? con il codice fiscale
-
-            try(ResultSet rs = pstmt.executeQuery()) {
-                if (rs.next() && rs.getInt(1) > 0) {
-                    return true; //codice fiscale trovato
-                }
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return false; //codice fiscale non trovato
-    }
-
-    //metodo per verificare se il cellulare è già presente nel database
-    private static boolean cellulareEsistente(String cellulare) {
-        String query = "SELECT count (*) FROM utente WHERE cellulare = ?"; //query per contare il numero di numeri di cellulare uguali a quello inserito
-
-        try (Connection conn = DatabaseConnection.getConnection()) {
-            PreparedStatement pstmt = conn.prepareStatement(query);
-            pstmt.setString(1, cellulare); // imposto il parametro della query, sostituisco il ? con il numero di cellulare
-
-            try(ResultSet rs = pstmt.executeQuery()) {
-                if (rs.next() && rs.getInt(1) > 0) {
-                    return true; //numero di cellulare trovato
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return false; //numero di cellulare non trovato
-    }
-
     //metodo per registrare un nuovo utente nel database
     private boolean registraUtente(String nome, String cognome, String cf, String email, String password, String cellulare, LocalDate dataNascita, String indirizzo) {
 
@@ -155,30 +93,23 @@ public class RegistrationController {
             a.setTitle("Errore nella registrazione");
             a.showAndWait();
             return false;
-
-        }/*else if(email.length() < 5 || email.length() > 50 || email.contains(" ") || password.contains(" ") || password.length() < 5) { //controllo se email e password sono valide
-            Alert a = new Alert(AlertType.ERROR, "Email o password non validi\n\nL'email deve essere tra i 5 e i 50 caratteri\n\nLa password deve essere lunga almeno 5 caratteri\n\nNella email e nella password non devono essere presenti spazi");
-            a.setHeaderText("Informazioni mancanti");
-            a.setTitle("Errore nella registrazione");
-            a.showAndWait();
-            return false;
-        }*/
+        }
 
         //verifiche di validità dei campi
-        if(!isValidEmail(email)){
-            Alert a = new Alert(AlertType.ERROR, "Email non valida\n\nL'email deve essere valida e non deve contenere spazi (es. esempio@prova.com).");
-            a.setHeaderText("Registrazione fallita");
-            a.setTitle("Email non valida");
-            a.showAndWait();
-            emailTextField.clear();
-            return false;
-        }
         if(!isValidCf(cf)){
             Alert a = new Alert(AlertType.ERROR, "Codice fiscale non valido\n\nIl codice fiscale deve essere conforme e non deve contenere spazi.");
             a.setHeaderText("Registrazione fallita");
             a.setTitle("Codice fiscale non valido");
             a.showAndWait();
             codiceFiscaleTextField.clear();
+            return false;
+        }
+        if(!isValidEmail(email)){
+            Alert a = new Alert(AlertType.ERROR, "Email non valida\n\nL'email deve essere valida e non deve contenere spazi (es. esempio@prova.com).");
+            a.setHeaderText("Registrazione fallita");
+            a.setTitle("Email non valida");
+            a.showAndWait();
+            emailTextField.clear();
             return false;
         }
         if(!isValidPassword(password)){
@@ -205,9 +136,9 @@ public class RegistrationController {
             dataNascitaPicker.getEditor().clear();
             return false;
         }
-
+        
         //verifico se l'email è già presente nel database
-        if(emailEsistente(email)) {
+        if(UserService.emailEsistente(email)) {
             Alert a = new Alert(AlertType.ERROR, "Questa email è già stata utilizzata");
             a.setHeaderText("Registrazione fallita");
             a.setTitle("Errore nella registrazione");
@@ -217,7 +148,7 @@ public class RegistrationController {
         }
 
         //verifico se il codice fiscale è già presente nel database
-        if(cfEsistente(cf)) {
+        if(UserService.cfEsistente(cf)) {
             Alert a = new Alert(AlertType.ERROR, "Questo codice fiscale non può essere utilizzato\n\nÈ gia presente nel nostro database");
             a.setHeaderText("Registrazione fallita");
             a.setTitle("Errore nella registrazione");
@@ -227,7 +158,7 @@ public class RegistrationController {
         }
 
         //verifico se il numero di cellulare è già presente nel database
-        if(cellulareEsistente(cellulare)) {
+        if(UserService.cellulareEsistente(cellulare)) {
             Alert a = new Alert(AlertType.ERROR, "Questo numero di cellulare non può essere utilizzato\n\nÈ gia presente nel nostro database");
             a.setHeaderText("Registrazione fallita");
             a.setTitle("Errore nella registrazione");
@@ -236,38 +167,20 @@ public class RegistrationController {
             return false;
         }
 
-        //query per inserire un nuovo utente nel database
-        String query = "INSERT INTO utente (nome, cognome, cf, email, pw, cellulare, data_nascita, indirizzo) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-
-        try(Connection conn = DatabaseConnection.getConnection()) {
-            PreparedStatement pstmt = conn.prepareStatement(query);
-            //imposto i parametri della query
-            Date sqlDate = Date.valueOf(dataNascita);
-            pstmt.setString(1, nome);
-            pstmt.setString(2, cognome);
-            pstmt.setString(3, cf);
-            pstmt.setString(4, email);
-            pstmt.setString(5, password);
-            pstmt.setString(6, cellulare);
-            pstmt.setDate(7, sqlDate);
-            pstmt.setString(8, indirizzo);
-
-            int rowsInserted = pstmt.executeUpdate(); //eseguo la query
+        if(UserService.inserimentoUtente(utente)) {
             Alert a = new Alert(AlertType.INFORMATION, "Ti sei registrato con successo, verrai reindirizzato alla pagina di login");
             a.setHeaderText("Registrazione avvenuta con successo");
             a.setTitle("Registrazione avvenuta");
             a.showAndWait();
             switchToLogin();
-            return rowsInserted > 0; //restituisce true se l'utente è stato registrato con successo
-
-        } catch (SQLException e) {
-            e.printStackTrace();
+            return true; //se l'utente è stato registrato con successo
+        }else{
+            Alert a = new Alert(AlertType.ERROR, "Errore non previsto nella registrazione");
+            a.setHeaderText("Registrazione fallita");
+            a.setTitle("Errore nella registrazione");
+            a.showAndWait();
+            return false; //se non è stato possibile registrare l'utente a causa di un errore
         }
-        Alert a = new Alert(AlertType.ERROR, "Errore non previsto nella registrazione");
-        a.setHeaderText("Registrazione fallita");
-        a.setTitle("Errore nella registrazione");
-        a.showAndWait();
-        return false; //se non è stato possibile registrare l'utente a causa di un errore
     }
 
 }

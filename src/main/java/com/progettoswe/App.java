@@ -7,8 +7,6 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.util.Dictionary;
-import java.util.Hashtable;
 
 /**
  * JavaFX App
@@ -16,12 +14,11 @@ import java.util.Hashtable;
 public class App extends Application {
 
     private static Scene scene;
-    protected static Dictionary<String, String> users = new Hashtable<String, String>();
 
 
     @Override
     public void start(Stage stage) throws IOException {
-        scene = new Scene(loadFXML("login"), 640, 480);
+        scene = new Scene(loadFXML("login"), 1000, 600);
         stage.setScene(scene);
         stage.show();
     }

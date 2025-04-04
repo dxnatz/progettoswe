@@ -5,13 +5,10 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import com.progettoswe.util.DatabaseConnection;
 import java.io.IOException;
 import com.progettoswe.App;
+import com.progettoswe.model.Session;
+import com.progettoswe.business_logic.UserService;
 
 
 public class LoginController {
@@ -39,86 +36,40 @@ public class LoginController {
     private void handleLogin() {
         String mail = emailTextField.getText();
         String password = passwordTextField.getText();
-        
+        Session.setUserEmail(mail);
         authenticate(mail, password);
     }
 
-    private boolean authenticate(String email, String password) {
+    private void authenticate(String email, String password) {
 
         if (email.isEmpty() || password.isEmpty()) {
             Alert a = new Alert(AlertType.ERROR, "Inserisci email e password");
             a.setHeaderText("Errore di accesso");
             a.setTitle("Errore durante l'accesso");
             a.showAndWait();
-            return false;
-            
+            return;
         }
 
-        String query = "SELECT count(*) FROM utente WHERE email = ? AND pw = ?";
-
-        try (Connection connection = DatabaseConnection.getConnection()){
-
-            PreparedStatement preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setString(1, email);
-            preparedStatement.setString(2, password);
-
-            try(ResultSet rs = preparedStatement.executeQuery()) {
-
-                if (rs.next() && rs.getInt(1) > 0) {
-                    try {
-                        switchToHomePage();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    return true; 
-                }
-                throw new SQLException();
-            } 
-            catch (SQLException e) {
-
-                if(emailCorrettaPasswordErrata(email, password)){
-                    Alert a = new Alert(AlertType.ERROR, "Password errata\n\nReinseriscila");
-                    a.setHeaderText("Errore di accesso");
-                    a.setTitle("Errore durante l'accesso");
-                    a.showAndWait();
-                    passwordTextField.clear();
-
-                } else {
-                    Alert a = new Alert(AlertType.INFORMATION, "Email non registrata nel nostro sistema\n\nRegistrati per accedere");
-                    a.setHeaderText("Errore di accesso");
-                    a.setTitle("Errore durante l'accesso");
-                    a.showAndWait();
-                    emailTextField.clear();
-                    passwordTextField.clear();
-                }
+        if(UserService.login(email, password)) {
+            try {
+                switchToHomePage();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } else if(UserService.checkPassword(email, password)) {
+            Alert a = new Alert(AlertType.ERROR, "La password inserta è errata");
+            a.setHeaderText("Errore di accesso");
+            a.setTitle("Errore durante l'accesso");
+            a.showAndWait();
+            passwordTextField.clear();
+        }else{
+            Alert a = new Alert(AlertType.ERROR, "L'email e la password non sono corretti\n\nSe non sei ancora registrato, fallo ora!");
+            a.setHeaderText("Errore di accesso");
+            a.setTitle("Errore durante l'accesso");
+            a.showAndWait();
+            emailTextField.clear();
+            passwordTextField.clear();
         }
-        return false;
-    }
-
-    private boolean emailCorrettaPasswordErrata(String email, String password) {
-
-        String query = "SELECT count(*) FROM utente WHERE email = ? AND pw != ?";
-
-        try (Connection connection = DatabaseConnection.getConnection()){
-            
-            PreparedStatement preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setString(1, email);
-            preparedStatement.setString(2, password);
-
-            try(ResultSet rs = preparedStatement.executeQuery()) {
-                if (rs.next() && rs.getInt(1) > 0) {
-                    return false; 
-                }
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return true;
     }
 
 }

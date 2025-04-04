@@ -1,107 +1,70 @@
 package com.progettoswe.model;
-import java.util.Date;
-import java.util.Calendar;
+import com.progettoswe.ORM.LoanDAO;
+
+import java.time.LocalDate;
 
 public class Prestito {
-    private int id;
+    private int id_prestito;
+    private Volume volume;
     private Utente utente;
-    private Libro libro;
-    private Date dataPrenotazione;
-    private Date scadenzaPrestito;
-    private int numeroRinnovi;
-    private boolean ritirato;
-    private boolean restituito;
-    private Date scadenzaRitiro;
-    private Date dataRitiro;
+    private LocalDate dataInizio;
+    private Boolean restituito;
+    private int num_rinnovi;
 
-    public Prestito(int id, Utente utente, Libro libro, Date dataPrenotazione) {
-        this.id = id;
+    //costruttore con id_prestito, dataInizio e restituito (usato quando leggiamo i dati dal database)
+    public Prestito(int id_prestito, Volume volume, Utente utente, LocalDate dataInizio, Boolean restituito, int num_rinnovi) {
+        this.id_prestito = id_prestito;
+        this.volume = volume;
         this.utente = utente;
-        this.libro = libro;
-        this.dataPrenotazione = dataPrenotazione;
-        this.scadenzaPrestito = null;
-        this.numeroRinnovi = 0;
-        this.ritirato = false;
-        this.restituito = false;
-        
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(dataPrenotazione);
-        calendar.add(Calendar.DAY_OF_YEAR, 7); //user has 7 days to pick up the book from the library
-        this.scadenzaRitiro = calendar.getTime();
-
-        this.dataRitiro = null;
+        this.dataInizio = dataInizio;
+        this.restituito = restituito;
+        this.num_rinnovi = num_rinnovi;
     }
 
-    public int getId() {
-        return id;
+    //costruttore senza id_prestito, dataInizio e restituito (usato quando creiamo un nuovo oggetto)
+    public Prestito(Volume volume, Utente utente) {
+        this.volume = volume;
+        this.utente = utente;
+        this.num_rinnovi = 0;
+    }
+
+    public int getId_prestito() {
+        return id_prestito;
+    }
+
+    public Volume getVolume() {
+        return volume;
     }
 
     public Utente getUtente() {
         return utente;
     }
 
-    public Libro getLibro() {
-        return libro;
+    public LocalDate getDataInizio() {
+        return dataInizio;
     }
 
-    public Date getDataPrenotazione() {
-        return dataPrenotazione;
-    }
-
-    public Date getScadenzaPrestito() {
-        return scadenzaPrestito;
-    }
-
-    public int getNumeroRinnovi() {
-        return numeroRinnovi;
-    }
-
-    public boolean isRitirato() {
-        return ritirato;
-    }
-
-    public boolean isRestituito() {
+    public Boolean getRestituito() {
         return restituito;
     }
 
-    public Date getScadenzaRitiro() {
-        return scadenzaRitiro;
+    public int getNum_rinnovi() {
+        return num_rinnovi;
     }
+    //toString
+    @Override
+    public String toString() {
+        String s;
+        LocalDate dataFine;
 
-    public Date getDataRitiro() {
-        return dataRitiro;
-    }
-
-    public void ritirato(){
-        if(!ritirato){
-            dataRitiro = new Date();
-
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(dataRitiro);
-            calendar.add(Calendar.DAY_OF_YEAR, 30); //user has 30 days to return the book to the library
-            scadenzaPrestito = calendar.getTime();
-
-            ritirato = true;
-            libro.setDisponibile(false);
+        if(LoanDAO.rinnovi(this.getVolume().edizione().getIsbn()) == 2){
+            dataFine = this.getDataInizio().plusDays(60);
+        }else if(LoanDAO.rinnovi(this.getVolume().edizione().getIsbn()) == 1){
+            dataFine = this.getDataInizio().plusDays(45);
+        }else{
+            dataFine = this.getDataInizio().plusDays(30);
         }
-    }
-
-    public void restituito(){
-        if(ritirato && !restituito){
-            restituito = true;
-            libro.setDisponibile(true);
-        }
-    }
-
-    //handle with exceptions
-    public void rinnovaPrestito(){
-        if(ritirato && !restituito && numeroRinnovi < 3){
-            numeroRinnovi++;
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(scadenzaPrestito);
-            calendar.add(Calendar.DAY_OF_YEAR, 30); // add 30 days to the current scadenzaPrestito
-            scadenzaPrestito = calendar.getTime();
-
-        }
+        s = this.getVolume().edizione().getOpera().getTitolo() + " - " + this.getVolume().edizione().getNumero() + " edizione - " + this.getVolume().edizione().getEditore() + " - " + this.getVolume().edizione().getOpera().getAutore() + " - Da restituire entro il: " + dataFine + " - " + this.getId_prestito();
+        return s;
     }
 }

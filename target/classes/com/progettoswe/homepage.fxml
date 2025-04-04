@@ -1,34 +1,59 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.collections.FXCollections?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-
+<?import java.lang.String?>
 <BorderPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.progettoswe.controller.HomePageController">
-    
+            fx:controller="com.progettoswe.controller.HomePageController" style="-fx-background-color: transparent;">
+
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+
     <top>
-        <HBox spacing="10" alignment="CENTER">
-            <TextField fx:id="searchField" promptText="Cerca per titolo, autore..."/>
-            <Button text="Cerca" onAction="#searchBooks"/>
-            <Button text="Logout" onAction="#logout"/>
+        <HBox spacing="10" alignment="CENTER" style="-fx-background-color: white;">
+            <HBox spacing="10" alignment="CENTER_LEFT" HBox.hgrow="ALWAYS">
+                <TextField fx:id="ricerca" promptText="Cerca per titolo, autore..." style="-fx-control-inner-background: #f8f9fa; -fx-background-radius: 6; -fx-border-radius: 6; -fx-border-color: #e9ecef; -fx-border-width: 1; -fx-pref-height: 38; -fx-font-size: 13; -fx-padding: 0 12;"/>
+                <Button text="Cerca" onAction="#searchBooks" style="-fx-background-color: #4361ee; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 6; -fx-pref-height: 38; -fx-font-size: 13; -fx-cursor: hand;"/>
+            </HBox>
+            <HBox spacing="10" alignment="CENTER_RIGHT" HBox.hgrow="ALWAYS">
+                <Button text="Profilo" onAction="#visualizzaProfilo" style="-fx-background-color: transparent; -fx-text-fill: #6c757d; -fx-font-weight: bold; -fx-border-color: #e9ecef; -fx-border-width: 1; -fx-border-radius: 6; -fx-background-radius: 6; -fx-pref-height: 38; -fx-font-size: 13; -fx-cursor: hand;"/>
+            </HBox>
         </HBox>
     </top>
-    
+
     <center>
-        <HBox spacing="5">
-            <VBox spacing="10" HBox.hgrow="ALWAYS">
-                <Label text="Catalogo Libri"/>
-                <ListView fx:id="catalogList" VBox.vgrow="ALWAYS"/>
-            </VBox>
-            <VBox spacing="10" HBox.hgrow="ALWAYS">
-                <Label text="Prestiti Attivi"/>
-                <ListView fx:id="loansSection" VBox.vgrow="ALWAYS"/>
-                <HBox spacing="5">
-                    <Button text="Prolunga Prestito" onAction="#extendLoan"/>
-                    <Button text="Cancella Prestito" onAction="#cancelLoan"/>
+        <HBox spacing="20" alignment="CENTER" style="-fx-background-color: white; -fx-background-radius: 10;">
+
+            <VBox spacing="10" HBox.hgrow="ALWAYS" style="-fx-pref-width: 50%;">
+                <Label text="Catalogo Libri" style="-fx-text-fill: #495057; -fx-font-size: 14; -fx-font-weight: bold;"/>
+                <ListView fx:id="listaCatalogo" VBox.vgrow="ALWAYS"/>
+                <HBox spacing="5" style="-fx-padding: 0;">
+                    <Button text="Prenota" fx:id="btnPrenota" onAction="#prenotaLibro" style="-fx-background-color: #4361ee; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 6; -fx-pref-height: 38; -fx-font-size: 13; -fx-cursor: hand;"/>
+                    <Button fx:id="btnInfoComm" text="Informazioni-Commenti" onAction="#visualizzaInfoComm" style="-fx-background-color: transparent; -fx-text-fill: #6c757d; -fx-font-weight: bold; -fx-border-color: #e9ecef; -fx-border-width: 1; -fx-border-radius: 6; -fx-background-radius: 6; -fx-pref-height: 38; -fx-font-size: 13; -fx-cursor: hand;"/>
                 </HBox>
             </VBox>
+
+            <VBox spacing="10" HBox.hgrow="ALWAYS" style="-fx-pref-width: 50%;">
+                <ComboBox fx:id="filtroPrestiti" onAction="#filtraPrestiti">
+                    <items>
+                        <FXCollections fx:factory="observableArrayList">
+                        </FXCollections>
+                    </items>
+                </ComboBox>
+                <ListView fx:id="listaPrestiti" VBox.vgrow="ALWAYS"/>
+                <HBox spacing="5" style="-fx-padding: 0;">
+                    <AnchorPane HBox.hgrow="ALWAYS">
+                        <Button fx:id="btnProlungaPrestito" text="Prolunga Prestito" onAction="#extendLoan" AnchorPane.leftAnchor="0" style="-fx-background-color: #4361ee; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 6; -fx-pref-height: 38; -fx-font-size: 13; -fx-cursor: hand;"/>
+                        <Button fx:id="btnCancellaPrestito" text="Cancella Prestito" onAction="#cancellaPrestito" AnchorPane.leftAnchor="120" style="-fx-background-color: transparent; -fx-text-fill: #6c757d; -fx-font-weight: bold; -fx-border-color: #e9ecef; -fx-border-width: 1; -fx-border-radius: 6; -fx-background-radius: 6; -fx-pref-height: 38; -fx-font-size: 13; -fx-cursor: hand;"/>
+                        <Button fx:id="btnCommentaVolume" text="Commenta volume" onAction="#commentaVolume" AnchorPane.rightAnchor="0" style="-fx-background-color: transparent; -fx-text-fill: #6c757d; -fx-font-weight: bold; -fx-border-color: #e9ecef; -fx-border-width: 1; -fx-border-radius: 6; -fx-background-radius: 6; -fx-pref-height: 38; -fx-font-size: 13; -fx-cursor: hand;"/>
+                    </AnchorPane>
+                </HBox>
+            </VBox>
+
         </HBox>
     </center>
 
-    
 </BorderPane>

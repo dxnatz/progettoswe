@@ -1,29 +1,46 @@
 package com.progettoswe.model;
-import java.util.ArrayList;
+import java.time.LocalDate;
 
 public class Utente {
-    private int id;
+    private int id_utente;
     private String nome;
     private String cognome;
+    private String cf;
     private String email;
     private String cellulare;
     private String password;
-    private ArrayList<Libro> preferiti;
-    private ArrayList<Prestito> prestiti;
+    private LocalDate dataNascita;
+    private String indirizzo;
+    private LocalDate dataRegistrazione;
 
-    public Utente(int id, String nome, String cognome, String email, String cellulare, String password) {
-        this.id = id;
+    //costruttore con id_utente e dataRegistrazione (usato quando leggiamo i dati dal database)
+    public Utente(int id_utente, String nome, String cognome, String cf, String email, String password, String cellulare, LocalDate dataNascita, String indirizzo, LocalDate dataRegistrazione) {
+        this.id_utente = id_utente;
         this.nome = nome;
         this.cognome = cognome;
+        this.cf = cf;
         this.email = email;
         this.cellulare = cellulare;
         this.password = password;
-        this.preferiti = new ArrayList<Libro>();
-        this.prestiti = new ArrayList<Prestito>();
+        this.dataNascita = dataNascita;
+        this.indirizzo = indirizzo;
+        this.dataRegistrazione = dataRegistrazione;
     }
 
-    public int getId() {
-        return id;
+    //costruttore senza id_utente e dataRegistrazione (usato quando creiamo un nuovo oggetto)
+    public Utente(String nome, String cognome, String cf, String email, String password, String cellulare, LocalDate dataNascita, String indirizzo) {
+        this.nome = nome;
+        this.cognome = cognome;
+        this.cf = cf;
+        this.email = email;
+        this.cellulare = cellulare;
+        this.password = password;
+        this.dataNascita = dataNascita;
+        this.indirizzo = indirizzo;
+    }
+
+    public int getId_utente() {
+        return id_utente;
     }
 
     public String getNome() {
@@ -46,26 +63,35 @@ public class Utente {
         return password;
     }
 
-    public void aggiungiPreferito(Libro libro){
-        if(!preferiti.contains(libro)){
-            preferiti.add(libro);
-        }
+    public LocalDate getDataNascita() {
+        return dataNascita;
     }
 
-    public void aggiungiPrestito(Prestito prestito){
-        prestiti.add(prestito);
+    public String getCodiceFiscale() {
+        return cf;
     }
 
-    public void rimuoviLibroDaPreferiti(Libro libro) {
-        preferiti.remove(libro);
+    public String getIndirizzo() {
+        return indirizzo;
     }
 
-    public ArrayList<Libro> getListaPreferiti() {
-        return preferiti;
+    public LocalDate getDataRegistrazione() {
+        return dataRegistrazione;
     }
 
-    public ArrayList<Prestito> getPrestiti() {
-        return prestiti;
+    public void setNome(String nome) {
+        this.nome = nome;
     }
 
+    public void setCognome(String cognome) {
+        this.cognome = cognome;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
 }

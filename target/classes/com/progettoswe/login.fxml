@@ -3,19 +3,46 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.geometry.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.shape.*?>
 
+<VBox alignment="CENTER" spacing="25" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.progettoswe.controller.LoginController" style="-fx-background-color: #f8f9fa;">
 
-<VBox alignment="CENTER" spacing="10.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.progettoswe.controller.LoginController">
-      <Label text="LOGIN" style="-fx-font-weight: bold; -fx-font-size: 25px;"/>
-      <HBox alignment="CENTER" spacing="10.0">
-         <TextField fx:id="emailTextField" promptText="E-Mail" prefWidth="150"/>
-         <PasswordField fx:id="passwordTextField" promptText="Password" prefWidth="150" />
-         <Button fx:id="loginButton" text="Login" onAction="#handleLogin"/>
-         <Button fx:id="registrateButton" text="Registrate" onAction="#switchToRegistrate"/>
-      </HBox>
-   <padding>
-      <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
-   </padding>
+    <!-- Header -->
+    <VBox alignment="CENTER" spacing="10">
+        <StackPane>
+            <Rectangle width="60" height="60" arcWidth="15" arcHeight="15" fill="#4361ee">
+                <effect>
+                    <InnerShadow color="#3a0ca3" radius="5"/>
+                </effect>
+            </Rectangle>
+            <Label text="LMS" style="-fx-font-weight: bold; -fx-text-fill: white; -fx-font-size: 18;"/>
+        </StackPane>
+
+        <Label text="Accedi al tuo account" style="-fx-text-fill: #495057; -fx-font-size: 16;"/>
+    </VBox>
+
+    <!-- Form Container -->
+    <VBox alignment="CENTER" spacing="15" style="-fx-background-color: white; -fx-background-radius: 12; -fx-max-width: 700; -fx-padding: 30 200 30 200; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 15, 0, 0, 5);">
+        <TextField fx:id="emailTextField" promptText="Email" style="-fx-background-radius: 8; -fx-border-radius: 8; -fx-border-color: #e9ecef; -fx-border-width: 1; -fx-pref-height: 40; -fx-max-width: 450; -fx-font-size: 14; -fx-padding: 0 10;"/>
+
+        <PasswordField fx:id="passwordTextField" promptText="Password" style="-fx-background-radius: 8; -fx-border-radius: 8; -fx-border-color: #e9ecef; -fx-border-width: 1; -fx-pref-height: 40; -fx-max-width: 450; -fx-font-size: 14; -fx-padding: 0 10;"/>
+
+        <Button fx:id="loginButton" text="Accedi" onAction="#handleLogin" style="-fx-background-color: #4361ee; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8; -fx-pref-width: 200; -fx-pref-height: 40; -fx-font-size: 14; -fx-cursor: hand;">
+            <effect>
+                <DropShadow color="#4361ee80" radius="8" spread="0.2"/>
+            </effect>
+        </Button>
+    </VBox>
+
+    <!-- Footer -->
+    <HBox alignment="CENTER" spacing="5">
+        <Label text="Non hai un account?" style="-fx-text-fill: #6c757d; -fx-font-size: 13;"/>
+        <Button fx:id="registrateButton" text="Registrati" onAction="#switchToRegistrate" style="-fx-background-color: transparent; -fx-text-fill: #4361ee; -fx-font-weight: bold; -fx-underline: true; -fx-padding: 0; -fx-cursor: hand;"/>
+    </HBox>
+
+    <padding>
+        <Insets bottom="40" left="40" right="40" top="40"/>
+    </padding>
 </VBox>
-
-
