@@ -43,6 +43,13 @@
                 </effect>
             </Button>
 
+            <Button fx:id="reviewsButton" text="Vedi Recensioni" onAction="#handleReviews" disable="true" visible="false"
+                    style="-fx-background-color: #4cc9f0; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8; -fx-pref-width: 135; -fx-pref-height: 40; -fx-font-size: 14; -fx-cursor: hand;">
+                <effect>
+                    <DropShadow color="#4cc9f080" radius="8" spread="0.2"/>
+                </effect>
+            </Button>
+
             <Button fx:id="editButton" text="Modifica" onAction="#handleEdit" disable="true"
                     style="-fx-background-color: #4cc9f0; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8; -fx-pref-width: 135; -fx-pref-height: 40; -fx-font-size: 14; -fx-cursor: hand;">
                 <effect>

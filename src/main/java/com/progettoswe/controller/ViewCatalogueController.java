@@ -4,6 +4,7 @@ import com.progettoswe.App;
 import com.progettoswe.business_logic.OperaService;
 import com.progettoswe.model.Edizione;
 import com.progettoswe.model.Opera;
+import com.progettoswe.model.Session;
 import com.progettoswe.model.Volume;
 import com.progettoswe.business_logic.EdizioneService;
 import com.progettoswe.business_logic.VolumeService;
@@ -32,16 +33,22 @@ public class ViewCatalogueController {
     @FXML private TextField searchField;
     @FXML private Button deleteButton;
     @FXML private Button editButton;
+    @FXML private Button reviewsButton;
 
     @FXML
     public void initialize() {
         loadItems();
         setupSearchListener();
 
+        boolean showReviews = whatToView.equals(SHOW_OPERE);
+        reviewsButton.setVisible(showReviews);
+        reviewsButton.setManaged(showReviews);
+
         itemsListView.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
             boolean isSelected = newVal != null;
             deleteButton.setDisable(!isSelected);
             editButton.setDisable(!isSelected);
+            reviewsButton.setDisable(!isSelected);
         });
     }
 
@@ -155,7 +162,20 @@ public class ViewCatalogueController {
         loadItems();
     }
 
-    //TODO: Implementa la funzionalità di eliminazione
+    @FXML
+    private void handleReviews() throws IOException {
+        if(!whatToView.equals(SHOW_OPERE)) return;
+
+        String selectedItem = itemsListView.getSelectionModel().getSelectedItem();
+        if (selectedItem == null) return;
+
+        int id = Integer.parseInt(selectedItem.split(" - ")[0].trim());
+        String title = selectedItem.split(" - ")[1].trim();
+        ViewCommentsController.setOperaTitle(title);
+        ViewCommentsController.setOperaId(id);
+        App.setRoot("view_comments");
+    }
+
     @FXML
     private void handleDelete() throws SQLException {
         if(whatToView == null) return;
