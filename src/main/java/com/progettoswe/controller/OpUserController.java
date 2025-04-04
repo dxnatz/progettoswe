@@ -21,7 +21,6 @@ public class OpUserController {
     @FXML private TextField ricerca;
     @FXML private TextField ricercaPrestito;
     @FXML private ListView<String> listaCatalogo;
-    @FXML private Button viewReviewsButton;
     @FXML private ListView<String> listaPrestiti;
     @FXML private Button returnBookButton;
 
@@ -206,11 +205,7 @@ public class OpUserController {
 
     @FXML
     private void initialize() {
-        // Setup listeners
-        listaCatalogo.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
-            viewReviewsButton.setDisable(newVal == null);
-        });
-
+        // Setup listener
         listaPrestiti.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
             returnBookButton.setDisable(newVal == null);
         });
@@ -219,8 +214,7 @@ public class OpUserController {
         BookService.stampaCatalogoBibliotecario(catalogo, listaCatalogo);
         LoanService.stampaTuttiPrestiti(prestiti, listaPrestiti);
 
-        // Stato iniziale pulsanti
-        viewReviewsButton.setDisable(true);
+        // Stato iniziale pulsante
         returnBookButton.setDisable(true);
     }
 

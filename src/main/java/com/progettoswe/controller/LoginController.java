@@ -47,24 +47,16 @@ public class LoginController {
     }
 
     private void loginByEmailType(String email) throws IOException {
-        if(!email.endsWith(Session.ADMIN_EMAIL)){
-            switchToHomePage();
-        }else{
+        //TODO: decidere se tenere admin
+        if(email.endsWith(Session.ADMIN_EMAIL) || email.toLowerCase().equals("admin")){
             switchToOpUser();
+        }else{
+            switchToHomePage();
         }
     }
 
     private void authenticate(String email, String password) {
         email = email.trim();
-        //TODO: serve solo per testing, togliere dopo
-        if(email.equals("admin")){
-            try {
-                switchToOpUser();
-                return;
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }
 
         if (!InputValidator.validateNotEmpty(emailTextField, "Email")
         || !InputValidator.validateNotEmpty(passwordTextField, "Password")) {

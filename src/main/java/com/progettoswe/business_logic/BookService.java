@@ -5,6 +5,7 @@ import com.progettoswe.model.Catalogo;
 import com.progettoswe.model.Edizione;
 import com.progettoswe.model.Opera;
 import com.progettoswe.model.Volume;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 
@@ -13,13 +14,27 @@ public class BookService {
 
     private static void aggiornaCatalogoBibliotecario(Catalogo catalogo, ListView<String> listaCatalogo) {
         listaCatalogo.getItems().clear();
+        listaCatalogo.setCellFactory(lv -> new ListCell<String>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                    setStyle("");
+                } else {
+                    setText(item);
+                    if (item.contains("Non disponibile")) {
+                        setStyle("-fx-text-fill: red;");
+                    } else {
+                        setStyle("-fx-text-fill: black;");
+                    }
+                }
+            }
+        });
 
         for (Volume volume : catalogo.getVolumi()) {
-            String statoDisponibile = "Non disponibile"; // Default "Non disponibile"
-            boolean disponibile = BookDAO.operaDisponibile(volume.getEdizione().getIsbn());
-            if (disponibile) {
-                statoDisponibile = "Disponibile"; // Se c'è almeno una copia disponibile
-            }
+            String statoDisponibile = BookDAO.operaDisponibile(volume.getEdizione().getIsbn())
+                    ? "Disponibile" : "Non disponibile";
 
             String editore = volume.getEdizione().getEditore();
             int numeroEdizione = volume.getEdizione().getNumero();
@@ -28,11 +43,10 @@ public class BookService {
             int codiceOpera = volume.getEdizione().getOpera().getId_opera();
             int codice_edizione = volume.getEdizione().getId_edizione();
 
-            // Aggiungi la stringa con il titolo, autore e stato
-            listaCatalogo.getItems().add(codiceOpera + " - " + titolo + " - " + codice_edizione + " - " + numeroEdizione + " edizione - " + editore + " - " + autore + " - " + statoDisponibile);
+            listaCatalogo.getItems().add(codiceOpera + " - " + titolo + " - " + codice_edizione +
+                    " - " + numeroEdizione + " edizione - " + editore + " - " + autore + " - " + statoDisponibile);
         }
     }
-
     private static void aggiornaCatalogo(Catalogo catalogo, ListView<String> listaCatalogo) {
         listaCatalogo.getItems().clear();
 

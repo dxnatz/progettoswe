@@ -5,6 +5,7 @@ import com.progettoswe.ORM.LoanDAO;
 import com.progettoswe.model.Prestito;
 import com.progettoswe.model.Session;
 import com.progettoswe.model.Utente;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 
 import java.time.LocalDate;
@@ -44,7 +45,7 @@ public class LoanService {
                 prestito.getVolume().getEdizione().getNumero(),
                 prestito.getVolume().getEdizione().getEditore(),
                 prestito.getUtente().getId_utente(),
-                prestito.getRestituito() ? "restituito" : "in prestito",
+                prestito.getRestituito() ? "restituito" : "da restituire",
                 calculateDueDate(prestito)
         );
     }
@@ -84,6 +85,26 @@ public class LoanService {
         prestiti.clear();
         prestiti.addAll(loadedPrestiti);
         Utente utente = Session.getUtente();
+
+        // Configura la cell factory per colorare i prestiti da restituire in rosso
+        listaPrestiti.setCellFactory(lv -> new ListCell<String>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                    setStyle("");
+                } else {
+                    setText(item);
+                    if (item.contains("da restituire")) {
+                        setStyle("-fx-text-fill: red;");
+                    } else {
+                        setStyle("-fx-text-fill: black;");
+                    }
+                }
+            }
+        });
+
         listaPrestiti.getItems().clear();
         for (Prestito prestito : prestiti) {
             String titolo = prestito.getVolume().getEdizione().getOpera().getTitolo();
@@ -94,12 +115,9 @@ public class LoanService {
             LocalDate dataFine;
             String isbn = prestito.getVolume().getEdizione().getIsbn();
             boolean restituito = prestito.getRestituito();
-            String r = "da restituire";
-            if (restituito) {
-                r = "restituito";
-            }
+            String stato = restituito ? "restituito" : "da restituire";
 
-            Session.setUtente(prestito.getUtente());
+            // Calcola la data di scadenza in base ai rinnovi
             if (LoanDAO.rinnovi(isbn) == 2) {
                 dataFine = prestito.getDataInizio().plusDays(60);
             } else if (LoanDAO.rinnovi(isbn) == 1) {
@@ -107,12 +125,18 @@ public class LoanService {
             } else {
                 dataFine = prestito.getDataInizio().plusDays(30);
             }
-            listaPrestiti.getItems().add(id_prestito + " - " + titolo + " - " + numero_edizione + " edizione - " + editore + " - " + autore + " - Data fine prestito: " + dataFine + " - Stato: " + r);
+
+            // Formatta la stringa del prestito
+            String prestitoString = String.format(
+                    "%d - %s - %d edizione - %s - %s - Data fine prestito: %s - Stato: %s",
+                    id_prestito, titolo, numero_edizione, editore, autore, dataFine, stato
+            );
+
+            listaPrestiti.getItems().add(prestitoString);
         }
         Session.setUtente(utente);
     }
 
-    //aggiornato
     public static boolean prenotaLibro(String selectedBook) {
         if(selectedBook != null){
             String [] bookDetails = selectedBook.split(" - ");
