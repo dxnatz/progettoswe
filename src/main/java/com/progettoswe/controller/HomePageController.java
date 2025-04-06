@@ -33,6 +33,7 @@ public class HomePageController {
     @FXML private ComboBox<String> filtroPrestiti;
     @FXML private Button btnCommentaVolume;
     Catalogo catalogo = new Catalogo();
+    private String ricercaAttiva = "";
     //ArrayList<Prestito> prestiti = new ArrayList<>();
 
     public void initialize() {
@@ -74,12 +75,16 @@ public class HomePageController {
             }
         });
 
-        // Timeline per aggiornare la pagina ogni 20 secondi
-        Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(20), event -> {
+        // Timeline per aggiornare la pagina ogni 25 secondi
+        Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(25), event -> {
             listaCatalogo.getItems().clear();
             listaPrestiti.getItems().clear();
             stampaCatalogo();
             filtraPrestiti();
+            if (!ricercaAttiva.isEmpty()) {
+                BookService.searchBooks(catalogo, listaCatalogo, ricerca);
+            }
+            System.out.println("Catalogo e prestiti aggiornati.");
         }));
         timeline.setCycleCount(Timeline.INDEFINITE);
         timeline.play();
@@ -99,6 +104,7 @@ public class HomePageController {
 
     @FXML
     private void searchBooks() {
+        ricercaAttiva = ricerca.getText();
         BookService.searchBooks(catalogo, listaCatalogo, ricerca);
     }
 

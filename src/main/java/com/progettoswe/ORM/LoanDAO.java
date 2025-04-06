@@ -344,7 +344,7 @@ public class LoanDAO {
             ResultSet resultSet = statement.executeQuery();
             if(resultSet.next()){
                 int num_prestiti = resultSet.getInt(1);
-                return num_prestiti >= 3;
+                return num_prestiti >= 3; // Se il numero di prestiti è maggiore o uguale a 3, ritorna true
             }
 
         }catch(SQLException e){
