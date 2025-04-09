@@ -7,4 +7,6 @@ module com.progettoswe {
 
     opens com.progettoswe.controller to javafx.fxml;
     exports com.progettoswe;
+    exports com.progettoswe.model;
+
 }

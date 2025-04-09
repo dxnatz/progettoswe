@@ -15,16 +15,20 @@ public class App extends Application {
 
     private static Scene scene;
 
-
     @Override
     public void start(Stage stage) throws IOException {
-        scene = new Scene(loadFXML("login"), 1000, 600);
+        // Inizializza la scena con la schermata di login
+        Parent root = loadFXML("login");
+        scene = new Scene(root, 1000, 600);
         stage.setScene(scene);
+        stage.setTitle("Applicazione Biblioteca");
         stage.show();
     }
 
     public static void setRoot(String fxml) throws IOException {
-        scene.setRoot(loadFXML(fxml));
+        if (scene != null) {
+            scene.setRoot(loadFXML(fxml));
+        }
     }
 
     private static Parent loadFXML(String fxml) throws IOException {
@@ -35,5 +39,4 @@ public class App extends Application {
     public static void main(String[] args) {
         launch();
     }
-
 }
