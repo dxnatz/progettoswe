@@ -10,22 +10,31 @@
       fx:controller="com.progettoswe.controller.ProfileController"
       style="-fx-background-color: #f8f9fa;" spacing="0" prefWidth="700">
 
-    <!-- Header compatto -->
-    <HBox alignment="CENTER" style="-fx-background-color: white; -fx-padding: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 5, 0, 0, 2);">
-        <StackPane>
-            <Rectangle width="40" height="40" arcWidth="12" arcHeight="12" fill="#4361ee">
-                <effect>
-                    <InnerShadow color="#3a0ca3" radius="4"/>
-                </effect>
-            </Rectangle>
-            <Label text="LMS" style="-fx-font-weight: bold; -fx-text-fill: white; -fx-font-size: 14;"/>
-        </StackPane>
+    <!-- Header con logo a sinistra, titolo al centro, pulsante a destra -->
+    <BorderPane style="-fx-background-color: white; -fx-padding: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 5, 0, 0, 2);">
+        <!-- Logo a sinistra -->
+        <left>
+            <StackPane>
+                <Rectangle width="40" height="40" arcWidth="12" arcHeight="12" fill="#4361ee">
+                    <effect>
+                        <InnerShadow color="#3a0ca3" radius="4"/>
+                    </effect>
+                </Rectangle>
+                <Label text="LMS" style="-fx-font-weight: bold; -fx-text-fill: white; -fx-font-size: 14;"/>
+            </StackPane>
+        </left>
 
-        <Label text="Profilo utente" style="-fx-font-size: 18; -fx-text-fill: #495057; -fx-font-weight: bold;" HBox.hgrow="ALWAYS" alignment="CENTER"/>
+        <!-- Titolo al centro -->
+        <center>
+            <Label text="Profilo utente" style="-fx-font-size: 18; -fx-text-fill: #495057; -fx-font-weight: bold;"/>
+        </center>
 
-        <Button text="Home" onAction="#tornaIndietro"
-                style="-fx-background-color: #4361ee; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 6; -fx-pref-height: 35; -fx-min-width: 80; -fx-font-size: 13; -fx-cursor: hand;"/>
-    </HBox>
+        <!-- Pulsante a destra -->
+        <right>
+            <Button text="Home" onAction="#tornaIndietro"
+                    style="-fx-background-color: #4361ee; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 6; -fx-pref-height: 35; -fx-min-width: 80; -fx-font-size: 13; -fx-cursor: hand;"/>
+        </right>
+    </BorderPane>
 
     <!-- Contenuto Centrale compatto -->
     <VBox alignment="CENTER" style="-fx-padding: 15;" VBox.vgrow="ALWAYS">
