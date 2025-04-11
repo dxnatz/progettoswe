@@ -37,7 +37,7 @@
 
                     <!-- Riga 0: Codice (non modificabile) -->
                     <Label text="Codice Opera" style="-fx-text-fill: #495057; -fx-font-size: 13;" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
-                    <TextField fx:id="codiceOperaField" editable="false" style="-fx-control-inner-background: #f8f9fa; -fx-background-radius: 6; -fx-border-radius: 6; -fx-border-color: #e9ecef; -fx-border-width: 1; -fx-pref-height: 38; -fx-font-size: 13; -fx-padding: 0 12;" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+                    <TextField fx:id="codiceOperaField" editable="false" disable="true" style="-fx-control-inner-background: #f8f9fa; -fx-background-radius: 6; -fx-border-radius: 6; -fx-border-color: #e9ecef; -fx-border-width: 1; -fx-pref-height: 38; -fx-font-size: 13; -fx-padding: 0 12;" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
 
                     <!-- Riga 1: Titolo -->
                     <Label text="Titolo*" style="-fx-text-fill: #495057; -fx-font-size: 13;" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
@@ -75,7 +75,7 @@
 
                     <!-- Riga 1: Codice Edizione (non modificabile) -->
                     <Label text="Codice Edizione" style="-fx-text-fill: #495057; -fx-font-size: 13;" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
-                    <TextField fx:id="codiceEdizioneField" editable="false" style="-fx-control-inner-background: #f8f9fa; -fx-background-radius: 6; -fx-border-radius: 6; -fx-border-color: #e9ecef; -fx-border-width: 1; -fx-pref-height: 38; -fx-font-size: 13; -fx-padding: 0 12;" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+                    <TextField fx:id="codiceEdizioneField" editable="false" disable="true" style="-fx-control-inner-background: #f8f9fa; -fx-background-radius: 6; -fx-border-radius: 6; -fx-border-color: #e9ecef; -fx-border-width: 1; -fx-pref-height: 38; -fx-font-size: 13; -fx-padding: 0 12;" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
 
                     <!-- Riga 2: Numero Edizione -->
                     <Label text="Numero Edizione*" style="-fx-text-fill: #495057; -fx-font-size: 13;" GridPane.rowIndex="2" GridPane.columnIndex="0"/>

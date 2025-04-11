@@ -124,6 +124,7 @@ public class AlertUtil {
         dialogPane.setPrefWidth(450);
     }
 
+    //TODO: agguista grafica che con un solo pulsante custom è brutto
     public static String showCustomButtonAlert(String title, String header, String content, String... buttonTexts) {
         Alert alert = new Alert(AlertType.NONE);
         alert.setTitle(title);

@@ -18,6 +18,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.HBox;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -27,31 +28,66 @@ public class ViewCatalogueController {
     public static final String SHOW_OPERE = "opera";
     public static final String SHOW_EDIZIONI = "edizione";
     public static final String SHOW_VOLUMI = "volume";
-    public static String whatToView = null;
+    private static String whatToView = null;
 
     @FXML private ListView<String> itemsListView;
     @FXML private Label titleLabel;
     @FXML private TextField searchField;
+
+    //Pulsanti
     @FXML private Button deleteButton;
     @FXML private Button editButton;
     @FXML private Button reviewsButton;
+    @FXML private Button addVolumeButton;
+    @FXML private Button addEdizioneButton;
+    @FXML private Button addOperaButton;
+
+    //Hbox che contiene i pulsanti
+    @FXML private HBox buttonContainer;
 
     @FXML
     public void initialize() {
         loadItems();
         setupSearchListener();
-
-        // Mostra il pulsante recensioni solo per opere e volumi
-        boolean showReviews = whatToView.equals(SHOW_OPERE) || whatToView.equals(SHOW_VOLUMI);
-        reviewsButton.setVisible(showReviews);
-        reviewsButton.setManaged(showReviews);
+        setButtonsVisibility();
 
         itemsListView.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
             boolean isSelected = newVal != null;
             deleteButton.setDisable(!isSelected);
             editButton.setDisable(!isSelected);
             reviewsButton.setDisable(!isSelected);
+            addVolumeButton.setDisable(!isSelected);
+            addEdizioneButton.setDisable(!isSelected);
+            addOperaButton.setDisable(!isSelected);
         });
+    }
+
+    private void setButtonsVisibility() {
+        boolean showReviews = whatToView.equals(SHOW_OPERE) || whatToView.equals(SHOW_VOLUMI);
+        reviewsButton.setVisible(showReviews);
+        reviewsButton.setManaged(showReviews);
+
+        if (whatToView == null) {
+            return;
+        }
+        switch (whatToView){
+            case SHOW_OPERE:
+                addVolumeButton.setVisible(false);
+                addVolumeButton.setManaged(false);
+                break;
+            case SHOW_EDIZIONI:
+                addOperaButton.setVisible(false);
+                addOperaButton.setManaged(false);
+                break;
+            case SHOW_VOLUMI:
+                addOperaButton.setVisible(false);
+                addOperaButton.setManaged(false);
+                addEdizioneButton.setVisible(false);
+                addEdizioneButton.setManaged(false);
+                break;
+            default:
+                break;
+        }
     }
 
     @FXML
@@ -85,6 +121,7 @@ public class ViewCatalogueController {
             switch (whatToView) {
                 case SHOW_OPERE:
                     titleLabel.setText("Catalogo Opere");
+
                     List<Opera> opere = OperaService.getAllOpere();
                     for (Opera opera : opere) {
                         items.add(String.format("%d - %s - %s (%s, %d)",
@@ -98,6 +135,8 @@ public class ViewCatalogueController {
 
                 case SHOW_EDIZIONI:
                     titleLabel.setText("Catalogo Edizioni");
+                    addEdizioneButton.setDisable(false);
+
                     List<Edizione> edizioni = EdizioneService.getAllEdizioni();
                     for (Edizione edizione : edizioni) {
                         items.add(String.format("%d - %s - %s | Ed.%d (%s, %d) | ISBN: %s",
@@ -113,6 +152,8 @@ public class ViewCatalogueController {
 
                 case SHOW_VOLUMI:
                     titleLabel.setText("Catalogo Volumi");
+                    addVolumeButton.setDisable(false);
+
                     List<Volume> volumi = VolumeService.getAllVolumi();
                     for (Volume volume : volumi) {
                         items.add(String.format("%d - %s - Ed.%d | Stato: %s | Pos: %s | ISBN: %s",
@@ -210,8 +251,7 @@ public class ViewCatalogueController {
                 "Sei sicuro di voler cancellare questo elemento?",
                 null, "Conferma");
 
-        //TODO dà errore quando si annulla la cancellazione
-        if(r.equals("Conferma")){
+        if(r != null && r.equals("Conferma")){
             int codice = Integer.parseInt(s.split(" - ")[0]);
             boolean risultato = false;
 
@@ -265,5 +305,76 @@ public class ViewCatalogueController {
         }
 
         App.setRoot("edit_book");
+    }
+
+    @FXML
+    private void handleAddOpera() throws IOException {
+        AddBookController.typeToAdd = AddBookController.ADD_OPERA;
+        openAddBookWindow();
+    }
+
+    @FXML
+    private void handleAddVolume(){
+        if(whatToView == null) return;
+        switch (whatToView){
+            case SHOW_OPERE:
+                return;
+
+            case SHOW_EDIZIONI: //aperto nella finestra edizione, id edizione recuperabile
+                int id = Integer.parseInt(itemsListView.getSelectionModel().getSelectedItem().split(" - ")[0]);
+                AddBookController.typeToAdd = AddBookController.ADD_VOLUME;
+                AddBookController.setSelectedEdizioneId(id);
+                try {
+                    openAddBookWindow();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                break;
+
+            case SHOW_VOLUMI: //aperto nella finestra volume, id edizione da inserire
+                AddBookController.typeToAdd = AddBookController.ADD_VOLUME;
+                AddBookController.setSelectedEdizioneId(-1);
+                try {
+                    openAddBookWindow();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                break;
+
+            default:
+                return;
+        }
+    }
+
+    @FXML
+    private void handleAddEdizione() {
+        if(whatToView == null) return;
+        switch (whatToView){
+            case SHOW_OPERE: //aperto nella finestra opera, id opera recuperabile
+                //TODO
+
+            case SHOW_EDIZIONI: //aperto nella finestra edizione, id opera da inserire
+                //TODO
+                break;
+
+            case SHOW_VOLUMI: //errato
+                return;
+
+            default:
+                return;
+        }
+    }
+
+    private void openAddBookWindow() throws IOException {
+        App.setRoot("add_book");
+        AddBookController.setReturnWindow("view_catalogue:" + whatToView);
+    }
+
+    public static void setWhatToView(String whatToView) {
+        ViewCatalogueController.whatToView = whatToView;
+    }
+
+    public static String getWhatToView() {
+        return whatToView;
     }
 }
