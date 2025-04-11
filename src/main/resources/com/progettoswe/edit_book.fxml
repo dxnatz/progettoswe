@@ -1,24 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
-<?import javafx.geometry.*?>
-<?import javafx.scene.text.*?>
-<?import javafx.scene.effect.*?>
-<?import javafx.scene.shape.*?>
-
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.effect.InnerShadow?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.Rectangle?>
 <VBox alignment="CENTER" spacing="20" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="com.progettoswe.controller.EditBookController" style="-fx-background-color: #f8f9fa;">
 
     <!-- Header -->
     <VBox alignment="CENTER" spacing="8">
         <StackPane>
-            <Rectangle width="52" height="52" arcWidth="12" arcHeight="12" fill="#4361ee">
+            <Rectangle width="52" height="52" arcWidth="15" arcHeight="15" fill="#f8f9fa">
                 <effect>
-                    <InnerShadow color="#3a0ca3" radius="4"/>
+                    <InnerShadow color="#4361ee" radius="5"/>
                 </effect>
             </Rectangle>
-            <Label text="LMS" style="-fx-font-weight: bold; -fx-text-fill: white; -fx-font-size: 16;"/>
+            <Label>
+                <graphic>
+                    <ImageView fitHeight="30" fitWidth="30" preserveRatio="true">
+                        <image>
+                            <Image url="@images/library.png"></Image>
+                        </image>
+                    </ImageView>
+                </graphic>
+            </Label>
         </StackPane>
 
         <Label fx:id="titleLabel" style="-fx-text-fill: #495057; -fx-font-size: 14;"/>

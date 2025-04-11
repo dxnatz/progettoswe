@@ -17,10 +17,10 @@
         <StackPane>
             <Rectangle width="50" height="50" arcWidth="15" arcHeight="15" fill="#f8f9fa">
                 <effect>
-                    <InnerShadow color="#002ca3" radius="5"/>
+                    <InnerShadow color="#4361ee" radius="5"/>
                 </effect>
             </Rectangle>
-            <Label style="-fx-font-weight: bold; -fx-text-fill: white; -fx-font-size: 16;">
+            <Label>
                 <graphic>
                     <ImageView fitHeight="40" fitWidth="40" preserveRatio="true">
                         <image>

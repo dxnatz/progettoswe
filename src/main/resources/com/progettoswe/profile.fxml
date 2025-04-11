@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import javafx.geometry.Insets?>
+
 <?import javafx.scene.control.*?>
+<?import javafx.scene.effect.InnerShadow?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
-<?import javafx.scene.effect.*?>
-<?import javafx.scene.shape.*?>
+<?import javafx.scene.shape.Rectangle?>
 
 <VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="com.progettoswe.controller.ProfileController"
@@ -15,12 +16,20 @@
         <!-- Logo a sinistra -->
         <left>
             <StackPane>
-                <Rectangle width="40" height="40" arcWidth="12" arcHeight="12" fill="#4361ee">
+                <Rectangle width="40" height="40" arcWidth="15" arcHeight="15" fill="#f8f9fa">
                     <effect>
-                        <InnerShadow color="#3a0ca3" radius="4"/>
+                        <InnerShadow color="#4361ee" radius="5"/>
                     </effect>
                 </Rectangle>
-                <Label text="LMS" style="-fx-font-weight: bold; -fx-text-fill: white; -fx-font-size: 14;"/>
+                <Label>
+                    <graphic>
+                        <ImageView fitHeight="30" fitWidth="30" preserveRatio="true">
+                            <image>
+                                <Image url="@images/library.png"></Image>
+                            </image>
+                        </ImageView>
+                    </graphic>
+                </Label>
             </StackPane>
         </left>
 
@@ -31,7 +40,7 @@
 
         <!-- Pulsante a destra -->
         <right>
-            <Button text="Home" onAction="#tornaIndietro"
+            <Button text="Indietro" onAction="#tornaIndietro"
                     style="-fx-background-color: #4361ee; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 6; -fx-pref-height: 35; -fx-min-width: 80; -fx-font-size: 13; -fx-cursor: hand;"/>
         </right>
     </BorderPane>

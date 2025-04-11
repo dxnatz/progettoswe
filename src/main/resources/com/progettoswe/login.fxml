@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.geometry.*?>
-<?import javafx.scene.text.*?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
 <?import javafx.scene.effect.*?>
 <?import javafx.scene.shape.*?>
 
@@ -13,12 +13,20 @@
     <!-- Header -->
     <VBox alignment="CENTER" spacing="10">
         <StackPane>
-            <Rectangle width="60" height="60" arcWidth="15" arcHeight="15" fill="#4361ee">
+            <Rectangle width="60" height="60" arcWidth="15" arcHeight="15" fill="#f8f9fa">
                 <effect>
-                    <InnerShadow color="#3a0ca3" radius="5"/>
+                    <InnerShadow color="#4361ee" radius="5"/>
                 </effect>
             </Rectangle>
-            <Label text="LMS" style="-fx-font-weight: bold; -fx-text-fill: white; -fx-font-size: 18;"/>
+            <Label>
+                <graphic>
+                    <ImageView fitHeight="40" fitWidth="40" preserveRatio="true">
+                        <image>
+                            <Image url="@images/library.png"></Image>
+                        </image>
+                    </ImageView>
+                </graphic>
+            </Label>
         </StackPane>
 
         <Label text="Accedi al tuo account" style="-fx-text-fill: #495057; -fx-font-size: 16;"/>
