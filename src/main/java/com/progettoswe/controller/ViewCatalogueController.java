@@ -247,11 +247,12 @@ public class ViewCatalogueController {
         String s = itemsListView.getSelectionModel().getSelectedItem();
         if (s == null) return;
 
+        String conferma = "Cancella " + cosaCancellare;
         String r = AlertUtil.showCustomButtonAlert("Cancella " + cosaCancellare ,
                 "Sei sicuro di voler cancellare questo elemento?",
-                null, "Cancella " + cosaCancellare);
+                null, conferma);
 
-        if(r != null && r.equals("Conferma")){
+        if(r != null && r.equals(conferma)){
             int codice = Integer.parseInt(s.split(" - ")[0]);
             boolean risultato = false;
 

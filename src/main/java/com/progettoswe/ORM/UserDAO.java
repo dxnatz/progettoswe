@@ -11,9 +11,10 @@ public class UserDAO {
     public static boolean inserimentoUtente(Utente utente) {
         String query = "INSERT INTO utente (nome, cognome, cf, email, pw, cellulare, data_nascita, indirizzo) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
-        try(Connection conn = DatabaseConnection.getConnection()) {
+        try (Connection conn = DatabaseConnection.getConnection()) {
             PreparedStatement pstmt = conn.prepareStatement(query);
-            //imposto i parametri della query
+
+            // Imposto i parametri della query
             Date sqlDate = Date.valueOf(utente.getDataNascita());
             pstmt.setString(1, utente.getNome());
             pstmt.setString(2, utente.getCognome());
@@ -24,159 +25,127 @@ public class UserDAO {
             pstmt.setDate(7, sqlDate);
             pstmt.setString(8, utente.getIndirizzo());
 
-            int rowsInserted = pstmt.executeUpdate(); //eseguo la query
-            return rowsInserted > 0; //restituisce true se l'utente è stato registrato con successo
+            int rowsInserted = pstmt.executeUpdate(); // Eseguo la query
+            return rowsInserted > 0; // Restituisce true se l'utente è stato registrato con successo
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return false; //se non è stato possibile registrare l'utente a causa di un errore
+        return false; // Se non è stato possibile registrare l'utente a causa di un errore
     }
 
-    // Metodo per controllare se un utente è già registrato
+    // Metodo per controllare se un utente è già registrato (email)
     public static boolean emailEsistente(String email) {
-        String query = "SELECT count (*) FROM utente WHERE email = ?"; //query per contare il numero di email uguali a quella inserita
+        String query = "SELECT count(*) FROM utente WHERE email = ?"; // Query per contare il numero di email uguali a quella inserita
 
         try (Connection conn = DatabaseConnection.getConnection()) {
             PreparedStatement pstmt = conn.prepareStatement(query);
-            pstmt.setString(1, email); // imposto il parametro della query, sostituisco il ? con l'email
+            pstmt.setString(1, email); // Imposto il parametro della query, sostituisco il ? con l'email
 
-            try(ResultSet rs = pstmt.executeQuery()) {
+            try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next() && rs.getInt(1) > 0) {
-                    return true; //email trovata
+                    return true; // Email trovata
                 }
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return false; //email non trovata
+        return false; // Email non trovata
     }
 
     // Metodo per controllare se un codice fiscale è già registrato
     public static boolean cfEsistente(String cf) {
-        String query = "SELECT count (*) FROM utente WHERE cf = ?"; //query per contare il numero di codici fiscali uguali a quello inserito
+        String query = "SELECT count(*) FROM utente WHERE cf = ?"; // Query per contare il numero di codici fiscali uguali a quello inserito
 
         try (Connection conn = DatabaseConnection.getConnection()) {
             PreparedStatement pstmt = conn.prepareStatement(query);
-            pstmt.setString(1, cf); // imposto il parametro della query, sostituisco il ? con il codice fiscale
+            pstmt.setString(1, cf); // Imposto il parametro della query, sostituisco il ? con il codice fiscale
 
-            try(ResultSet rs = pstmt.executeQuery()) {
+            try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next() && rs.getInt(1) > 0) {
-                    return true; //codice fiscale trovato
+                    return true; // Codice fiscale trovato
                 }
             }
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return false; //codice fiscale non trovato
+        return false; // Codice fiscale non trovato
     }
 
     // Metodo per controllare se un numero di cellulare è già registrato
     public static boolean cellulareEsistente(String cellulare) {
-        String query = "SELECT count (*) FROM utente WHERE cellulare = ?"; //query per contare il numero di numeri di cellulare uguali a quello inserito
+        String query = "SELECT count(*) FROM utente WHERE cellulare = ?"; // Query per contare il numero di numeri di cellulare uguali a quello inserito
 
         try (Connection conn = DatabaseConnection.getConnection()) {
             PreparedStatement pstmt = conn.prepareStatement(query);
-            pstmt.setString(1, cellulare); // imposto il parametro della query, sostituisco il ? con il numero di cellulare
+            pstmt.setString(1, cellulare); // Imposto il parametro della query, sostituisco il ? con il numero di cellulare
 
-            try(ResultSet rs = pstmt.executeQuery()) {
+            try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next() && rs.getInt(1) > 0) {
-                    return true; //numero di cellulare trovato
+                    return true; // Numero di cellulare trovato
                 }
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return false; //numero di cellulare non trovato
+        return false; // Numero di cellulare non trovato
     }
 
+    // Metodo per login
     public static boolean login(String email, String password) {
         String query = "SELECT count(*) FROM utente WHERE email = ? AND pw = ?";
 
-        try (Connection connection = DatabaseConnection.getConnection()) {
+        try (Connection conn = DatabaseConnection.getConnection()) {
+            PreparedStatement pstmt = conn.prepareStatement(query);
+            pstmt.setString(1, email);
+            pstmt.setString(2, password);
 
-            PreparedStatement preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setString(1, email);
-            preparedStatement.setString(2, password);
-
-            try (ResultSet rs = preparedStatement.executeQuery()) {
-                // Verifica se la query ha restituito risultati
+            try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next() && rs.getInt(1) > 0) {
-                    return true;
+                    return true; // Login riuscito
                 } else {
-                    return false;  // Restituisce false se non ci sono risultati
+                    return false; // Login fallito
                 }
-            } catch (SQLException e) {
-                // Gestisci eventuali eccezioni nella query
-                e.printStackTrace();
-                return false;
             }
-
         } catch (SQLException e) {
-            // Gestisci eccezioni di connessione
             e.printStackTrace();
             return false;
         }
     }
 
-    // Metodo per controllare se l'email è corretta e la password è errata
-    public static boolean emailCorrettaPasswordErrata(String email, String password) {
-
-        String query = "SELECT count(*) FROM utente WHERE email = ? AND pw != ?";
-
-        try (Connection connection = DatabaseConnection.getConnection()){
-            
-            PreparedStatement preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setString(1, email);
-            preparedStatement.setString(2, password);
-
-            try(ResultSet rs = preparedStatement.executeQuery()) {
-                if (rs.next() && rs.getInt(1) > 0) {
-                    return false; 
-                }
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return true;
-    }
-
-    // Metodo per restituire un utente dal database
+    // Metodo per ottenere un utente dal database
     public static Utente utente(String email) {
         String query = "SELECT * FROM utente WHERE email = ?";
 
-        try (Connection connection = DatabaseConnection.getConnection()) {
-            PreparedStatement statement = connection.prepareStatement(query);
-            statement.setString(1, email);
-            ResultSet resultSet = statement.executeQuery();
+        try (Connection conn = DatabaseConnection.getConnection()) {
+            PreparedStatement pstmt = conn.prepareStatement(query);
+            pstmt.setString(1, email);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    int idUtente = rs.getInt("id_utente");
+                    String nome = rs.getString("nome");
+                    String cognome = rs.getString("cognome");
+                    String codiceFiscale = rs.getString("cf");
+                    String cellulare = rs.getString("cellulare");
+                    LocalDate dataNascita = rs.getDate("data_nascita").toLocalDate();
+                    String indirizzo = rs.getString("indirizzo");
+                    LocalDate dataRegistrazione = rs.getDate("data_registrazione").toLocalDate();
 
-            if (resultSet.next()) {
-                int id_utente = resultSet.getInt("id_utente");
-                String nome = resultSet.getString("nome");
-                String cognome = resultSet.getString("cognome");
-                String codiceFiscale = resultSet.getString("cf");
-                String cellulare = resultSet.getString("cellulare");
-                LocalDate dataNascita = resultSet.getDate("data_nascita").toLocalDate();
-                String indirizzo = resultSet.getString("indirizzo");
-                LocalDate dataRegistrazione = resultSet.getDate("data_registrazione").toLocalDate();
-
-                return new Utente(id_utente, nome, cognome, codiceFiscale, email, cellulare, "", dataNascita, indirizzo, dataRegistrazione);
+                    return new Utente(idUtente, nome, cognome, codiceFiscale, email, cellulare, "", dataNascita, indirizzo, dataRegistrazione);
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return null;
+        return null; // Utente non trovato
     }
 
+    // Metodo per aggiornare un utente
     public static boolean updateUtente(Utente utente) {
-        String query;
-        if (utente.getPassword() == null || utente.getPassword().isEmpty()) {
-            query = "UPDATE utente SET nome = ?, cognome = ?, cf = ?, email = ? WHERE id_utente = ?";
-        } else {
-            query = "UPDATE utente SET nome = ?, cognome = ?, cf = ?, email = ?, pw = ? WHERE id_utente = ?";
-        }
+        String query = (utente.getPassword() == null || utente.getPassword().isEmpty()) ?
+                "UPDATE utente SET nome = ?, cognome = ?, cf = ?, email = ? WHERE id_utente = ?" :
+                "UPDATE utente SET nome = ?, cognome = ?, cf = ?, email = ?, pw = ? WHERE id_utente = ?";
 
         try (Connection conn = DatabaseConnection.getConnection()) {
             PreparedStatement pstmt = conn.prepareStatement(query);
@@ -202,32 +171,44 @@ public class UserDAO {
         return false;
     }
 
+    // Metodo per eliminare un utente
     public static boolean deleteUtente(Utente utente) {
         String checkQuery = "SELECT COUNT(*) FROM prestito WHERE id_utente = ?";
         String deleteQuery = "DELETE FROM utente WHERE id_utente = ?";
 
         try (Connection conn = DatabaseConnection.getConnection()) {
-            //Controllo se ha prestiti attivi
             PreparedStatement checkStmt = conn.prepareStatement(checkQuery);
             checkStmt.setInt(1, utente.getId_utente());
-            ResultSet rs = checkStmt.executeQuery();
-
-            if (rs.next() && rs.getInt(1) > 0) {
-                return false;
+            try (ResultSet rs = checkStmt.executeQuery()) {
+                if (rs.next() && rs.getInt(1) == 0) {
+                    PreparedStatement deleteStmt = conn.prepareStatement(deleteQuery);
+                    deleteStmt.setInt(1, utente.getId_utente());
+                    int rowsDeleted = deleteStmt.executeUpdate();
+                    return rowsDeleted > 0;
+                }
             }
-
-            //Se non ha prestiti attivi, procedo con l'eliminazione
-            PreparedStatement deleteStmt = conn.prepareStatement(deleteQuery);
-            deleteStmt.setInt(1, utente.getId_utente());
-            int rowsDeleted = deleteStmt.executeUpdate();
-
-            return rowsDeleted > 0; //Ritorna true se l'utente è stato eliminato
-
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
-        return false; //Se c'è un errore, ritorna false
+        return false;
     }
 
+    public static boolean emailCorrettaPasswordErrata(String email, String password) {
+        String query = "SELECT count(*) FROM utente WHERE email = ? AND pw = ?";
+
+        try (Connection conn = DatabaseConnection.getConnection()) {
+            PreparedStatement pstmt = conn.prepareStatement(query);
+            pstmt.setString(1, email);
+            pstmt.setString(2, password);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next() && rs.getInt(1) > 0) {
+                    return false; // La combinazione è corretta
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return true; // La combinazione è errata
+    }
 }
