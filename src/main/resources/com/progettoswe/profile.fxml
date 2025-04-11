@@ -2,56 +2,101 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.shape.*?>
 
-<BorderPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.progettoswe.controller.ProfileController" style="-fx-background-color: transparent;">
+<VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.progettoswe.controller.ProfileController"
+      style="-fx-background-color: #f8f9fa;" spacing="0" prefWidth="700">
 
-    <top>
-        <HBox spacing="10" alignment="CENTER" style="-fx-background-color: white;">
-            <HBox spacing="10" alignment="CENTER_LEFT" HBox.hgrow="ALWAYS">
-                <Label text="Profilo Utente" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #495057;"/>
-            </HBox>
-        </HBox>
-    </top>
+    <!-- Header con logo a sinistra, titolo al centro, pulsante a destra -->
+    <BorderPane style="-fx-background-color: white; -fx-padding: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 5, 0, 0, 2);">
+        <!-- Logo a sinistra -->
+        <left>
+            <StackPane>
+                <Rectangle width="40" height="40" arcWidth="12" arcHeight="12" fill="#4361ee">
+                    <effect>
+                        <InnerShadow color="#3a0ca3" radius="4"/>
+                    </effect>
+                </Rectangle>
+                <Label text="LMS" style="-fx-font-weight: bold; -fx-text-fill: white; -fx-font-size: 14;"/>
+            </StackPane>
+        </left>
 
-    <center>
-        <GridPane hgap="10" vgap="10" alignment="CENTER">
-            <padding>
-                <Insets top="20" right="20" bottom="20" left="20"/>
-            </padding>
-            <Label text="Nome:" GridPane.rowIndex="0" GridPane.columnIndex="0" style="-fx-text-fill: #495057; -fx-font-size: 14px;"/>
-            <TextField fx:id="nome" GridPane.rowIndex="0" GridPane.columnIndex="1" style="-fx-control-inner-background: #f8f9fa; -fx-background-radius: 6; -fx-border-radius: 6; -fx-border-color: #e9ecef; -fx-border-width: 1; -fx-font-size: 13; -fx-padding: 0 12;"/>
+        <!-- Titolo al centro -->
+        <center>
+            <Label text="Profilo utente" style="-fx-font-size: 18; -fx-text-fill: #495057; -fx-font-weight: bold;"/>
+        </center>
 
-            <Label text="Cognome:" GridPane.rowIndex="1" GridPane.columnIndex="0" style="-fx-text-fill: #495057; -fx-font-size: 14px;"/>
-            <TextField fx:id="cognome" GridPane.rowIndex="1" GridPane.columnIndex="1" style="-fx-control-inner-background: #f8f9fa; -fx-background-radius: 6; -fx-border-radius: 6; -fx-border-color: #e9ecef; -fx-border-width: 1; -fx-font-size: 13; -fx-padding: 0 12;"/>
+        <!-- Pulsante a destra -->
+        <right>
+            <Button text="Home" onAction="#tornaIndietro"
+                    style="-fx-background-color: #4361ee; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 6; -fx-pref-height: 35; -fx-min-width: 80; -fx-font-size: 13; -fx-cursor: hand;"/>
+        </right>
+    </BorderPane>
 
-            <Label text="Email:" GridPane.rowIndex="2" GridPane.columnIndex="0" style="-fx-text-fill: #495057; -fx-font-size: 14px;"/>
-            <TextField fx:id="email" GridPane.rowIndex="2" GridPane.columnIndex="1" style="-fx-control-inner-background: #f8f9fa; -fx-background-radius: 6; -fx-border-radius: 6; -fx-border-color: #e9ecef; -fx-border-width: 1; -fx-font-size: 13; -fx-padding: 0 12;"/>
+    <!-- Contenuto Centrale compatto -->
+    <VBox alignment="CENTER" style="-fx-padding: 15;" VBox.vgrow="ALWAYS">
+        <GridPane style="-fx-background-color: white; -fx-background-radius: 8; -fx-padding: 20; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 8, 0, 0, 3);"
+                  hgap="15" vgap="12" alignment="TOP_CENTER" prefWidth="600">
 
-            <Label text="Vecchia Password:" GridPane.rowIndex="3" GridPane.columnIndex="0" style="-fx-text-fill: #495057; -fx-font-size: 14px;"/>
-            <PasswordField fx:id="vecchiaPassword" GridPane.rowIndex="3" GridPane.columnIndex="1" style="-fx-control-inner-background: #f8f9fa; -fx-background-radius: 6; -fx-border-radius: 6; -fx-border-color: #e9ecef; -fx-border-width: 1; -fx-font-size: 13; -fx-padding: 0 12;"/>
+            <!-- Definizione colonne più strette -->
+            <columnConstraints>
+                <ColumnConstraints halignment="RIGHT" minWidth="120"/>
+                <ColumnConstraints halignment="LEFT" minWidth="180"/>
+                <ColumnConstraints halignment="RIGHT" minWidth="120"/>
+                <ColumnConstraints halignment="LEFT" minWidth="180"/>
+            </columnConstraints>
 
-            <Label text="Nuova Password:" GridPane.rowIndex="4" GridPane.columnIndex="0" style="-fx-text-fill: #495057; -fx-font-size: 14px;"/>
-            <PasswordField fx:id="password" GridPane.rowIndex="4" GridPane.columnIndex="1" style="-fx-control-inner-background: #f8f9fa; -fx-background-radius: 6; -fx-border-radius: 6; -fx-border-color: #e9ecef; -fx-border-width: 1; -fx-font-size: 13; -fx-padding: 0 12;"/>
+            <!-- Titoli Sezioni -->
+            <Label text="Informazioni" style="-fx-font-size: 16; -fx-text-fill: #4361ee; -fx-font-weight: bold;"
+                   GridPane.columnSpan="2" GridPane.rowIndex="0" GridPane.halignment="CENTER"/>
 
-            <Label text="Conferma Nuova Password:" GridPane.rowIndex="5" GridPane.columnIndex="0" style="-fx-text-fill: #495057; -fx-font-size: 14px;"/>
-            <PasswordField fx:id="confermaPassword" GridPane.rowIndex="5" GridPane.columnIndex="1" style="-fx-control-inner-background: #f8f9fa; -fx-background-radius: 6; -fx-border-radius: 6; -fx-border-color: #e9ecef; -fx-border-width: 1; -fx-font-size: 13; -fx-padding: 0 12;"/>
+            <Label text="Password" style="-fx-font-size: 16; -fx-text-fill: #4361ee; -fx-font-weight: bold;"
+                   GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="0" GridPane.halignment="CENTER"/>
 
-            <HBox spacing="10" GridPane.rowIndex="6" GridPane.columnIndex="1" alignment="CENTER">
-                <Button text="Salva" onAction="#salvaInformazioni" style="-fx-background-color: #4361ee; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 6; -fx-pref-height: 38; -fx-font-size: 13; -fx-cursor: hand;"/>
-                <Button text="Cancella Utente" onAction="#cancellaUtente" style="-fx-background-color: transparent; -fx-text-fill: #6c757d; -fx-font-weight: bold; -fx-border-color: #e9ecef; -fx-border-width: 1; -fx-border-radius: 6; -fx-background-radius: 6; -fx-pref-height: 38; -fx-font-size: 13; -fx-cursor: hand;"/>
+            <!-- Riga 1 -->
+            <Label text="Nome:" GridPane.rowIndex="1" style="-fx-font-size: 13; -fx-text-fill: #6c757d;"/>
+            <TextField fx:id="nome" GridPane.rowIndex="1" GridPane.columnIndex="1"
+                       style="-fx-background-radius: 5; -fx-border-radius: 5; -fx-border-color: #e9ecef; -fx-border-width: 1; -fx-pref-height: 35; -fx-font-size: 13; -fx-min-width: 180;"/>
+
+            <Label text="Attuale:" GridPane.columnIndex="2" GridPane.rowIndex="1" style="-fx-font-size: 13; -fx-text-fill: #6c757d;"/>
+            <PasswordField fx:id="vecchiaPassword" GridPane.columnIndex="3" GridPane.rowIndex="1"
+                           style="-fx-background-radius: 5; -fx-border-radius: 5; -fx-border-color: #e9ecef; -fx-border-width: 1; -fx-pref-height: 35; -fx-font-size: 13; -fx-min-width: 180;"/>
+
+            <!-- Riga 2 -->
+            <Label text="Cognome:" GridPane.rowIndex="2" style="-fx-font-size: 13; -fx-text-fill: #6c757d;"/>
+            <TextField fx:id="cognome" GridPane.rowIndex="2" GridPane.columnIndex="1"
+                       style="-fx-background-radius: 5; -fx-border-radius: 5; -fx-border-color: #e9ecef; -fx-border-width: 1; -fx-pref-height: 35; -fx-font-size: 13; -fx-min-width: 180;"/>
+
+            <Label text="Nuova:" GridPane.columnIndex="2" GridPane.rowIndex="2" style="-fx-font-size: 13; -fx-text-fill: #6c757d;"/>
+            <PasswordField fx:id="password" GridPane.columnIndex="3" GridPane.rowIndex="2"
+                           style="-fx-background-radius: 5; -fx-border-radius: 5; -fx-border-color: #e9ecef; -fx-border-width: 1; -fx-pref-height: 35; -fx-font-size: 13; -fx-min-width: 180;"/>
+
+            <!-- Riga 3 -->
+            <Label text="Email:" GridPane.rowIndex="3" style="-fx-font-size: 13; -fx-text-fill: #6c757d;"/>
+            <TextField fx:id="email" GridPane.rowIndex="3" GridPane.columnIndex="1"
+                       style="-fx-background-radius: 5; -fx-border-radius: 5; -fx-border-color: #e9ecef; -fx-border-width: 1; -fx-pref-height: 35; -fx-font-size: 13; -fx-min-width: 180;"/>
+
+            <Label text="Conferma:" GridPane.columnIndex="2" GridPane.rowIndex="3" style="-fx-font-size: 13; -fx-text-fill: #6c757d;"/>
+            <PasswordField fx:id="confermaPassword" GridPane.columnIndex="3" GridPane.rowIndex="3"
+                           style="-fx-background-radius: 5; -fx-border-radius: 5; -fx-border-color: #e9ecef; -fx-border-width: 1; -fx-pref-height: 35; -fx-font-size: 13; -fx-min-width: 180;"/>
+
+            <!-- Pulsanti più compatti -->
+            <HBox spacing="15" alignment="CENTER" GridPane.columnSpan="4" GridPane.rowIndex="4" style="-fx-padding: 20 0 0 0;">
+                <Button text="Salva" onAction="#salvaInformazioni"
+                        style="-fx-background-color: #4361ee; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 6; -fx-pref-height: 35; -fx-min-width: 120; -fx-font-size: 13; -fx-cursor: hand;"/>
+
+                <Button text="Elimina" onAction="#cancellaUtente"
+                        style="-fx-background-color: #f72585; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 6; -fx-pref-height: 35; -fx-min-width: 120; -fx-font-size: 13; -fx-cursor: hand;"/>
             </HBox>
         </GridPane>
-    </center>
+    </VBox>
 
-    <bottom>
-        <HBox spacing="10" alignment="CENTER" style="-fx-background-color: white;">
-            <padding>
-                <Insets top="20" right="0" bottom="20" left="0"/>
-            </padding>
-            <Button text="Indietro" onAction="#tornaIndietro" style="-fx-background-color: transparent; -fx-text-fill: #6c757d; -fx-font-weight: bold; -fx-border-color: #e9ecef; -fx-border-width: 1; -fx-border-radius: 6; -fx-background-radius: 6; -fx-pref-height: 38; -fx-font-size: 13; -fx-cursor: hand;"/>
-            <Button text="Logout" onAction="#logout" style="-fx-background-color: transparent; -fx-text-fill: #6c757d; -fx-font-weight: bold; -fx-border-color: #e9ecef; -fx-border-width: 1; -fx-border-radius: 6; -fx-background-radius: 6; -fx-pref-height: 38; -fx-font-size: 13; -fx-cursor: hand;"/>
-        </HBox>
-    </bottom>
-
-</BorderPane>
+    <!-- Footer compatto -->
+    <HBox alignment="CENTER" style="-fx-background-color: white; -fx-padding: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 5, 0, 0, -2);">
+        <Button text="Logout" onAction="#logout"
+                style="-fx-background-color: #6c757d; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 6; -fx-pref-height: 35; -fx-min-width: 100; -fx-font-size: 13; -fx-cursor: hand;"/>
+    </HBox>
+</VBox>

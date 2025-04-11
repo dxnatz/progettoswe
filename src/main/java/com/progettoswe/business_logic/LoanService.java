@@ -127,7 +127,7 @@ public class LoanService {
                 } else {
                     setText(item);
                     if (item.contains("da restituire")) {
-                        setStyle("-fx-text-fill: red;");
+                        //setStyle("-fx-text-fill: red;"); //non ci serve
                     } else {
                         setStyle("-fx-text-fill: black;");
                     }

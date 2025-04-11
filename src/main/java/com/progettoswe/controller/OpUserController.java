@@ -80,55 +80,16 @@ public class OpUserController {
     }
 
     @FXML
-    private void openAddBookAlert() throws IOException {
-        String selectedItem = listaCatalogo.getSelectionModel().getSelectedItem();
-        boolean itemSelected = selectedItem != null;
-
-        String result = AlertUtil.showCustomButtonAlert("Aggiungi libro",
-                "Scegli se vuoi aggiungere una nuova opera, edizione o un nuovo volume",
-                null,
-                "Nuova opera",
-                "Nuova edizione",
-                "Nuovo volume",
-                "Primo volume");
-
-        if (result != null) {
-            setAddBookWindowType(result, selectedItem);
-            openAddBookWindow();
-        }
+    private void addBookHandler() throws IOException {
+        AddBookController.typeToAdd = AddBookController.ADD_OPERA;
+        openAddBookWindow();
     }
 
     private void openAddBookWindow() throws IOException {
         App.setRoot("add_book");
+        AddBookController.setReturnWindow("op_user");
     }
 
-    private void setAddBookWindowType(String type, String selectedItem) {
-        switch (type) {
-            case "Nuova opera":
-                AddBookController.typeToAdd = AddBookController.ADD_OPERA;
-                break;
-            case "Nuova edizione":
-                AddBookController.typeToAdd = AddBookController.ADD_EDIZIONE;
-                if (selectedItem != null) {
-                    AddBookController.selectedOperaId = extractFirstNumber(selectedItem);
-                }
-                break;
-            case "Nuovo volume":
-                AddBookController.typeToAdd = AddBookController.ADD_VOLUME;
-                if (selectedItem != null) {
-                    AddBookController.selectedOperaId = extractFirstNumber(selectedItem);
-                    AddBookController.selectedEdizioneId = extractEditionNumber(selectedItem);
-                }
-                break;
-            case "Primo volume":
-                AddBookController.typeToAdd = AddBookController.ADD_VOLUME;
-                if (selectedItem != null) {
-                    AddBookController.selectedOperaId = extractFirstNumber(selectedItem);
-                    // selectedEdizioneId rimane -1 per indicare nuova edizione
-                }
-                break;
-        }
-    }
     @FXML
     private void openReturnBookAlert() {
         String selectedItem = listaPrestiti.getSelectionModel().getSelectedItem();
@@ -160,16 +121,16 @@ public class OpUserController {
         if (result != null) {
             switch (result) {
                 case "Opere":
-                    ViewCatalogueController.whatToView = ViewCatalogueController.SHOW_OPERE;
+                    ViewCatalogueController.setWhatToView(ViewCatalogueController.SHOW_OPERE);
                     break;
                 case "Edizioni":
-                    ViewCatalogueController.whatToView = ViewCatalogueController.SHOW_EDIZIONI;
+                    ViewCatalogueController.setWhatToView(ViewCatalogueController.SHOW_EDIZIONI);
                     break;
                 case "Volumi":
-                    ViewCatalogueController.whatToView = ViewCatalogueController.SHOW_VOLUMI;
+                    ViewCatalogueController.setWhatToView(ViewCatalogueController.SHOW_VOLUMI);
                     break;
                 default:
-                    ViewCatalogueController.whatToView = null;
+                    ViewCatalogueController.setWhatToView(null);
             }
             App.setRoot("view_catalogue");
         }

@@ -104,7 +104,8 @@ public class LoanDAO {
                 + "JOIN utente ON prestito.id_utente = utente.id_utente "
                 + "JOIN volume ON prestito.id_volume = volume.id_volume "
                 + "JOIN edizione ON edizione.id_edizione = volume.id_edizione "
-                + "JOIN opera ON opera.id_opera = edizione.id_opera";
+                + "JOIN opera ON opera.id_opera = edizione.id_opera "
+                + "WHERE prestito.restituito = false";
 
         try (Connection connection = DatabaseConnection.getConnection()) {
             PreparedStatement statement = connection.prepareStatement(query);

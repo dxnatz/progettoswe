@@ -215,7 +215,8 @@ public class InfoCommDAO {
                 "FROM commento c " +
                 "JOIN prestito p ON c.id_prestito = p.id_prestito " +
                 "JOIN utente u ON c.id_utente = u.id_utente " +
-                "JOIN edizione e ON c.id_edizione = e.id_edizione " +
+                "JOIN volume v ON v.id_volume = p.id_volume " +
+                "JOIN edizione e ON v.id_edizione = e.id_edizione " +
                 "WHERE p.id_volume = ? " +
                 "ORDER BY c.id_commento DESC";
 

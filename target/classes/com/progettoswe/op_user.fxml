@@ -64,7 +64,7 @@
                       VBox.vgrow="ALWAYS"/>
 
             <HBox spacing="10" alignment="CENTER_LEFT">
-                <Button text="Aggiungi Libro" onAction="#openAddBookAlert"
+                <Button text="Aggiungi Libro" onAction="#addBookHandler"
                         style="-fx-background-color: #4361ee; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8; -fx-pref-height: 40; -fx-font-size: 14; -fx-cursor: hand;">
                     <effect>
                         <DropShadow color="#4cc9f080" radius="8" spread="0.2"/>
