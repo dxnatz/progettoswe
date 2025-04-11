@@ -249,7 +249,7 @@ public class ViewCatalogueController {
 
         String r = AlertUtil.showCustomButtonAlert("Cancella " + cosaCancellare ,
                 "Sei sicuro di voler cancellare questo elemento?",
-                null, "Conferma");
+                null, "Cancella " + cosaCancellare);
 
         if(r != null && r.equals("Conferma")){
             int codice = Integer.parseInt(s.split(" - ")[0]);

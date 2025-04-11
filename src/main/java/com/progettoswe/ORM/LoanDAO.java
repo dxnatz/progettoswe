@@ -93,7 +93,6 @@ public class LoanDAO {
         System.out.println(prestiti.size()); // Debug statement
     }
 
-    //TODO da finire di risolvere
     public static ArrayList<Prestito> caricaTuttiPrestiti() {
         ArrayList<Prestito> prestiti = new ArrayList<>();
         String query = "SELECT opera.id_opera, titolo, autore, genere, anno_pubblicazione_originale, descrizione, "
