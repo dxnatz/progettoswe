@@ -109,7 +109,7 @@ public class AddBookController {
 
         // Disabilita il campo codice opera (verrà generato dal DB)
         codiceOperaField.setDisable(true);
-        codiceOperaField.setText("Nuovo codice");
+        codiceOperaField.setText("Generato automaticamente");
         resetAllFields();
     }
 
@@ -117,12 +117,25 @@ public class AddBookController {
         saveButton.setOnAction(event -> saveEdizione());
         saveButton.setText("Salva edizione");
 
+        System.out.println("Selected opera ID: " + selectedOperaId);
+
         codiceEdizioneField.setDisable(true);
-        codiceEdizioneField.setText("Nuovo codice");
-        codiceOperaTabEdizioneField.setText(String.valueOf(selectedOperaId));
-        codiceOperaField.setText(String.valueOf(selectedOperaId));
-        codiceOperaTabEdizioneField.setDisable(true);
+        codiceEdizioneField.setText("Generato automaticamente");
+
         disableOperaFields();
+        if(selectedOperaId != -1) {
+            codiceOperaTabEdizioneField.setText(String.valueOf(selectedOperaId));
+            codiceOperaField.setText(String.valueOf(selectedOperaId));
+            tabOpera.setDisable(true);
+        }else{
+            codiceOperaTabEdizioneField.setText("Da inserire nel tab opera");
+            codiceOperaTabEdizioneField.setDisable(true);
+            tabOpera.setDisable(false);
+            codiceOperaField.setDisable(false);
+        }
+
+        tabVolume.setDisable(true);
+        tabPane.getSelectionModel().select(tabEdizione);
     }
 
     private void configureForVolume() throws SQLException {
@@ -215,7 +228,13 @@ public class AddBookController {
         if (!validateEdizioneFields()) return;
 
         try {
-            Opera opera = OperaService.getOperaById(selectedOperaId);
+            Opera opera = null;
+            if(selectedOperaId != -1){
+                opera = OperaService.getOperaById(selectedOperaId);
+            }else{
+                opera = OperaService.getOperaById(Integer.parseInt(codiceOperaField.getText()));
+            }
+
             if (opera == null) {
                 AlertUtil.showErrorAlert("Errore", "Opera non trovata", "");
                 return;
@@ -299,6 +318,12 @@ public class AddBookController {
         isValid &= InputValidator.validateNotEmpty(annoEdizioneField, "Anno pubblicazione");
         isValid &= InputValidator.validateInteger(annoEdizioneField, "Anno pubblicazione");
         isValid &= InputValidator.validateNotEmpty(isbnField, "ISBN");
+
+        if(selectedOperaId == -1) {
+            isValid &= InputValidator.validateNotEmpty(codiceOperaField, "codice opera");
+            isValid &= InputValidator.validateInteger(codiceOperaField, "codice opera");
+        }
+
         return isValid;
     }
 

@@ -351,10 +351,23 @@ public class ViewCatalogueController {
         if(whatToView == null) return;
         switch (whatToView){
             case SHOW_OPERE: //aperto nella finestra opera, id opera recuperabile
-                //TODO
-
+                int id = Integer.parseInt(itemsListView.getSelectionModel().getSelectedItem().split(" - ")[0]);
+                AddBookController.typeToAdd = AddBookController.ADD_EDIZIONE;
+                AddBookController.setSelectedOperaId(id);
+                try {
+                    openAddBookWindow();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                break;
             case SHOW_EDIZIONI: //aperto nella finestra edizione, id opera da inserire
-                //TODO
+                AddBookController.typeToAdd = AddBookController.ADD_EDIZIONE;
+                AddBookController.setSelectedOperaId(-1);
+                try {
+                    openAddBookWindow();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 break;
 
             case SHOW_VOLUMI: //errato
