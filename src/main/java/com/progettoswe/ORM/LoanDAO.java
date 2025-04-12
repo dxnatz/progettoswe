@@ -175,7 +175,8 @@ public class LoanDAO {
                 "JOIN volume v ON p.id_volume = v.id_volume " +
                 "JOIN edizione e ON v.id_edizione = e.id_edizione " +
                 "WHERE e.isbn = ? " +
-                "AND p.id_utente = ? ";
+                "AND p.id_utente = ? " +
+                "AND p.restituito = false";
 
         try(Connection connection = DatabaseConnection.getConnection()){
             PreparedStatement statement = connection.prepareStatement(query);
@@ -337,7 +338,7 @@ public class LoanDAO {
 
     //corretto
     public static boolean prestitiMassimiRaggiunti(){
-        String query = "SELECT COUNT(*) FROM prestito WHERE id_utente = ?";
+        String query = "SELECT COUNT(*) FROM prestito WHERE id_utente = ? AND restituito = false;";
 
         try(Connection connection = DatabaseConnection.getConnection()){
             PreparedStatement statement = connection.prepareStatement(query);
@@ -355,15 +356,23 @@ public class LoanDAO {
     }
 
     public static boolean concludiPrestito(int id) {
-        try {
-            String query = "UPDATE prestito SET restituito = true WHERE id_prestito = ?";
+        String queryUpdatePrestito = "UPDATE prestito SET restituito = true WHERE id_prestito = ?";
 
-            try (Connection conn = DatabaseConnection.getConnection();
-                 PreparedStatement stmt = conn.prepareStatement(query)) {
-                stmt.setInt(1, id);
-                return stmt.executeUpdate() > 0;
-            }
-        } catch (SQLException | NumberFormatException e) {
+        String queryUpdateVolume = " UPDATE volume SET stato = 'disponibile' FROM prestito WHERE prestito.id_prestito = ? AND prestito.id_volume = volume.id_volume";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmtPrestito = conn.prepareStatement(queryUpdatePrestito);
+             PreparedStatement stmtVolume = conn.prepareStatement(queryUpdateVolume)) {
+
+            stmtPrestito.setInt(1, id);
+            stmtVolume.setInt(1, id);
+
+            int updatedPrestito = stmtPrestito.executeUpdate();
+            int updatedVolume = stmtVolume.executeUpdate();
+
+            return updatedPrestito > 0 && updatedVolume > 0;
+
+        } catch (SQLException e) {
             e.printStackTrace();
             return false;
         }

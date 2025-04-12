@@ -6,7 +6,6 @@ import com.progettoswe.business_logic.LoanService;
 import com.progettoswe.model.Catalogo;
 import com.progettoswe.model.Prestito;
 import com.progettoswe.utilities.AlertUtil;
-import com.progettoswe.utilities.InputValidator;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
@@ -105,6 +104,7 @@ public class OpUserController {
             if (confirmed && LoanService.concludiPrestito(loanId)) {
                 AlertUtil.showInfoAlert("Successo", "Prestito concluso con successo", null);
                 refreshPrestiti();
+                BookService.stampaCatalogoBibliotecario(catalogo, listaCatalogo);
             } else {
                 if(confirmed)
                     AlertUtil.showErrorAlert("Errore", "Impossibile concludere il prestito", null);
