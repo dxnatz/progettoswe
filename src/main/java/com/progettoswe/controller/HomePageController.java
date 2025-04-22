@@ -84,7 +84,6 @@ public class HomePageController {
             if (!ricercaAttiva.isEmpty()) {
                 BookService.searchBooks(catalogo, listaCatalogo, ricerca);
             }
-            System.out.println("Catalogo e prestiti aggiornati.");
         }));
         timeline.setCycleCount(Timeline.INDEFINITE);
         timeline.play();
