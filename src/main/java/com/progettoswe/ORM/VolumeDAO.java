@@ -26,7 +26,7 @@ public class VolumeDAO {
 
     public static Volume getVolumeById(int idVolume) {
         String query = "SELECT * FROM volume WHERE id_volume = ?";
-        try (Connection connection = DatabaseConnection.getConnection()) {
+        try (Connection connection = DatabaseConnection.getInstance().getConnection()) {
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setInt(1, idVolume);
             ResultSet resultSet = statement.executeQuery();
@@ -47,7 +47,7 @@ public class VolumeDAO {
 
     public static boolean insertVolume(Volume volume) {
         String query = "INSERT INTO volume (id_edizione, stato, posizione) VALUES (?, ?, ?)";
-        try (Connection connection = DatabaseConnection.getConnection()) {
+        try (Connection connection = DatabaseConnection.getInstance().getConnection()) {
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setInt(1, volume.getEdizione().getId_edizione());
             statement.setString(2, volume.getStato());
@@ -62,7 +62,7 @@ public class VolumeDAO {
 
     public static boolean updateVolume(Volume volume) {
         String query = "UPDATE volume SET id_edizione = ?, stato = ?, posizione = ? WHERE id_volume = ?";
-        try (Connection connection = DatabaseConnection.getConnection()) {
+        try (Connection connection = DatabaseConnection.getInstance().getConnection()) {
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setInt(1, volume.getEdizione().getId_edizione());
             statement.setString(2, volume.getStato());
@@ -78,7 +78,7 @@ public class VolumeDAO {
 
     public static boolean deleteVolume(int idVolume) {
         String query = "DELETE FROM volume WHERE id_volume = ?";
-        try (Connection connection = DatabaseConnection.getConnection()) {
+        try (Connection connection = DatabaseConnection.getInstance().getConnection()) {
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setInt(1, idVolume);
 
@@ -91,7 +91,7 @@ public class VolumeDAO {
 
     public static boolean updateStatoVolume(int idVolume, String nuovoStato) {
         String query = "UPDATE volume SET stato = ? WHERE id_volume = ?";
-        try (Connection connection = DatabaseConnection.getConnection()) {
+        try (Connection connection = DatabaseConnection.getInstance().getConnection()) {
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, nuovoStato);
             statement.setInt(2, idVolume);
@@ -105,7 +105,7 @@ public class VolumeDAO {
 
     public static boolean isVolumeInPrestito(int idVolume) {
         String query = "SELECT 1 FROM prestito WHERE id_volume = ? AND restituito = false";
-        try (Connection connection = DatabaseConnection.getConnection()) {
+        try (Connection connection = DatabaseConnection.getInstance().getConnection()) {
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setInt(1, idVolume);
             ResultSet resultSet = statement.executeQuery();
@@ -119,7 +119,7 @@ public class VolumeDAO {
     public static List<Volume> getAllVolumi() throws SQLException {
         List<Volume> volumi = new ArrayList<>();
 
-        try (Connection conn = DatabaseConnection.getConnection();
+        try (Connection conn = DatabaseConnection.getInstance().getConnection();
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(GET_ALL_VOLUMI)) {
 
@@ -134,7 +134,7 @@ public class VolumeDAO {
         List<Volume> volumi = new ArrayList<>();
         String term = "%" + searchTerm.toLowerCase() + "%";
 
-        try (Connection conn = DatabaseConnection.getConnection();
+        try (Connection conn = DatabaseConnection.getInstance().getConnection();
              PreparedStatement stmt = conn.prepareStatement(SEARCH_VOLUMI)) {
 
             stmt.setString(1, term);

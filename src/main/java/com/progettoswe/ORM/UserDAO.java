@@ -11,7 +11,7 @@ public class UserDAO {
     public static boolean inserimentoUtente(Utente utente) {
         String query = "INSERT INTO utente (nome, cognome, cf, email, pw, cellulare, data_nascita, indirizzo) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
-        try (Connection conn = DatabaseConnection.getConnection()) {
+        try (Connection conn = DatabaseConnection.getInstance().getConnection()) {
             PreparedStatement pstmt = conn.prepareStatement(query);
 
             // Imposto i parametri della query
@@ -38,7 +38,7 @@ public class UserDAO {
     public static boolean emailEsistente(String email) {
         String query = "SELECT count(*) FROM utente WHERE email = ?"; // Query per contare il numero di email uguali a quella inserita
 
-        try (Connection conn = DatabaseConnection.getConnection()) {
+        try (Connection conn = DatabaseConnection.getInstance().getConnection()) {
             PreparedStatement pstmt = conn.prepareStatement(query);
             pstmt.setString(1, email); // Imposto il parametro della query, sostituisco il ? con l'email
 
@@ -57,7 +57,7 @@ public class UserDAO {
     public static boolean cfEsistente(String cf) {
         String query = "SELECT count(*) FROM utente WHERE cf = ?"; // Query per contare il numero di codici fiscali uguali a quello inserito
 
-        try (Connection conn = DatabaseConnection.getConnection()) {
+        try (Connection conn = DatabaseConnection.getInstance().getConnection()) {
             PreparedStatement pstmt = conn.prepareStatement(query);
             pstmt.setString(1, cf); // Imposto il parametro della query, sostituisco il ? con il codice fiscale
 
@@ -77,7 +77,7 @@ public class UserDAO {
     public static boolean cellulareEsistente(String cellulare) {
         String query = "SELECT count(*) FROM utente WHERE cellulare = ?"; // Query per contare il numero di numeri di cellulare uguali a quello inserito
 
-        try (Connection conn = DatabaseConnection.getConnection()) {
+        try (Connection conn = DatabaseConnection.getInstance().getConnection()) {
             PreparedStatement pstmt = conn.prepareStatement(query);
             pstmt.setString(1, cellulare); // Imposto il parametro della query, sostituisco il ? con il numero di cellulare
 
@@ -96,7 +96,7 @@ public class UserDAO {
     public static boolean login(String email, String password) {
         String query = "SELECT count(*) FROM utente WHERE email = ? AND pw = ?";
 
-        try (Connection conn = DatabaseConnection.getConnection()) {
+        try (Connection conn = DatabaseConnection.getInstance().getConnection()) {
             PreparedStatement pstmt = conn.prepareStatement(query);
             pstmt.setString(1, email);
             pstmt.setString(2, password);
@@ -118,7 +118,7 @@ public class UserDAO {
     public static Utente utente(String email) {
         String query = "SELECT * FROM utente WHERE email = ?";
 
-        try (Connection conn = DatabaseConnection.getConnection()) {
+        try (Connection conn = DatabaseConnection.getInstance().getConnection()) {
             PreparedStatement pstmt = conn.prepareStatement(query);
             pstmt.setString(1, email);
             try (ResultSet rs = pstmt.executeQuery()) {
@@ -147,7 +147,7 @@ public class UserDAO {
                 "UPDATE utente SET nome = ?, cognome = ?, cf = ?, email = ? WHERE id_utente = ?" :
                 "UPDATE utente SET nome = ?, cognome = ?, cf = ?, email = ?, pw = ? WHERE id_utente = ?";
 
-        try (Connection conn = DatabaseConnection.getConnection()) {
+        try (Connection conn = DatabaseConnection.getInstance().getConnection()) {
             PreparedStatement pstmt = conn.prepareStatement(query);
 
             pstmt.setString(1, utente.getNome());
@@ -176,7 +176,7 @@ public class UserDAO {
         String checkQuery = "SELECT COUNT(*) FROM prestito WHERE id_utente = ?";
         String deleteQuery = "DELETE FROM utente WHERE id_utente = ?";
 
-        try (Connection conn = DatabaseConnection.getConnection()) {
+        try (Connection conn = DatabaseConnection.getInstance().getConnection()) {
             PreparedStatement checkStmt = conn.prepareStatement(checkQuery);
             checkStmt.setInt(1, utente.getId_utente());
             try (ResultSet rs = checkStmt.executeQuery()) {
@@ -196,7 +196,7 @@ public class UserDAO {
     public static boolean emailCorrettaPasswordErrata(String email, String password) {
         String query = "SELECT count(*) FROM utente WHERE email = ? AND pw = ?";
 
-        try (Connection conn = DatabaseConnection.getConnection()) {
+        try (Connection conn = DatabaseConnection.getInstance().getConnection()) {
             PreparedStatement pstmt = conn.prepareStatement(query);
             pstmt.setString(1, email);
             pstmt.setString(2, password);

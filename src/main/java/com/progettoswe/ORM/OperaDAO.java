@@ -31,7 +31,7 @@ private static final String SEARCH_OPERE =
 
     // Inserisce una nuova opera e restituisce l'ID generato
     public static int insertOpera(Opera opera) throws SQLException {
-        try (Connection conn = DatabaseConnection.getConnection();
+        try (Connection conn = DatabaseConnection.getInstance().getConnection();
              PreparedStatement stmt = conn.prepareStatement(INSERT_OPERA)) {
 
             stmt.setString(1, opera.getTitolo());
@@ -50,7 +50,7 @@ private static final String SEARCH_OPERE =
 
     // Recupera un'opera per ID
     public static Opera getOperaById(int id) throws SQLException {
-        try (Connection conn = DatabaseConnection.getConnection();
+        try (Connection conn = DatabaseConnection.getInstance().getConnection();
              PreparedStatement stmt = conn.prepareStatement(GET_OPERA_BY_ID)) {
 
             stmt.setInt(1, id);
@@ -67,7 +67,7 @@ private static final String SEARCH_OPERE =
     public static List<Opera> getAllOpere() throws SQLException {
         List<Opera> opere = new ArrayList<>();
 
-        try (Connection conn = DatabaseConnection.getConnection();
+        try (Connection conn = DatabaseConnection.getInstance().getConnection();
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(GET_ALL_OPERE)) {
 
@@ -80,7 +80,7 @@ private static final String SEARCH_OPERE =
 
     // Aggiorna un'opera esistente
     public static boolean updateOpera(Opera opera) throws SQLException {
-        try (Connection conn = DatabaseConnection.getConnection();
+        try (Connection conn = DatabaseConnection.getInstance().getConnection();
              PreparedStatement stmt = conn.prepareStatement(UPDATE_OPERA)) {
 
             stmt.setString(1, opera.getTitolo());
@@ -96,7 +96,7 @@ private static final String SEARCH_OPERE =
 
     // Elimina un'opera
     public static boolean deleteOpera(int id) throws SQLException {
-        try (Connection conn = DatabaseConnection.getConnection();
+        try (Connection conn = DatabaseConnection.getInstance().getConnection();
              PreparedStatement stmt = conn.prepareStatement(DELETE_OPERA)) {
 
             stmt.setInt(1, id);
@@ -109,7 +109,7 @@ private static final String SEARCH_OPERE =
         List<Opera> opere = new ArrayList<>();
         String term = "%" + searchTerm.toLowerCase() + "%";
 
-        try (Connection conn = DatabaseConnection.getConnection();
+        try (Connection conn = DatabaseConnection.getInstance().getConnection();
              PreparedStatement stmt = conn.prepareStatement(SEARCH_OPERE)) {
 
             stmt.setString(1, term);

@@ -16,7 +16,7 @@ public class LoanDAO {
         ArrayList<Prestito> prestiti = new ArrayList<>();
         String query = "SELECT opera.id_opera, titolo, autore, genere, anno_pubblicazione_originale, descrizione, edizione.id_edizione, numero_edizione, editore, anno_pubblicazione, isbn, volume.id_volume, stato, posizione, prestito.id_prestito, data_inizio, restituito, num_rinnovi FROM prestito JOIN Utente ON prestito.id_utente = utente.id_utente JOIN volume ON prestito.id_volume = volume.id_volume JOIN edizione ON edizione.id_edizione = volume.id_edizione JOIN opera ON opera.id_opera = edizione.id_opera WHERE email = ?";
 
-        try(Connection connection = DatabaseConnection.getConnection()){
+        try(Connection connection = DatabaseConnection.getInstance().getConnection()){
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, Session.getUserEmail()); //imposto il parametro della query, sostituisco il ? con l'email dell'utente dentro la sessione
             ResultSet resultSet = statement.executeQuery();
@@ -107,7 +107,7 @@ public class LoanDAO {
                 + "JOIN opera ON opera.id_opera = edizione.id_opera "
                 + "WHERE prestito.restituito = false";
 
-        try (Connection connection = DatabaseConnection.getConnection()) {
+        try (Connection connection = DatabaseConnection.getInstance().getConnection()) {
             PreparedStatement statement = connection.prepareStatement(query);
             ResultSet resultSet = statement.executeQuery();
 
@@ -178,7 +178,7 @@ public class LoanDAO {
                 "AND p.id_utente = ? " +
                 "AND p.restituito = false";
 
-        try(Connection connection = DatabaseConnection.getConnection()){
+        try(Connection connection = DatabaseConnection.getInstance().getConnection()){
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, isbn);
             statement.setInt(2, Session.getUtente().getId_utente());
@@ -194,7 +194,7 @@ public class LoanDAO {
     public static boolean prestitoDaMenoDiTreGiorni(String isbn, int num_edizione){
         String query = "SELECT * FROM prestito JOIN volume ON prestito.id_volume = volume.id_volume JOIN edizione ON volume.id_edizione = edizione.id_edizione WHERE isbn = ? AND id_utente = ? AND numero_edizione = ? AND data_inizio >= CURRENT_DATE - INTERVAL '3 days'";
 
-        try(Connection connection = DatabaseConnection.getConnection()){
+        try(Connection connection = DatabaseConnection.getInstance().getConnection()){
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, isbn);
             statement.setInt(2, Session.getUtente().getId_utente());
@@ -221,7 +221,7 @@ public class LoanDAO {
                 "SET stato = 'disponibile' " +
                 "WHERE id_volume = ?";
 
-        try (Connection connection = DatabaseConnection.getConnection()) {
+        try (Connection connection = DatabaseConnection.getInstance().getConnection()) {
             // Prima eliminiamo il prestito e recuperiamo l'id del volume
             PreparedStatement deleteStatement = connection.prepareStatement(deleteQuery);
             deleteStatement.setString(1, isbn);
@@ -255,7 +255,7 @@ public class LoanDAO {
                 "AND edizione.isbn = ? " +
                 "AND prestito.id_utente = ?";
 
-        try(Connection connection = DatabaseConnection.getConnection()){
+        try(Connection connection = DatabaseConnection.getInstance().getConnection()){
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, isbn);
             statement.setInt(2, Session.getUtente().getId_utente());
@@ -281,7 +281,7 @@ public class LoanDAO {
         String insertPrestitoQuery = "INSERT INTO prestito (id_volume, id_utente) " +
                 "VALUES (?, ?)";  // Inserisce il prestito
 
-        try (Connection connection = DatabaseConnection.getConnection()) {
+        try (Connection connection = DatabaseConnection.getInstance().getConnection()) {
             // 1. Ottenere l'id_volume disponibile
             PreparedStatement getIdVolumeStatement = connection.prepareStatement(getIdVolumeQuery);
                     getIdVolumeStatement.setString(1, isbn);  // Imposta l'ISBN
@@ -321,7 +321,7 @@ public class LoanDAO {
         String query = "SELECT num_rinnovi FROM prestito JOIN volume ON prestito.id_volume = volume.id_volume JOIN edizione ON volume.id_edizione = edizione.id_edizione WHERE isbn = ? AND id_utente = ?";
         int num_rinnovi = 0;
 
-        try(Connection connection = DatabaseConnection.getConnection()){
+        try(Connection connection = DatabaseConnection.getInstance().getConnection()){
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, isbn);
             statement.setInt(2, Session.getUtente().getId_utente());
@@ -340,7 +340,7 @@ public class LoanDAO {
     public static boolean prestitiMassimiRaggiunti(){
         String query = "SELECT COUNT(*) FROM prestito WHERE id_utente = ? AND restituito = false;";
 
-        try(Connection connection = DatabaseConnection.getConnection()){
+        try(Connection connection = DatabaseConnection.getInstance().getConnection()){
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setInt(1, Session.getUtente().getId_utente());
             ResultSet resultSet = statement.executeQuery();
@@ -360,7 +360,7 @@ public class LoanDAO {
 
         String queryUpdateVolume = " UPDATE volume SET stato = 'disponibile' FROM prestito WHERE prestito.id_prestito = ? AND prestito.id_volume = volume.id_volume";
 
-        try (Connection conn = DatabaseConnection.getConnection();
+        try (Connection conn = DatabaseConnection.getInstance().getConnection();
              PreparedStatement stmtPrestito = conn.prepareStatement(queryUpdatePrestito);
              PreparedStatement stmtVolume = conn.prepareStatement(queryUpdateVolume)) {
 
