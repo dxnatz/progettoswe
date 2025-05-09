@@ -10,7 +10,7 @@ public class DatabaseConnection {
     private Connection connection;
 
     private static final String DB_URL = "jdbc:postgresql://localhost:5432/ProvaSWE";
-    private static final String USER = "dardanmat";
+    private static final String USER = "postgres";
     private static final String PASSWORD = "1234";
 
     // Costruttore privato per impedire l'istanziazione
