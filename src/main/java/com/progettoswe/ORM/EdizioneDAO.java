@@ -15,7 +15,7 @@ public class EdizioneDAO {
 
     public static Edizione getEdizione(String titolo, int edizione) {
         String query = "SELECT * FROM opera JOIN edizione ON opera.id_opera = edizione.id_opera WHERE opera.titolo = ? AND edizione.numero_edizione = ?";
-        try (Connection connection = DatabaseConnection.getConnection()) {
+        try (Connection connection = DatabaseConnection.getInstance().getConnection()) {
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, titolo);
             statement.setInt(2, edizione);
@@ -55,7 +55,7 @@ public class EdizioneDAO {
 
     public static Edizione getEdizioneById(int idEdizione) {
         String query = "SELECT e.*, o.* FROM edizione e JOIN opera o ON e.id_opera = o.id_opera WHERE e.id_edizione = ?";
-        try (Connection connection = DatabaseConnection.getConnection()) {
+        try (Connection connection = DatabaseConnection.getInstance().getConnection()) {
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setInt(1, idEdizione);
             ResultSet resultSet = statement.executeQuery();
@@ -85,7 +85,7 @@ public class EdizioneDAO {
 
     public static Edizione getEdizioneByIsbn(String isbn) {
         String query = "SELECT e.*, o.* FROM edizione e JOIN opera o ON e.id_opera = o.id_opera WHERE e.isbn = ?";
-        try (Connection connection = DatabaseConnection.getConnection()) {
+        try (Connection connection = DatabaseConnection.getInstance().getConnection()) {
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, isbn);
             ResultSet resultSet = statement.executeQuery();
@@ -115,7 +115,7 @@ public class EdizioneDAO {
 
     public static int insertEdizione(Edizione edizione) {
         String query = "INSERT INTO edizione (isbn, anno_pubblicazione, editore, numero_edizione, id_opera) VALUES (?, ?, ?, ?, ?) RETURNING id_edizione";
-        try (Connection connection = DatabaseConnection.getConnection()) {
+        try (Connection connection = DatabaseConnection.getInstance().getConnection()) {
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, edizione.getIsbn());
             statement.setInt(2, edizione.getAnnoPubblicazione());
@@ -135,7 +135,7 @@ public class EdizioneDAO {
 
     public static boolean updateEdizione(Edizione edizione) {
         String query = "UPDATE edizione SET isbn = ?, anno_pubblicazione = ?, editore = ?, numero_edizione = ?, id_opera = ? WHERE id_edizione = ?";
-        try (Connection connection = DatabaseConnection.getConnection()) {
+        try (Connection connection = DatabaseConnection.getInstance().getConnection()) {
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, edizione.getIsbn());
             statement.setInt(2, edizione.getAnnoPubblicazione());
@@ -153,7 +153,7 @@ public class EdizioneDAO {
 
     public static boolean deleteEdizione(int idEdizione) {
         String query = "DELETE FROM edizione WHERE id_edizione = ?";
-        try (Connection connection = DatabaseConnection.getConnection()) {
+        try (Connection connection = DatabaseConnection.getInstance().getConnection()) {
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setInt(1, idEdizione);
 
@@ -166,7 +166,7 @@ public class EdizioneDAO {
 
     public static boolean existsEdizioneByIsbn(String isbn) {
         String query = "SELECT 1 FROM edizione WHERE isbn = ?";
-        try (Connection connection = DatabaseConnection.getConnection()) {
+        try (Connection connection = DatabaseConnection.getInstance().getConnection()) {
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, isbn);
             ResultSet resultSet = statement.executeQuery();
@@ -180,7 +180,7 @@ public class EdizioneDAO {
     public static List<Edizione> getAllEdizioni() throws SQLException {
         List<Edizione> edizioni = new ArrayList<>();
 
-        try (Connection conn = DatabaseConnection.getConnection();
+        try (Connection conn = DatabaseConnection.getInstance().getConnection();
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(GET_ALL_EDIZIONI)) {
 
@@ -195,7 +195,7 @@ public class EdizioneDAO {
         List<Edizione> edizioni = new ArrayList<>();
         String term = "%" + searchTerm.toLowerCase() + "%";
 
-        try (Connection conn = DatabaseConnection.getConnection();
+        try (Connection conn = DatabaseConnection.getInstance().getConnection();
              PreparedStatement stmt = conn.prepareStatement(SEARCH_EDIZIONI)) {
 
             stmt.setString(1, term);

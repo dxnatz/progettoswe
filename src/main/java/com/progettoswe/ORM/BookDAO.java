@@ -30,7 +30,7 @@ public class BookDAO {
                 "JOIN edizione ON opera.id_opera = edizione.id_opera " +
                 "JOIN volume ON edizione.id_edizione = volume.id_edizione;";
 
-        try (Connection connection = DatabaseConnection.getConnection()) {
+        try (Connection connection = DatabaseConnection.getInstance().getConnection()) {
             PreparedStatement statement = connection.prepareStatement(query);
             ResultSet resultSet = statement.executeQuery();
 
@@ -90,7 +90,7 @@ public class BookDAO {
                 "OR LOWER(edizione.editore) LIKE ? " +
                 "OR LOWER(edizione.isbn) LIKE ?;";
 
-        try (Connection connection = DatabaseConnection.getConnection()) {
+        try (Connection connection = DatabaseConnection.getInstance().getConnection()) {
             PreparedStatement statement = connection.prepareStatement(query);
             String searchPattern = "%" + ricerca.toLowerCase() + "%"; // Converte la ricerca in minuscolo per rendere la ricerca case-insensitive
             statement.setString(1, searchPattern);
@@ -131,7 +131,7 @@ public class BookDAO {
 
     public static String ottieniIsbn (String nome, String autore, int num_edizione) {
         String query = "SELECT isbn FROM opera JOIN edizione ON opera.id_opera = edizione.id_opera WHERE opera.titolo = ? AND opera.autore = ? AND numero_edizione = ?;";
-        try(Connection connection = DatabaseConnection.getConnection()){
+        try(Connection connection = DatabaseConnection.getInstance().getConnection()){
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, nome);
             statement.setString(2, autore);
@@ -148,7 +148,7 @@ public class BookDAO {
 
     public static boolean libroDisponibile(String isbn) {
         String query = "SELECT stato FROM volume WHERE id_edizione = (SELECT id_edizione FROM edizione WHERE isbn = ?);";
-        try(Connection connection = DatabaseConnection.getConnection()){
+        try(Connection connection = DatabaseConnection.getInstance().getConnection()){
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, isbn);
             ResultSet resultSet = statement.executeQuery();
@@ -165,7 +165,7 @@ public class BookDAO {
     // Metodo per verificare se l'opera è disponibile
     public static boolean operaDisponibile(String isbn) {
         String query = "SELECT COUNT(*) FROM volume WHERE id_edizione = (SELECT id_edizione FROM edizione WHERE isbn = ?) AND stato = 'disponibile';";
-        try (Connection connection = DatabaseConnection.getConnection()) {
+        try (Connection connection = DatabaseConnection.getInstance().getConnection()) {
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, isbn);
             ResultSet resultSet = statement.executeQuery();
@@ -183,7 +183,7 @@ public class BookDAO {
     //aggiornato
     public static boolean copiaDisponibile(String isbn){
         String query = "SELECT COUNT(id_volume) AS copie FROM edizione JOIN volume ON edizione.id_edizione = volume.id_edizione WHERE isbn = ? AND stato = 'disponibile';";
-        try(Connection connection = DatabaseConnection.getConnection()){
+        try(Connection connection = DatabaseConnection.getInstance().getConnection()){
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, isbn);
             ResultSet resultSet = statement.executeQuery();

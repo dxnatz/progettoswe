@@ -21,7 +21,7 @@ public class InfoCommDAO {
 
         ArrayList<String> commentiOpera = new ArrayList<>();
 
-        try(Connection connection = DatabaseConnection.getConnection()){
+        try(Connection connection = DatabaseConnection.getInstance().getConnection()){
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             preparedStatement.setString(1, Session.getNomeOpera());
             var resultSet = preparedStatement.executeQuery();
@@ -43,7 +43,7 @@ public class InfoCommDAO {
     //inserimento di un commento nel database
     public static boolean aggiungiCommento(String commento, int idEdizione) {
         String query = "INSERT INTO commento (testo, id_edizione, id_utente) VALUES (?, ?, ?)";
-        try (Connection connection = DatabaseConnection.getConnection()) {
+        try (Connection connection = DatabaseConnection.getInstance().getConnection()) {
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             preparedStatement.setString(1, commento);
             preparedStatement.setInt(2, idEdizione);
@@ -58,7 +58,7 @@ public class InfoCommDAO {
 
     public static boolean utenteHaCommentato(int idEdizione) {
         String query = "SELECT COUNT(*) FROM Commento WHERE id_utente = ? AND id_edizione = ?";
-        try (Connection conn = DatabaseConnection.getConnection();
+        try (Connection conn = DatabaseConnection.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement(query)) {
             ps.setInt(1, Session.getUtente().getId_utente());
             ps.setInt(2, idEdizione);
@@ -75,7 +75,7 @@ public class InfoCommDAO {
 
     public static boolean modificaCommento(String commento, int idEdizione) {
         String query = "UPDATE commento SET testo = ? WHERE id_edizione = ? AND id_utente = ?";
-        try (Connection connection = DatabaseConnection.getConnection()) {
+        try (Connection connection = DatabaseConnection.getInstance().getConnection()) {
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             preparedStatement.setString(1, commento);
             preparedStatement.setInt(2, idEdizione);
@@ -90,7 +90,7 @@ public class InfoCommDAO {
 
     public static String getCommentoUtente(int idEdizione) {
         String query = "SELECT testo FROM commento WHERE id_edizione = ? AND id_utente = ?";
-        try (Connection connection = DatabaseConnection.getConnection()) {
+        try (Connection connection = DatabaseConnection.getInstance().getConnection()) {
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             preparedStatement.setInt(1, idEdizione);
             preparedStatement.setInt(2, Session.getUtente().getId_utente());
@@ -106,7 +106,7 @@ public class InfoCommDAO {
 
     public static void eliminaCommento(int idEdizione) {
         String query = "DELETE FROM commento WHERE id_edizione = ? AND id_utente = ?";
-        try (Connection connection = DatabaseConnection.getConnection()) {
+        try (Connection connection = DatabaseConnection.getInstance().getConnection()) {
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             preparedStatement.setInt(1, idEdizione);
             preparedStatement.setInt(2, Session.getUtente().getId_utente());
@@ -119,7 +119,7 @@ public class InfoCommDAO {
     public static boolean aggiungiCommentoVolume(int idPrestito, String testo) {
         String query = "INSERT INTO commento (id_utente, id_prestito, testo) VALUES (?, ?, ?)";
 
-        try (Connection conn = DatabaseConnection.getConnection();
+        try (Connection conn = DatabaseConnection.getInstance().getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
 
             stmt.setInt(1, Session.getUtente().getId_utente());
@@ -150,7 +150,7 @@ public class InfoCommDAO {
 
         List<Commento> comments = new ArrayList<>();
 
-        try (Connection conn = DatabaseConnection.getConnection();
+        try (Connection conn = DatabaseConnection.getInstance().getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
 
             stmt.setInt(1, idOpera);
@@ -199,7 +199,7 @@ public class InfoCommDAO {
 
     public static String getTitoloOpera(int idOpera) throws SQLException {
         String query = "SELECT titolo FROM opera WHERE id_opera = ?";
-        try (Connection conn = DatabaseConnection.getConnection();
+        try (Connection conn = DatabaseConnection.getInstance().getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setInt(1, idOpera);
             ResultSet rs = stmt.executeQuery();
@@ -222,7 +222,7 @@ public class InfoCommDAO {
 
         List<Commento> comments = new ArrayList<>();
 
-        try (Connection conn = DatabaseConnection.getConnection();
+        try (Connection conn = DatabaseConnection.getInstance().getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
 
             stmt.setInt(1, idVolume);
@@ -278,7 +278,7 @@ public class InfoCommDAO {
 
         List<Commento> commenti = new ArrayList<>();
 
-        try (Connection conn = DatabaseConnection.getConnection();
+        try (Connection conn = DatabaseConnection.getInstance().getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
 
             stmt.setInt(1, idOpera);
@@ -326,7 +326,7 @@ public class InfoCommDAO {
 
         List<Commento> commenti = new ArrayList<>();
 
-        try (Connection conn = DatabaseConnection.getConnection();
+        try (Connection conn = DatabaseConnection.getInstance().getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
 
             stmt.setInt(1, idVolume);
