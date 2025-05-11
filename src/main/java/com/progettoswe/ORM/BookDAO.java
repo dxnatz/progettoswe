@@ -65,7 +65,7 @@ public class BookDAO {
     }
 
     public static Catalogo ricercaLibro(String ricerca) {
-        Catalogo catalogo = new Catalogo(); //creo un nuovo catalogo per inserire i libri che corrispondono alla ricerca
+        Catalogo catalogo = new Catalogo();
         String query = "SELECT DISTINCT ON (edizione.id_edizione) " +
                 "opera.id_opera, " +
                 "opera.titolo, " +
@@ -75,12 +75,12 @@ public class BookDAO {
                 "edizione.isbn, " +
                 "edizione.editore, " +
                 "edizione.numero_edizione, " +
-                "volume.id_volume, " + // Aggiunta per recuperare il volume
+                "volume.id_volume, " +
                 "volume.stato, " +
                 "volume.posizione, " +
-                "opera.anno_pubblicazione_originale, " + // Aggiunto anno di pubblicazione originale
-                "edizione.anno_pubblicazione, " + // Aggiunto anno di pubblicazione
-                "opera.descrizione " + // Aggiunta descrizione dell'opera
+                "opera.anno_pubblicazione_originale, " +
+                "edizione.anno_pubblicazione, " +
+                "opera.descrizione " +
                 "FROM opera " +
                 "JOIN edizione ON opera.id_opera = edizione.id_opera " +
                 "JOIN volume ON edizione.id_edizione = volume.id_edizione " +
@@ -130,8 +130,7 @@ public class BookDAO {
     }
 
     public static String ottieniIsbn (String nome, String autore, int num_edizione) {
-        String query = "SELECT isbn FROM opera JOIN edizione ON opera.id_opera = edizione.id_opera" +
-                       "+ WHERE opera.titolo = ? AND opera.autore = ? AND numero_edizione = ?;";
+        String query = "SELECT isbn FROM opera JOIN edizione ON opera.id_opera = edizione.id_opera WHERE opera.titolo = ? AND opera.autore = ? AND numero_edizione = ?;";
         try(Connection connection = DatabaseConnection.getInstance().getConnection()){
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, nome);

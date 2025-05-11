@@ -40,9 +40,9 @@ public class InfoCommDAO {
     }
 
 
-    //inserimento di un commento nel database
     public static boolean aggiungiCommento(String commento, int idEdizione) {
         String query = "INSERT INTO commento (testo, id_edizione, id_utente) VALUES (?, ?, ?)";
+
         try (Connection connection = DatabaseConnection.getInstance().getConnection()) {
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             preparedStatement.setString(1, commento);

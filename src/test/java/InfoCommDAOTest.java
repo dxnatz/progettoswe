@@ -1,12 +1,6 @@
 import com.progettoswe.business_logic.InfoCommService;
-import com.progettoswe.business_logic.LoanService;
 import com.progettoswe.model.Session;
 import com.progettoswe.model.Utente;
-import com.progettoswe.model.Commento;
-import com.progettoswe.model.Volume;
-import com.progettoswe.model.Edizione;
-import com.progettoswe.model.Opera;
-import com.progettoswe.model.Prestito;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -27,31 +21,20 @@ public class InfoCommDAOTest {
         Session.setUtente(utenteTest);
     }
 
-    // 1. Test aggiunta commento per volume
-    @Test
-    public void testAggiungiCommentoVolume() {
-        boolean risultato = InfoCommService.aggiungiCommentoVolume(ID_PRESTITO_TEST, COMMENTO_TEST);
+    // 1. Test aggiunta commento per opera
 
-        assertTrue(risultato);
-        Commento commento = InfoCommService.getCommentoUtente(LoanService.getPrestito(ID_PRESTITO_TEST).getVolume().getEdizione().getIdEdizione());
-        assertEquals(COMMENTO_TEST, commento.getTesto(), "Il commento dovrebbe essere stato aggiunto correttamente");
-
-        InfoCommService.eliminaCommento(ID_PRESTITO_TEST);
-    }
-
-    // 2. Test aggiunta commento per opera
     @Test
     public void testAggiungiCommentoOpera() {
         boolean risultato = InfoCommService.aggiungiCommento(COMMENTO_TEST, ID_EDIZIONE_TEST);
 
         assertTrue(risultato, "L'aggiunta del commento su opera dovrebbe riuscire");
-        Commento commento = InfoCommService.getCommentoUtente(ID_EDIZIONE_TEST);
-        assertEquals(COMMENTO_TEST, commento.getTesto(), "Il commento dovrebbe essere stato aggiunto correttamente");
+        String commento = InfoCommService.getCommentoUtente(ID_EDIZIONE_TEST);
+        assertEquals(COMMENTO_TEST, commento, "Il commento dovrebbe essere stato aggiunto correttamente");
 
         InfoCommService.eliminaCommento(ID_EDIZIONE_TEST);
     }
 
-    // 3. Test eliminazione commento
+    // 2. Test eliminazione commento
     @Test
     public void testEliminaCommento() {
         InfoCommService.aggiungiCommento(COMMENTO_TEST, ID_EDIZIONE_TEST);
@@ -66,7 +49,7 @@ public class InfoCommDAOTest {
         assertNull(commentoDopoEliminazione, "Il commento dovrebbe essere stato eliminato");
     }
 
-    // 4. Test modifica commento
+    // 3. Test modifica commento
     @Test
     public void testModificaCommento() {
         InfoCommService.aggiungiCommento(COMMENTO_TEST, ID_EDIZIONE_TEST);

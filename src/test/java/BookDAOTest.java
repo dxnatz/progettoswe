@@ -48,4 +48,26 @@ public class BookDAOTest {
         assertNotNull(volume.getEdizione().getOpera(), "L'opera non deve essere nulla");
         assertNotNull(volume.getStato(), "Lo stato del volume non deve essere nullo");
     }
+
+    @Test
+    public void testRicercaLibroConRisultati() {
+        String termineRicerca = "Il Signore degli Anelli";
+
+        Catalogo catalogo = BookDAO.ricercaLibro(termineRicerca);
+        List<Volume> volumiTrovati = catalogo.getVolumi();
+
+        assertNotNull(volumiTrovati, "La lista dei volumi non dovrebbe essere null");
+        assertFalse(volumiTrovati.isEmpty(), "Dovrebbero esserci risultati per la ricerca");
+    }
+
+    @Test
+    public void testRicercaLibroSenzaRisultati() {
+        String termineRicerca = "xyznonesiste";
+
+        Catalogo catalogo = BookDAO.ricercaLibro(termineRicerca);
+        List<Volume> volumiTrovati = catalogo.getVolumi();
+
+        assertNotNull(volumiTrovati, "La lista dei volumi non dovrebbe essere null");
+        assertTrue(volumiTrovati.isEmpty(), "Non dovrebbero esserci risultati per una ricerca inesistente");
+    }
 }

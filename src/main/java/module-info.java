@@ -9,5 +9,6 @@ module com.progettoswe {
     exports com.progettoswe;
     exports com.progettoswe.model;
     exports com.progettoswe.ORM;
+    exports com.progettoswe.business_logic;
 
 }
