@@ -11,7 +11,6 @@ public class BookDAOTest {
 
     @Test
     public void testOttieniIsbnEsistente() {
-        // Questi valori devono esistere nel database
         String titolo = "Il Signore degli Anelli";
         String autore = "J.R.R. Tolkien";
         int numeroEdizione = 1;
@@ -19,7 +18,7 @@ public class BookDAOTest {
         String isbn = BookDAO.ottieniIsbn(titolo, autore, numeroEdizione);
 
         assertNotNull(isbn, "L'ISBN non dovrebbe essere nullo per un libro esistente.");
-        assertEquals("9788845292610", isbn); // Sostituisci con l'ISBN atteso
+        assertEquals("9788845292610", isbn);
     }
 
     @Test

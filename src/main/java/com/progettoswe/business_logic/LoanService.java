@@ -195,7 +195,6 @@ public class LoanService {
         return isbn;
     }
 
-    //corretto
     private static boolean libroDisponibile(String isbn) {
         return BookDAO.libroDisponibile(isbn);
     }
