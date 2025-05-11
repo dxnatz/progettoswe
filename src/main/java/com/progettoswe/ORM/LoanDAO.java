@@ -377,4 +377,65 @@ public class LoanDAO {
             return false;
         }
     }
+
+   public static Prestito getPrestitoById(int idPrestito) {
+       String query = "SELECT * FROM prestito " +
+               "JOIN volume ON prestito.id_volume = volume.id_volume " +
+               "JOIN edizione ON volume.id_edizione = edizione.id_edizione " +
+               "JOIN opera ON opera.id_opera = edizione.id_opera " +
+               "WHERE id_prestito = ?";
+
+       try (Connection connection = DatabaseConnection.getInstance().getConnection();
+            PreparedStatement statement = connection.prepareStatement(query)) {
+
+           statement.setInt(1, idPrestito);
+           ResultSet resultSet = statement.executeQuery();
+
+           if (resultSet.next()) {
+               // Creazione oggetto Opera
+               Opera opera = new Opera(
+                       resultSet.getInt("id_opera"),
+                       resultSet.getString("titolo"),
+                       resultSet.getString("autore"),
+                       resultSet.getString("genere"),
+                       resultSet.getInt("anno_pubblicazione_originale"),
+                       resultSet.getString("descrizione")
+               );
+
+               // Creazione oggetto Edizione
+               Edizione edizione = new Edizione(
+                       resultSet.getString("isbn"),
+                       resultSet.getInt("anno_pubblicazione"),
+                       resultSet.getString("editore"),
+                       resultSet.getInt("numero_edizione"),
+                       opera,
+                       resultSet.getInt("id_edizione")
+               );
+
+               // Creazione oggetto Volume
+               Volume volume = new Volume(
+                       resultSet.getInt("id_volume"),
+                       edizione,
+                       resultSet.getString("stato"),
+                       resultSet.getString("posizione")
+               );
+
+               // Creazione oggetto Prestito
+               return new Prestito(
+                       resultSet.getInt("id_prestito"),
+                       volume,
+                       Session.getUtente(), // Ensure this is not null
+                       resultSet.getDate("data_inizio").toLocalDate(),
+                       resultSet.getBoolean("restituito"),
+                       resultSet.getInt("num_rinnovi")
+               );
+           } else {
+               System.out.println("No loan found with id: " + idPrestito);
+           }
+       } catch (SQLException e) {
+           System.err.println("Error while fetching loan: " + e.getMessage());
+           e.printStackTrace();
+       }
+       return null; // Return null if the loan is not found
+   }
 }

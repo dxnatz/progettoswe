@@ -52,9 +52,12 @@ public class LoanService {
 
     private static LocalDate calculateDueDate(Prestito prestito) {
         switch (prestito.getNum_rinnovi()) {
-            case 2: return prestito.getDataInizio().plusDays(60);
-            case 1: return prestito.getDataInizio().plusDays(45);
-            default: return prestito.getDataInizio().plusDays(30);
+            case 2:
+                return prestito.getDataInizio().plusDays(60);
+            case 1:
+                return prestito.getDataInizio().plusDays(45);
+            default:
+                return prestito.getDataInizio().plusDays(30);
         }
     }
 
@@ -69,11 +72,11 @@ public class LoanService {
             int numero_edizione = prestiti.get(i).getVolume().getEdizione().getNumero();
             LocalDate dataFine;
             String isbn = prestiti.get(i).getVolume().getEdizione().getIsbn();
-            if(LoanDAO.rinnovi(isbn) == 2){
+            if (LoanDAO.rinnovi(isbn) == 2) {
                 dataFine = prestiti.get(i).getDataInizio().plusDays(60);
-            }else if(LoanDAO.rinnovi(isbn) == 1){
+            } else if (LoanDAO.rinnovi(isbn) == 1) {
                 dataFine = prestiti.get(i).getDataInizio().plusDays(45);
-            }else{
+            } else {
                 dataFine = prestiti.get(i).getDataInizio().plusDays(30);
             }
             listaPrestiti.getItems().add(titolo + " - " + numero_edizione + " edizione - " + editore + " - " + autore + " - Da restituire entro il: " + dataFine);
@@ -168,14 +171,14 @@ public class LoanService {
     }
 
     public static boolean prenotaLibro(String selectedBook) {
-        if(selectedBook != null){
-            String [] bookDetails = selectedBook.split(" - ");
+        if (selectedBook != null) {
+            String[] bookDetails = selectedBook.split(" - ");
             String titolo = bookDetails[0];
             String autore = bookDetails[3];
             int num_edizione = Integer.parseInt(bookDetails[1].split(" edizione")[0]);
             String isbn = getIsbnFromSelection(titolo, autore, num_edizione);
-            if(isbn != null && libroDisponibile(isbn) && !libroGiaPrenotato(isbn) && !prestitiMassimiRaggiunti()){
-                if(LoanDAO.prenotaLibro(isbn)){
+            if (isbn != null && libroDisponibile(isbn) && !libroGiaPrenotato(isbn) && !prestitiMassimiRaggiunti()) {
+                if (LoanDAO.prenotaLibro(isbn)) {
                     //aggiornaStatoVolumePrestito(isbn);
                     return true;
                 }
@@ -185,7 +188,7 @@ public class LoanService {
     }
 
     //corretto
-    private static boolean prestitiMassimiRaggiunti(){
+    private static boolean prestitiMassimiRaggiunti() {
         return LoanDAO.prestitiMassimiRaggiunti();
     }
 
@@ -206,13 +209,13 @@ public class LoanService {
 
     //corretto
     public static boolean annullaPrestito(String selectedLoan) {
-        if(selectedLoan != null){
-            String [] loanDetails = selectedLoan.split(" - ");
+        if (selectedLoan != null) {
+            String[] loanDetails = selectedLoan.split(" - ");
             String titolo = loanDetails[0];
             String autore = loanDetails[3];
             int num_edizione = Integer.parseInt(loanDetails[1].split(" edizione")[0]);
             String isbn = getIsbnFromSelection(titolo, autore, num_edizione);
-            if(isbn != null && LoanDAO.prestitoDaMenoDiTreGiorni(isbn, num_edizione)){
+            if (isbn != null && LoanDAO.prestitoDaMenoDiTreGiorni(isbn, num_edizione)) {
                 //aggiornaStatoVolumeRientro(isbn);
                 return LoanDAO.annullaPrestito(isbn);
             }
@@ -222,11 +225,11 @@ public class LoanService {
 
     //corretto
     public static boolean prenotazioneScaduta(String dataFine) {
-        if(dataFine != null){
+        if (dataFine != null) {
             LocalDate dataOdiena = LocalDate.now();
             LocalDate dataControllo = LocalDate.parse(dataFine);
             dataControllo = dataControllo.minusDays(27);
-            if(dataOdiena.isAfter(dataControllo)){
+            if (dataOdiena.isAfter(dataControllo)) {
                 return true;
             }
         }
@@ -235,14 +238,14 @@ public class LoanService {
 
     //corretto
     public static boolean prolungaPrestito(String selectedLoan) {
-        if(selectedLoan != null){
-            String [] loanDetails = selectedLoan.split(" - ");
+        if (selectedLoan != null) {
+            String[] loanDetails = selectedLoan.split(" - ");
             String titolo = loanDetails[0];
             String autore = loanDetails[3];
             String dataFine = loanDetails[4].split("Da restituire entro il: ")[1];
             int num_edizione = Integer.parseInt(loanDetails[1].split(" edizione")[0]);
             String isbn = getIsbnFromSelection(titolo, autore, num_edizione);
-            if(isbn != null && !scadenzaImminente(dataFine) && copiaDisponibile(isbn) && rinnoviEsauriti(isbn) != 2){
+            if (isbn != null && !scadenzaImminente(dataFine) && copiaDisponibile(isbn) && rinnoviEsauriti(isbn) != 2) {
                 LoanDAO.prolungaPrestito(isbn);
                 return true;
             }
@@ -252,11 +255,11 @@ public class LoanService {
 
     //corretto
     private static boolean scadenzaImminente(String dataFine) {
-        if(dataFine != null){
+        if (dataFine != null) {
             LocalDate dataOdiena = LocalDate.now();
             LocalDate dataControllo = LocalDate.parse(dataFine);
             dataControllo = dataControllo.minusDays(2);
-            if(dataOdiena.isAfter(dataControllo)){
+            if (dataOdiena.isAfter(dataControllo)) {
                 return true;
             }
         }
@@ -273,8 +276,11 @@ public class LoanService {
         return LoanDAO.rinnovi(isbn);
     }
 
-    public static boolean concludiPrestito(int id){
+    public static boolean concludiPrestito(int id) {
         return LoanDAO.concludiPrestito(id);
     }
 
+    public static Prestito getPrestito(int id) {
+        return LoanDAO.getPrestitoById(id);
+    }
 }
