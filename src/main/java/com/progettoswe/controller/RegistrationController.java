@@ -1,17 +1,18 @@
 package com.progettoswe.controller;
 
+import com.progettoswe.App;
+import com.progettoswe.business_logic.UserService;
+import com.progettoswe.model.Utente;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
+
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.regex.Pattern;
-import com.progettoswe.App;
-import com.progettoswe.model.Utente;
-import com.progettoswe.business_logic.UserService;
 
 
 public class RegistrationController {
@@ -77,10 +78,10 @@ public class RegistrationController {
     }
     private boolean isValidDate(LocalDate dataNascita) {
         LocalDate today = LocalDate.now(); // Data attuale
-        LocalDate limiteMinimo = today.minusYears(100); // Limite minimo (massimo 100 anni)
-        LocalDate limiteMassimo = today.minusYears(10); // Limite massimo (almeno 10 anni)
+        LocalDate limiteMinimo = today.minusYears(100);
+        LocalDate limiteMassimo = today.minusYears(10);
     
-        return !dataNascita.isAfter(limiteMassimo) && !dataNascita.isBefore(limiteMinimo); //verifica se rientra tra 10 e 100 anni
+        return !dataNascita.isAfter(limiteMassimo) && !dataNascita.isBefore(limiteMinimo);
     }
 
     //metodo per registrare un nuovo utente nel database

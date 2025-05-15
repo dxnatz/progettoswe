@@ -70,4 +70,34 @@ public class BookDAOTest {
         assertNotNull(volumiTrovati, "La lista dei volumi non dovrebbe essere null");
         assertTrue(volumiTrovati.isEmpty(), "Non dovrebbero esserci risultati per una ricerca inesistente");
     }
+
+    @Test
+    public void testOperaDisponibileConCopieDisponibili() {
+
+        String isbnDisponibile = "9788845292610";
+
+        boolean disponibile = BookDAO.operaDisponibile(isbnDisponibile);
+
+        assertTrue(disponibile, "Dovrebbero esserci copie disponibili per questo ISBN.");
+    }
+
+    @Test
+    public void testOperaDisponibileSenzaCopieDisponibili() {
+
+        String isbnNonDisponibile = "9788806229993";
+
+        boolean disponibile = BookDAO.operaDisponibile(isbnNonDisponibile);
+
+        assertFalse(disponibile, "Non dovrebbero esserci copie disponibili per questo ISBN.");
+    }
+
+    @Test
+    public void testOperaDisponibileIsbnInesistente() {
+
+        String isbnInesistente = "0000000000000";
+
+        boolean disponibile = BookDAO.operaDisponibile(isbnInesistente);
+
+        assertFalse(disponibile, "Non dovrebbero esserci copie per un ISBN inesistente.");
+    }
 }

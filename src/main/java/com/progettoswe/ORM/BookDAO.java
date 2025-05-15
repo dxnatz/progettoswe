@@ -162,9 +162,9 @@ public class BookDAO {
         return false;
     }
 
-    // Metodo per verificare se l'opera è disponibile
     public static boolean operaDisponibile(String isbn) {
-        String query = "SELECT COUNT(*) FROM volume WHERE id_edizione = (SELECT id_edizione FROM edizione WHERE isbn = ?) AND stato = 'disponibile';";
+        String query = "SELECT COUNT(*) FROM volume WHERE id_edizione = (SELECT id_edizione " +
+                       "FROM edizione WHERE isbn = ?) AND stato = 'disponibile';";
         try (Connection connection = DatabaseConnection.getInstance().getConnection()) {
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, isbn);
@@ -172,12 +172,12 @@ public class BookDAO {
 
             if (resultSet.next()) {
                 int copieDisponibili = resultSet.getInt(1);
-                return copieDisponibili > 0; // Se ci sono copie disponibili, restituisci true
+                return copieDisponibili > 0;
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return false; // Nessuna copia disponibile
+        return false;
     }
 
     //aggiornato

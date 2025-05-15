@@ -296,8 +296,6 @@ public class LoanDAO {
 
                 int rowsUpdated = updateStatement.executeUpdate();  // Esegui l'UPDATE
                 if (rowsUpdated > 0) {
-                    // Aggiornamento avvenuto correttamente
-
                     // 3. Inserisci il prestito nel database
                     PreparedStatement insertStatement = connection.prepareStatement(insertPrestitoQuery);
                     insertStatement.setInt(1, idVolume);  // Imposta l'ID del volume selezionato

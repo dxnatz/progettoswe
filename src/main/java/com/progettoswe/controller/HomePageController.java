@@ -232,7 +232,11 @@ public class HomePageController {
                         successAlert.showAndWait();
                     } else {
                         Alert errorAlert = new Alert(Alert.AlertType.ERROR);
-                        errorAlert.setContentText("Il libro non è stato selezionato correttamente.\n\nIl libro non è disponibile.\n\nHai già un prestito attivo per questo libro.\n\n Il libro è appena stato prenotato da un altro utente.\n\nHai raggiunto il numero massimo di prestiti.");
+                        errorAlert.setContentText("Il libro non è stato selezionato correttamente.\n\n" +
+                                "Il libro non è disponibile.\n\n" +
+                                "Hai già un prestito attivo per questo libro.\n\n" +
+                                "Il libro è appena stato prenotato da un altro utente.\n\n" +
+                                "Hai raggiunto il numero massimo di prestiti.");
                         errorAlert.setHeaderText("Errore");
                         errorAlert.setTitle("Errore durante la prenotazione del libro");
                         errorAlert.showAndWait();

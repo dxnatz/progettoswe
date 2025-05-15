@@ -103,9 +103,9 @@ public class UserDAO {
 
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next() && rs.getInt(1) > 0) {
-                    return true; // Login riuscito
+                    return true;
                 } else {
-                    return false; // Login fallito
+                    return false;
                 }
             }
         } catch (SQLException e) {
