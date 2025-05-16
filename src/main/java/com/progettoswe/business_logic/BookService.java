@@ -2,9 +2,8 @@ package com.progettoswe.business_logic;
 
 import com.progettoswe.ORM.BookDAO;
 import com.progettoswe.model.Catalogo;
-import com.progettoswe.model.Edizione;
-import com.progettoswe.model.Opera;
 import com.progettoswe.model.Volume;
+import com.progettoswe.utilities.AlertUtil;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
@@ -68,8 +67,26 @@ public class BookService {
     }
 
     public static void stampaCatalogo(Catalogo catalogo, ListView<String> listaCatalogo) {
-        catalogo = BookDAO.caricaCatalogo();
-        aggiornaCatalogo(catalogo, listaCatalogo);
+        try {
+            listaCatalogo.getItems().clear();  // Pulisce la lista prima del caricamento
+            catalogo = BookDAO.caricaCatalogo();
+            if (catalogo == null || catalogo.getVolumi().isEmpty()) {
+                AlertUtil.showErrorAlert(
+                        "Errore di Caricamento",
+                        "Catalogo vuoto",
+                        "Non è stato possibile recuperare i dati del catalogo. Il database potrebbe essere vuoto."
+                );
+                return;
+            }
+            aggiornaCatalogo(catalogo, listaCatalogo);
+        } catch (Exception e) {
+            AlertUtil.showErrorAlert(
+                    "Errore di Sistema",
+                    "Impossibile caricare il catalogo",
+                    "Si è verificato un errore durante il caricamento dei dati: " + e.getMessage()
+            );
+            listaCatalogo.getItems().add("Errore nel caricamento del catalogo");
+        }
     }
 
     public static void stampaCatalogoBibliotecario(Catalogo catalogo, ListView<String> listaCatalogo) {
